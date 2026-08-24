@@ -681,9 +681,11 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 </footer>
 
 <script>
-/* Starfield — the sky at 60,000 ft. Silver ramp only; the drift and the
-   occasional meteor both run along the wing's own diagonal (17.2,-14).
-   Static single frame under prefers-reduced-motion; pauses off-screen. */
+/* The sky at 60,000 ft — built to be felt, not looked at. Three star
+   depths in parallax, high cirrus wisps sliding underneath, a satellite
+   crossing every minute or so, a dim meteor on the wing angle. Everything
+   low-alpha; the motion carries it. Static single frame under
+   prefers-reduced-motion; pauses off-screen. */
 (function(){
   var cv = document.getElementById('starfield');
   if (!cv || !cv.getContext) return;
@@ -691,23 +693,35 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
   var TONES = ['245,246,248','200,204,213','154,160,172'];
-  var DXW = 17.2, DYW = -14, LEN = Math.hypot(DXW, DYW);
-  var UX = DXW/LEN, UY = DYW/LEN;          // wing direction (right, up)
-  var W, H, stars = [], meteor = null, nextMeteor = 6, raf = 0, on = false, last = 0, t = 0;
+  var LEN = Math.hypot(17.2, 14);
+  var UX = 17.2/LEN, UY = -14/LEN;          // wing direction (right, up)
+  var W, H, stars = [], wisps = [], meteor = null, sat = null;
+  var nextMeteor = 8, nextSat = 4, raf = 0, on = false, last = 0, t = 0;
 
   function seed(){
-    stars = [];
-    var n = Math.round(W*H/9000);          // ~150 stars at 1400x950
+    stars = []; wisps = [];
+    var n = Math.round(W*H/8000);
     for (var i = 0; i < n; i++){
-      var deep = Math.random() < .68;      // two depths, faint majority
+      var z = Math.random();                 // depth: most stars live far away
+      var far = z < .55, mid = z < .88;
       stars.push({
         x: Math.random()*W, y: Math.random()*H,
-        r: deep ? .5 + Math.random()*.55 : .9 + Math.random()*.85,
-        v: deep ? 2.2 : 4.4,               // px/s against the wing direction
+        r: far ? .45+Math.random()*.4 : mid ? .6+Math.random()*.5 : .9+Math.random()*.5,
+        v: far ? 1.6 : mid ? 3.2 : 5.5,      // px/s, three parallax rates
         tone: TONES[(Math.random()*TONES.length)|0],
-        a: .22 + Math.random()*.5,
-        tw: 1.5 + Math.random()*4.5,       // twinkle period, seconds
+        a: far ? .08+Math.random()*.16 : mid ? .12+Math.random()*.2 : .16+Math.random()*.22,
+        tw: 1.2+Math.random()*4.2,           // livelier shimmer, dimmer base
         ph: Math.random()*6.283
+      });
+    }
+    for (var j = 0; j < 4; j++){
+      wisps.push({
+        x: Math.random()*W, y: Math.random()*H,
+        rx: 220+Math.random()*240,           // wide, flat cirrus sheets
+        ry: 60+Math.random()*70,
+        v: 6+Math.random()*3.5,              // nearest layer = fastest
+        a: .018+Math.random()*.02,
+        tw: 9+Math.random()*8, ph: Math.random()*6.283
       });
     }
   }
@@ -721,34 +735,73 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   }
   function frame(dt){
     ctx.clearRect(0,0,W,H);
+
+    // cirrus sheets, sliding aft under everything
+    for (var k = 0; k < wisps.length; k++){
+      var wp = wisps[k];
+      wp.x -= UX*wp.v*dt; wp.y -= UY*wp.v*dt;
+      if (wp.x < -wp.rx) wp.x += W+wp.rx*2; if (wp.x > W+wp.rx) wp.x -= W+wp.rx*2;
+      if (wp.y < -wp.ry) wp.y += H+wp.ry*2; if (wp.y > H+wp.ry) wp.y -= H+wp.ry*2;
+      var wa = wp.a*(.7+.3*Math.sin(t/wp.tw*6.283+wp.ph));
+      ctx.save();
+      ctx.translate(wp.x, wp.y); ctx.scale(1, wp.ry/wp.rx);
+      var wg = ctx.createRadialGradient(0,0,0, 0,0,wp.rx);
+      wg.addColorStop(0,'rgba(200,204,213,'+wa.toFixed(4)+')');
+      wg.addColorStop(1,'rgba(200,204,213,0)');
+      ctx.fillStyle = wg;
+      ctx.beginPath(); ctx.arc(0,0,wp.rx,0,6.283); ctx.fill();
+      ctx.restore();
+    }
+
+    // stars
     for (var i = 0; i < stars.length; i++){
       var st = stars[i];
-      st.x -= UX*st.v*dt; st.y -= UY*st.v*dt;   // world slides past, aft-down
+      st.x -= UX*st.v*dt; st.y -= UY*st.v*dt;
       if (st.x < -4) st.x += W+8; if (st.x > W+4) st.x -= W+8;
       if (st.y < -4) st.y += H+8; if (st.y > H+4) st.y -= H+8;
-      var a = st.a*(.72+.28*Math.sin(t/st.tw*6.283 + st.ph));
+      var a = st.a*(.55+.45*Math.sin(t/st.tw*6.283 + st.ph));
       ctx.beginPath();
       ctx.arc(st.x, st.y, st.r, 0, 6.283);
       ctx.fillStyle = 'rgba('+st.tone+','+a.toFixed(3)+')';
       ctx.fill();
     }
-    if (!reduce){
-      if (!meteor && t > nextMeteor){
-        meteor = { x: W*(.05+Math.random()*.35), y: H*(.25+Math.random()*.55), life: 0 };
+
+    if (reduce) return;
+
+    // a satellite: slow, steady, faint — the opposite register from a meteor
+    if (!sat && t > nextSat){
+      var fromLeft = Math.random() < .5;
+      sat = { x: fromLeft ? -8 : W+8, y: H*(.12+Math.random()*.5),
+              vx: (fromLeft ? 1 : -1)*(20+Math.random()*10),
+              vy: (Math.random()-.5)*7, life: 0, dur: (W+16)/28 };
+    }
+    if (sat){
+      sat.life += dt; sat.x += sat.vx*dt; sat.y += sat.vy*dt;
+      var sp = sat.life/sat.dur;
+      if (sp >= 1 || sat.x < -12 || sat.x > W+12){ sat = null; nextSat = t + 34 + Math.random()*40; }
+      else {
+        var sf = Math.min(1, Math.min(sp, 1-sp)*6) * .3;
+        ctx.beginPath(); ctx.arc(sat.x, sat.y, .8, 0, 6.283);
+        ctx.fillStyle = 'rgba(228,231,236,'+sf.toFixed(3)+')'; ctx.fill();
       }
-      if (meteor){
-        meteor.life += dt;
-        var p = meteor.life/.9;
-        if (p >= 1){ meteor = null; nextMeteor = t + 16 + Math.random()*20; }
-        else {
-          var d = 560*p, hx = meteor.x + UX*d, hy = meteor.y + UY*d;
-          var tail = 110, fade = p < .5 ? p*2 : (1-p)*2;
-          var g = ctx.createLinearGradient(hx, hy, hx-UX*tail, hy-UY*tail);
-          g.addColorStop(0, 'rgba(228,231,236,'+(.75*fade).toFixed(3)+')');
-          g.addColorStop(1, 'rgba(228,231,236,0)');
-          ctx.strokeStyle = g; ctx.lineWidth = 1.3; ctx.lineCap = 'round';
-          ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx-UX*tail, hy-UY*tail); ctx.stroke();
-        }
+    }
+
+    // a dim meteor along the wing angle
+    if (!meteor && t > nextMeteor){
+      meteor = { x: W*(.05+Math.random()*.35), y: H*(.25+Math.random()*.55), life: 0 };
+    }
+    if (meteor){
+      meteor.life += dt;
+      var p = meteor.life/.9;
+      if (p >= 1){ meteor = null; nextMeteor = t + 13 + Math.random()*16; }
+      else {
+        var d = 560*p, hx = meteor.x + UX*d, hy = meteor.y + UY*d;
+        var tail = 96, fade = p < .5 ? p*2 : (1-p)*2;
+        var g = ctx.createLinearGradient(hx, hy, hx-UX*tail, hy-UY*tail);
+        g.addColorStop(0, 'rgba(228,231,236,'+(.42*fade).toFixed(3)+')');
+        g.addColorStop(1, 'rgba(228,231,236,0)');
+        ctx.strokeStyle = g; ctx.lineWidth = 1.05; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx-UX*tail, hy-UY*tail); ctx.stroke();
       }
     }
   }
@@ -762,7 +815,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   function stop(){ on = false; cancelAnimationFrame(raf); }
 
   size();
-  if (reduce){ frame(0); }                  // one static frame, no motion
+  cv.renderFrame = function(dt){ frame(dt || 0) };   // static capture / testing hook
+  if (reduce){ frame(0); }
   else {
     start();
     document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
