@@ -700,16 +700,16 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 
   function seed(){
     stars = []; wisps = [];
-    var n = Math.round(W*H/4200);
+    var n = Math.round(W*H/3400);
     for (var i = 0; i < n; i++){
       var z = Math.random();                 // depth: most stars live far away
       var far = z < .55, mid = z < .88;
       stars.push({
         x: Math.random()*W, y: Math.random()*H,
-        r: far ? .45+Math.random()*.4 : mid ? .6+Math.random()*.5 : .9+Math.random()*.5,
+        r: far ? .55+Math.random()*.45 : mid ? .7+Math.random()*.55 : 1+Math.random()*.55,
         v: far ? 2.6 : mid ? 5.2 : 8.8,      // px/s, three parallax rates
         tone: TONES[(Math.random()*TONES.length)|0],
-        a: far ? .09+Math.random()*.17 : mid ? .13+Math.random()*.22 : .2+Math.random()*.26,
+        a: far ? .16+Math.random()*.22 : mid ? .24+Math.random()*.28 : .32+Math.random()*.32,
         tw: .9+Math.random()*3.4,           // livelier shimmer, dimmer base
         ph: Math.random()*6.283
       });
@@ -759,7 +759,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       st.x -= UX*st.v*dt; st.y -= UY*st.v*dt;
       if (st.x < -4) st.x += W+8; if (st.x > W+4) st.x -= W+8;
       if (st.y < -4) st.y += H+8; if (st.y > H+4) st.y -= H+8;
-      var a = st.a*(.55+.45*Math.sin(t/st.tw*6.283 + st.ph));
+      var a = st.a*(.72+.28*Math.sin(t/st.tw*6.283 + st.ph));
       ctx.beginPath();
       ctx.arc(st.x, st.y, st.r, 0, 6.283);
       ctx.fillStyle = 'rgba('+st.tone+','+a.toFixed(3)+')';
