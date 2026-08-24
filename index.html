@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Concorde</title>
+<meta name="description" content="CONCORDE — Fly Concorde, Fly. Desktop software that runs on your own machines. ConcordeAI and ConcordeVPN.">
+<script>document.documentElement.className='js';</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Michroma&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#101013;
+  --panel:#0a0a0c;
+  --panel2:#191a1e;
+  --line:#26272c;
+  --line-soft:#1e1f23;
+  --text:#ececec;
+  --dim:#b4b4b4;
+  --faint:#8e8e8e;
+  --accent:#ececec;
+  --accent-hot:#fff;
+  --accent-dim:rgba(255,255,255,.10);
+  --red:#e26d5a;
+  --radius:10px;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --disp:'Michroma','Space Grotesk',system-ui,sans-serif;
+  --silver:linear-gradient(90deg,#f5f6f8,#c8ccd5,#9aa0ac,#e2e5ea,#8f95a1,#d5d8df,#f5f6f8);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:74px}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:var(--sans);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3,h4,p,ul,ol,figure{margin:0}
+ul{list-style:none;padding:0}
+
+:where(a,button,summary,[tabindex]):focus-visible{
+  outline:2px solid var(--accent-hot);outline-offset:3px;border-radius:4px;
+}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:100;
+  background:var(--accent);color:var(--panel);padding:10px 16px;border-radius:0 0 var(--radius) 0;
+  font:600 13px/1 var(--sans);
+}
+.skip:focus{left:0}
+
+.wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,28px)}
+
+/* ---------- shared atoms ---------- */
+.label{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
+}
+.lockup{
+  font-family:var(--disp);text-transform:uppercase;letter-spacing:.15em;
+  color:#fff;font-weight:400;white-space:nowrap;
+}
+.lockup .tld{font-weight:800;-webkit-text-stroke:.55px currentColor}
+.wing{display:block;overflow:visible}
+.wing line{stroke:url(#wgrad);stroke-linecap:round;fill:none}
+
+/* Brand line: Michroma small + wide tracking, the apps' own #brand treatment */
+.slogan{
+  font-family:var(--disp);text-transform:uppercase;font-weight:400;
+  font-size:10.5px;letter-spacing:.34em;text-indent:.34em;
+  color:var(--faint);margin:13px 0 0;
+}
+
+/* ---------- fixed header (from C) ---------- */
+.site-head{
+  position:fixed;inset:0 0 auto 0;z-index:50;
+  background:rgba(16,16,19,.78);
+  -webkit-backdrop-filter:saturate(140%) blur(14px);
+  backdrop-filter:saturate(140%) blur(14px);
+  border-bottom:1px solid var(--line-soft);
+}
+.site-head .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:58px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;opacity:.72}
+.brand:hover{opacity:1}
+.brand .wing{width:26px}
+.brand .wing line{stroke-width:2.4}
+.brand .lockup{font-size:12.5px}
+.nav{display:flex;align-items:center;gap:clamp(14px,2.4vw,30px)}
+.nav a{
+  text-decoration:none;font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+  padding:6px 0;border-bottom:1px solid transparent;white-space:nowrap;
+}
+.nav a:hover{color:var(--text);border-bottom-color:var(--accent-dim)}
+
+/* ---------- hero (from C) ---------- */
+.hero{
+  position:relative;min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:120px 0 96px;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
+  width:min(1100px,150vw);aspect-ratio:1;pointer-events:none;
+  background:radial-gradient(circle,rgba(200,204,213,.085),rgba(200,204,213,.02) 42%,transparent 68%);
+}
+/* one quiet moment of silver where the hero hands off to the grid (from A) */
+.hero::after{
+  content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:min(620px,80%);height:1px;background:var(--silver);opacity:.5;
+}
+.hero .wrap{position:relative;display:flex;flex-direction:column;align-items:center}
+.hero-wing{width:clamp(132px,20vw,236px);margin-bottom:clamp(30px,5vw,54px)}
+.hero-wing line{stroke-width:.62}
+
+.hero-mark{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;line-height:1;
+  font-size:clamp(1.5rem,7.2vw,6.6rem);letter-spacing:.15em;
+  padding-right:.15em; /* balance trailing letter-spacing */
+  background:var(--silver);background-size:220% 100%;background-position:50% 0;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  animation:sheen 2.4s cubic-bezier(.2,.7,.2,1) .35s both;
+}
+@keyframes sheen{from{background-position:118% 0}to{background-position:50% 0}}
+
+.hero-line{
+  margin-top:clamp(24px,3.2vw,34px);max-width:34ch;
+  font-size:clamp(16px,1.45vw,19px);line-height:1.5;color:var(--dim);
+  text-wrap:balance;
+}
+.hero-meta{
+  margin-top:clamp(28px,4vw,44px);display:flex;flex-wrap:wrap;justify-content:center;
+  gap:10px 12px;
+}
+.hero-meta li{
+  border:1px solid var(--line);border-radius:999px;padding:6px 13px;
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);
+}
+.cue{
+  position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.cue i{
+  display:block;width:1px;height:46px;
+  background:linear-gradient(180deg,transparent,var(--line) 30%,var(--faint) 100%);
+  overflow:hidden;position:relative;
+}
+.cue i::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:14px;background:var(--text);
+  animation:fall 2.8s cubic-bezier(.6,0,.4,1) infinite;
+}
+@keyframes fall{0%{transform:translateY(-46px);opacity:0}25%{opacity:1}75%{opacity:1}100%{transform:translateY(46px);opacity:0}}
+
+/* wing draw-in */
+.hero-wing line{animation:draw 1.5s cubic-bezier(.3,.75,.25,1) both}
+.hero-wing line:nth-child(1){stroke-dasharray:22.3;stroke-dashoffset:22.3;animation-delay:.05s}
+.hero-wing line:nth-child(2){stroke-dasharray:16.7;stroke-dashoffset:16.7;animation-delay:.17s}
+.hero-wing line:nth-child(3){stroke-dasharray:11.2;stroke-dashoffset:11.2;animation-delay:.29s}
+.hero-wing line:nth-child(4){stroke-dasharray:5.6;stroke-dashoffset:5.6;animation-delay:.41s}
+.hero-wing line:nth-child(5){stroke-dasharray:1.5;stroke-dashoffset:1.5;animation-delay:.53s}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ---------- section furniture (from A) ---------- */
+.section{padding:78px 0 0}
+main .section:last-child{padding-bottom:104px}
+.sec-head{
+  display:flex;align-items:baseline;gap:16px;
+  padding-bottom:14px;border-bottom:1px solid var(--line-soft);
+  margin-bottom:36px;
+}
+.sec-head h2{
+  font-family:var(--disp);font-size:13px;text-transform:uppercase;
+  letter-spacing:.15em;font-weight:400;color:var(--text);
+}
+.sec-head .count{margin-left:auto}
+
+/* ---------- the grid: the whole point (from A) ---------- */
+.grid{
+  display:grid;gap:22px;
+  grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+  align-items:stretch;
+}
+
+/* ---------- product card = the reusable atom (from A) ---------- */
+.card{
+  display:flex;flex-direction:column;
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;
+}
+.card-head{padding:26px 26px 22px;border-bottom:1px solid var(--line-soft)}
+.card-head .row{display:flex;align-items:center;gap:11px}
+.card-head .wing{width:22px;height:18px;flex:0 0 auto}
+.card-head .wing line{stroke-width:2.4}
+.card-head .lockup{font-size:15px}
+.card-head .desc{margin-top:14px;color:var(--dim);font-size:14.5px;max-width:38ch}
+.card-head .plats{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.card-head .plats span{border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+
+.feats{padding:6px 26px 4px}
+.feats li{
+  display:grid;grid-template-columns:15px 1fr;gap:12px;
+  padding:13px 0;border-bottom:1px solid var(--line-soft);
+}
+.feats li:last-child{border-bottom:0}
+.feats .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--faint);padding-top:2px}
+.feats b{
+  display:block;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--text);
+}
+.feats span.d{display:block;margin-top:5px;color:var(--faint);font-size:14px;line-height:1.5}
+
+/* ---------- downloads ---------- */
+.dl{
+  margin-top:auto;border-top:1px solid var(--line-soft);
+  background:var(--panel2);padding:22px 26px 24px;
+}
+.dl > .label{display:block;margin-bottom:14px}
+
+.chan{
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--bg);padding:15px 16px 16px;
+}
+.chan + .chan{margin-top:12px}
+.chan-top{
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  padding-bottom:12px;border-bottom:1px solid var(--line-soft);
+}
+.chan-name{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:600;color:var(--text);
+}
+.chan-ver{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);letter-spacing:.01em}
+.chan-build{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.chan-date{
+  margin-left:auto;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--faint);white-space:nowrap;
+}
+
+.btns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.btn{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+  border:1px solid var(--line);border-radius:8px;background:var(--panel2);
+  padding:10px 13px;
+  transition:border-color .14s ease,background .14s ease;
+}
+.btn:hover{border-color:var(--accent-dim);background:var(--accent-dim)}
+.btn .os{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);flex:0 0 62px;
+}
+.btn .file{
+  font-family:var(--mono);font-size:11.5px;color:var(--text);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;
+}
+.btn .arw{margin-left:auto;color:var(--faint);flex:0 0 auto}
+.btn:hover .arw{color:var(--text)}
+
+.chan-note{margin-top:12px;color:var(--faint);font-size:14px;line-height:1.5}
+.chan-name abbr{text-decoration:none;cursor:help}
+
+/* empty channel state — honest, explained, not a dead button */
+.chan.empty{border-style:dashed;border-color:var(--line)}
+.chan.empty .chan-ver{color:var(--faint)}
+.chan.empty p{margin-top:12px;color:var(--faint);font-size:14px;line-height:1.5}
+
+/* checksum disclosure */
+details.sum{margin-top:10px}
+details.sum > summary{
+  cursor:pointer;list-style:none;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);display:flex;align-items:center;gap:8px;padding:3px 0;
+}
+details.sum > summary::-webkit-details-marker{display:none}
+details.sum > summary:hover{color:var(--dim)}
+details.sum > summary::before{content:"+";font-size:12px;line-height:1}
+details.sum[open] > summary::before{content:"–"}
+.sum-body{
+  margin-top:8px;border:1px solid var(--line-soft);border-radius:8px;
+  background:var(--bg);padding:11px 12px;overflow-x:auto;
+}
+.sum-body code{font-family:var(--mono);font-size:11px;color:var(--dim);white-space:pre;display:block}
+.sum-body a{
+  display:inline-block;margin-top:9px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--dim);
+}
+.sum-body a:hover{color:var(--text)}
+
+/* ---------- empty product slot (from A) ---------- */
+.slot{
+  border:1px dashed var(--line);border-radius:var(--radius);background:transparent;
+  min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;text-align:center;padding:40px 26px;
+}
+.slot .lockup{font-size:15px;color:var(--faint)}
+.slot .suffix{
+  display:inline-block;width:2.4em;height:.92em;margin-left:.16em;
+  border:1px dashed var(--line);border-radius:3px;vertical-align:-.04em;
+}
+.slot p{color:var(--faint);font-size:14px;max-width:26ch}
+
+/* ---------- install note (from A, honesty copy from C) ---------- */
+.note{
+  border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);
+  padding:24px 26px;display:grid;
+  grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:22px 34px;
+}
+.note h3{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--faint);font-weight:500;
+}
+.note .body{color:var(--dim);font-size:14.5px;max-width:70ch}
+.note .body strong{color:var(--text);font-weight:600}
+.note .body .path{
+  font-family:var(--mono);font-size:13px;color:var(--text);
+  background:var(--panel2);border:1px solid var(--line-soft);
+  border-radius:6px;padding:1px 6px;white-space:nowrap;
+}
+.note .body p + p{margin-top:10px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line-soft);padding:34px 0 46px}
+footer .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+footer .brand{opacity:.72}
+footer .brand .wing{width:18px}
+footer .brand .lockup{font-size:11px}
+footer .slogan{margin:0;padding-left:16px;border-left:1px solid var(--line)}
+footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
+
+/* ---------- reveal (from C) ---------- */
+.js .reveal{opacity:0;transform:translateY(20px)}
+.js .reveal.in{opacity:1;transform:none;transition:opacity .85s cubic-bezier(.22,.7,.2,1),transform .85s cubic-bezier(.22,.7,.2,1)}
+.js .reveal.d1.in{transition-delay:.07s}
+.js .reveal.d2.in{transition-delay:.14s}
+
+/* ---------- responsive ---------- */
+@media (max-width:720px){
+  .hero{padding:100px 0 84px}
+  .section{padding:58px 0 0}
+  main .section:last-child{padding-bottom:78px}
+  .grid{grid-template-columns:1fr}
+  .card-head,.feats,.dl,.note{padding-left:20px;padding-right:20px}
+  .btn .os{flex-basis:54px}
+}
+@media (max-width:560px){
+  .site-head .wrap{height:54px}
+  .brand .lockup{font-size:11px}
+  .nav{gap:14px}
+  .nav a[href="#products"]{display:none}
+}
+@media (max-width:440px){
+  .chan-date{margin-left:0;width:100%}
+  .note .body .path{white-space:normal}
+}
+@media (max-width:900px){
+  .note{grid-template-columns:1fr;gap:8px 0}
+  .note h3{margin-top:14px}
+  .note h3:first-child{margin-top:0}
+}
+@media (max-height:660px){
+  .cue{display:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .hero-wing line{stroke-dashoffset:0!important}
+  .hero-mark{background-position:50% 0!important}
+  .js .reveal{opacity:1!important;transform:none!important}
+  .cue i::after{display:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="wgrad" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#787e89"/>
+    <stop offset=".55" stop-color="#b7bcc6"/>
+    <stop offset="1" stop-color="#f4f5f8"/>
+  </linearGradient>
+</defs></svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Concorde — top of page">
+      <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
+        <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+        <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+        <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+        <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+        <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+      <span class="lockup">Concorde</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#products">Products</a>
+      <a href="#concordeai">AI</a>
+      <a href="#concordevpn">VPN</a>
+      <a href="#install">Install</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="wrap">
+      <svg class="wing hero-wing" viewBox="2 2.3 19.6 16.4" role="img" aria-label="Concorde delta wing mark" focusable="false">
+        <g>
+          <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+          <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+          <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+          <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+          <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/>
+        </g>
+      </svg>
+      <h1 class="hero-mark">Concorde</h1>
+      <p class="slogan">Fly Concorde, Fly.</p>
+      <p class="hero-line">Desktop software that runs on your own machines, and gets out of the way.</p>
+      <ul class="hero-meta">
+        <li>2 apps shipping</li>
+        <li>macOS + Windows</li>
+        <li>Direct download</li>
+      </ul>
+    </div>
+    <div class="cue" aria-hidden="true">
+      <span class="label">Scroll</span>
+      <i></i>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS ============ -->
+  <section class="section" id="products" aria-labelledby="prod-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="prod-h">Products</h2>
+        <span class="label count">02 shipping</span>
+      </div>
+
+      <!-- RELEASE DATA — everything inside .grid below is regenerated by the
+           release workflow at deploy time. Sources:
+             ConcordeAI  stable  github.com/bigmillz/concordeai      /releases/latest
+             ConcordeAI  rc      github.com/bigmillz/concordeai      newest prerelease
+             ConcordeVPN rc      github.com/bigmillz/concordevpn-releases  newest prerelease
+           The concordevpn-releases mirror exists and carries the v30 assets
+           (created 2026-08-25) — the VPN links point at it because the source
+           repo is private and its asset URLs 404 for the public. New VPN
+           releases must be mirrored there or the buttons here go stale. -->
+      <div class="grid">
+
+        <!-- ============ CARD: CONCORDEAI ============ -->
+        <article class="card reveal" id="concordeai" aria-labelledby="ai-name">
+          <div class="card-head">
+            <div class="row">
+              <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
+                <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+                <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+                <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+                <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+                <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+              <h3 id="ai-name" class="lockup">Concorde<span class="tld">AI</span></h3>
+            </div>
+            <p class="desc">An AI desktop app that puts cloud models, local models, and your own GPUs in one place.</p>
+            <div class="plats label">
+              <span>macOS</span>
+              <span>Windows</span>
+            </div>
+          </div>
+
+          <ul class="feats">
+            <li>
+              <span class="n">01</span>
+              <div><b>Pooled GPU</b><span class="d">Combine GPU capacity across machines.</span></div>
+            </li>
+            <li>
+              <span class="n">02</span>
+              <div><b>Cloud + local</b><span class="d">Advanced cloud models and local models in one workflow.</span></div>
+            </li>
+            <li>
+              <span class="n">03</span>
+              <div><b>Funnel</b><span class="d">Staged decision flows: pick through option cards, end with a recommendation.</span></div>
+            </li>
+            <li>
+              <span class="n">04</span>
+              <div><b>Code features</b><span class="d">A code lane with a remote SSH agent and per-command approval.</span></div>
+            </li>
+          </ul>
+
+          <div class="dl">
+            <span class="label">Downloads</span>
+
+            <div class="chan">
+              <div class="chan-top">
+                <span class="chan-name">Stable</span>
+                <span class="chan-ver">5.3.7</span>
+                <span class="chan-date">Released <time datetime="2026-08-15">15 Aug 2026</time></span>
+              </div>
+              <p class="chan-note">Stable predates the Concorde rename — files are still named MillenAI.</p>
+              <div class="btns">
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v197/MillenAI.5.3.7.dmg">
+                  <span class="os">macOS</span>
+                  <span class="file">MillenAI.5.3.7.dmg</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v197/MillenAI-5.3.7-Windows.zip">
+                  <span class="os">Win zip</span>
+                  <span class="file">MillenAI-5.3.7-Windows.zip</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v197/MillenAI-5.3.7-x64.msi">
+                  <span class="os">Win msi</span>
+                  <span class="file">MillenAI-5.3.7-x64.msi</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <div class="chan">
+              <div class="chan-top">
+                <span class="chan-name"><abbr title="Release candidate">RC</abbr></span>
+                <span class="chan-ver">6.1.0</span>
+                <span class="chan-build">build 259</span>
+                <span class="chan-date">Released <time datetime="2026-08-23">23 Aug 2026</time></span>
+              </div>
+              <div class="btns">
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v259/ConcordeAI-6.1.0.dmg">
+                  <span class="os">macOS</span>
+                  <span class="file">ConcordeAI-6.1.0.dmg</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v259/ConcordeAI-6.1.0-Windows.zip">
+                  <span class="os">Win zip</span>
+                  <span class="file">ConcordeAI-6.1.0-Windows.zip</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v259/ConcordeAI-6.1.0-x64.msi">
+                  <span class="os">Win msi</span>
+                  <span class="file">ConcordeAI-6.1.0-x64.msi</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ============ CARD: CONCORDEVPN ============ -->
+        <article class="card reveal d1" id="concordevpn" aria-labelledby="vpn-name">
+          <div class="card-head">
+            <div class="row">
+              <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
+                <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+                <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+                <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+                <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+                <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+              <h3 id="vpn-name" class="lockup">Concorde<span class="tld">VPN</span></h3>
+            </div>
+            <p class="desc">A menu-bar VPN client for your own exit node. Bring your own server — the one-command installer is included.</p>
+            <div class="plats label">
+              <span>macOS</span>
+            </div>
+          </div>
+
+          <ul class="feats">
+            <li>
+              <span class="n">01</span>
+              <div><b>Trojan + Hysteria 2</b><span class="d">TCP by default with automatic fallback — keeps working on networks that shape or block.</span></div>
+            </li>
+            <li>
+              <span class="n">02</span>
+              <div><b>Unmodified mihomo</b><span class="d">The app is a thin, fast control plane over a stock engine.</span></div>
+            </li>
+            <li>
+              <span class="n">03</span>
+              <div><b>One click, no sudo</b><span class="d">Menu bar or global hotkey. No password after install.</span></div>
+            </li>
+            <li>
+              <span class="n">04</span>
+              <div><b>Server-side DNS filtering</b><span class="d">Ad and telemetry blocking with zero client config.</span></div>
+            </li>
+            <li>
+              <span class="n">05</span>
+              <div><b>Leak test &amp; bench</b><span class="d">Built-in leak test and throughput bench.</span></div>
+            </li>
+            <li>
+              <span class="n">06</span>
+              <div><b>Self-updating</b><span class="d">Checks for new builds and updates itself in place.</span></div>
+            </li>
+          </ul>
+
+          <div class="dl">
+            <span class="label">Downloads</span>
+
+            <div class="chan empty">
+              <div class="chan-top">
+                <span class="chan-name">Stable</span>
+                <span class="chan-ver">Not released</span>
+                <span class="chan-date">—</span>
+              </div>
+              <p>No stable ConcordeVPN release yet. The 1.0 release candidate below is the only published build.</p>
+            </div>
+
+            <div class="chan">
+              <div class="chan-top">
+                <span class="chan-name"><abbr title="Release candidate">RC</abbr></span>
+                <span class="chan-ver">1.0</span>
+                <span class="chan-build">build 30</span>
+                <span class="chan-date">Released <time datetime="2026-08-23">23 Aug 2026</time></span>
+              </div>
+              <div class="btns">
+                <a class="btn" href="https://github.com/bigmillz/concordevpn-releases/releases/download/v30/ConcordeVPN-1.0.0.dmg">
+                  <span class="os">macOS</span>
+                  <span class="file">ConcordeVPN-1.0.0.dmg</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+              <details class="sum">
+                <summary>Verify checksum</summary>
+                <div class="sum-body">
+<code>shasum -a 256 -c ConcordeVPN-1.0.0.dmg.sha256</code>
+                  <a href="https://github.com/bigmillz/concordevpn-releases/releases/download/v30/ConcordeVPN-1.0.0.dmg.sha256">ConcordeVPN-1.0.0.dmg.sha256</a>
+                </div>
+              </details>
+            </div>
+          </div>
+        </article>
+
+        <!-- ============ EMPTY SLOT ============ -->
+        <div class="slot reveal d2">
+          <span class="lockup">Concorde<span class="suffix" aria-hidden="true"></span></span>
+          <span class="label">More coming</span>
+          <p>Same name, same card. The next Concorde app drops into this grid.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INSTALL ============ -->
+  <section class="section" id="install" aria-labelledby="install-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="install-h">Install</h2>
+        <span class="label count">Direct download</span>
+      </div>
+
+      <div class="note reveal d1">
+        <h3>Gatekeeper</h3>
+        <div class="body">
+          <p>macOS builds are <strong>not notarized</strong>. The first launch will be blocked. Open <span class="path">System Settings &rsaquo; Privacy &amp; Security</span>, scroll to the message naming the app, and click <strong>Open Anyway</strong>. Once per version.</p>
+        </div>
+
+        <h3>ConcordeVPN servers</h3>
+        <div class="body">
+          <p>ConcordeVPN is bring-your-own-server. There is no network to sign up for. You run your own exit node — the one-command installer ships with the download and sets up the server side, including DNS filtering.</p>
+          <p>What that gets you is a tunnel you operate end to end. It is not an anonymity tool, and we make no claims about what your server, your host or your network records.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Concorde — top of page">
+      <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
+        <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+        <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+        <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+        <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+        <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+      <span class="lockup">Concorde</span>
+    </a>
+    <span class="slogan">Fly Concorde, Fly.</span>
+    <span class="right label">
+      <span>Direct download only</span>
+      <span>Updated <time datetime="2026-08-23">23 Aug 2026</time></span>
+    </span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    for (var i=0;i<els.length;i++) els[i].classList.add('in');
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {rootMargin:'0px 0px -12% 0px', threshold:0.06});
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>
