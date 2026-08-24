@@ -116,6 +116,11 @@ ul{list-style:none;padding:0}
   content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
   width:min(620px,80%);height:1px;background:var(--silver);opacity:.5;
 }
+.stars{
+  position:absolute;inset:0;
+  -webkit-mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
+  mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
+}
 .hero .wrap{position:relative;display:flex;flex-direction:column;align-items:center}
 .hero-wing{width:clamp(104px,13vw,164px);margin-bottom:clamp(24px,3.5vw,38px)}
 /* 1.6: between the app's 2.4 (reads blobby blown up — the inter-line gaps
@@ -403,6 +408,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="top">
+    <canvas class="stars" id="starfield" aria-hidden="true"></canvas>
     <div class="wrap">
       <svg class="wing hero-wing" viewBox="2 2.3 19.6 16.4" role="img" aria-label="Concorde delta wing mark" focusable="false">
         <g>
@@ -675,6 +681,99 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 </footer>
 
 <script>
+/* Starfield — the sky at 60,000 ft. Silver ramp only; the drift and the
+   occasional meteor both run along the wing's own diagonal (17.2,-14).
+   Static single frame under prefers-reduced-motion; pauses off-screen. */
+(function(){
+  var cv = document.getElementById('starfield');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var TONES = ['245,246,248','200,204,213','154,160,172'];
+  var DXW = 17.2, DYW = -14, LEN = Math.hypot(DXW, DYW);
+  var UX = DXW/LEN, UY = DYW/LEN;          // wing direction (right, up)
+  var W, H, stars = [], meteor = null, nextMeteor = 6, raf = 0, on = false, last = 0, t = 0;
+
+  function seed(){
+    stars = [];
+    var n = Math.round(W*H/9000);          // ~150 stars at 1400x950
+    for (var i = 0; i < n; i++){
+      var deep = Math.random() < .68;      // two depths, faint majority
+      stars.push({
+        x: Math.random()*W, y: Math.random()*H,
+        r: deep ? .5 + Math.random()*.55 : .9 + Math.random()*.85,
+        v: deep ? 2.2 : 4.4,               // px/s against the wing direction
+        tone: TONES[(Math.random()*TONES.length)|0],
+        a: .22 + Math.random()*.5,
+        tw: 1.5 + Math.random()*4.5,       // twinkle period, seconds
+        ph: Math.random()*6.283
+      });
+    }
+  }
+  function size(){
+    var r = cv.parentElement.getBoundingClientRect();
+    W = r.width; H = r.height;
+    cv.width = W*DPR; cv.height = H*DPR;
+    cv.style.width = W+'px'; cv.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    seed();
+  }
+  function frame(dt){
+    ctx.clearRect(0,0,W,H);
+    for (var i = 0; i < stars.length; i++){
+      var st = stars[i];
+      st.x -= UX*st.v*dt; st.y -= UY*st.v*dt;   // world slides past, aft-down
+      if (st.x < -4) st.x += W+8; if (st.x > W+4) st.x -= W+8;
+      if (st.y < -4) st.y += H+8; if (st.y > H+4) st.y -= H+8;
+      var a = st.a*(.72+.28*Math.sin(t/st.tw*6.283 + st.ph));
+      ctx.beginPath();
+      ctx.arc(st.x, st.y, st.r, 0, 6.283);
+      ctx.fillStyle = 'rgba('+st.tone+','+a.toFixed(3)+')';
+      ctx.fill();
+    }
+    if (!reduce){
+      if (!meteor && t > nextMeteor){
+        meteor = { x: W*(.05+Math.random()*.35), y: H*(.25+Math.random()*.55), life: 0 };
+      }
+      if (meteor){
+        meteor.life += dt;
+        var p = meteor.life/.9;
+        if (p >= 1){ meteor = null; nextMeteor = t + 16 + Math.random()*20; }
+        else {
+          var d = 560*p, hx = meteor.x + UX*d, hy = meteor.y + UY*d;
+          var tail = 110, fade = p < .5 ? p*2 : (1-p)*2;
+          var g = ctx.createLinearGradient(hx, hy, hx-UX*tail, hy-UY*tail);
+          g.addColorStop(0, 'rgba(228,231,236,'+(.75*fade).toFixed(3)+')');
+          g.addColorStop(1, 'rgba(228,231,236,0)');
+          ctx.strokeStyle = g; ctx.lineWidth = 1.3; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx-UX*tail, hy-UY*tail); ctx.stroke();
+        }
+      }
+    }
+  }
+  function loop(now){
+    if (!on) return;
+    var dt = Math.min((now-last)/1000, .05); last = now; t += dt;
+    frame(dt);
+    raf = requestAnimationFrame(loop);
+  }
+  function start(){ if (on || reduce) return; on = true; last = performance.now(); raf = requestAnimationFrame(loop); }
+  function stop(){ on = false; cancelAnimationFrame(raf); }
+
+  size();
+  if (reduce){ frame(0); }                  // one static frame, no motion
+  else {
+    start();
+    document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(e){ e[0].isIntersecting ? start() : stop(); })
+        .observe(cv.parentElement);
+    }
+  }
+  var rt; addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(function(){ size(); if (reduce) frame(0); }, 150); });
+})();
+
 (function(){
   var els = document.querySelectorAll('.reveal');
   if (!('IntersectionObserver' in window)) {
