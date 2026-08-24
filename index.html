@@ -440,11 +440,13 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
            release workflow at deploy time. Sources:
              ConcordeAI  stable  github.com/bigmillz/concordeai      /releases/latest
              ConcordeAI  rc      github.com/bigmillz/concordeai      newest prerelease
-             ConcordeVPN rc      github.com/bigmillz/concordevpn-releases  newest prerelease
-           The concordevpn-releases mirror exists and carries the v30 assets
-           (created 2026-08-25) — the VPN links point at it because the source
-           repo is private and its asset URLs 404 for the public. New VPN
-           releases must be mirrored there or the buttons here go stale. -->
+             ConcordeVPN stable  github.com/bigmillz/concordevpn-releases  /releases/latest
+           The VPN links point at the concordevpn-releases MIRROR because the
+           source repo is private and its asset URLs 404 for the public — a
+           release must be mirrored there or the buttons here go stale.
+           ConcordeVPN went 1.0 stable on 2026-08-25 (v31); the RC channel was
+           retired with it, since RC2 and 1.0 are the same version. Add an RC
+           block back when a 1.1 candidate exists. -->
       <div class="grid">
 
         <!-- ============ CARD: CONCORDEAI ============ -->
@@ -563,7 +565,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           <ul class="feats">
             <li>
               <span class="n">01</span>
-              <div><b>Trojan + Hysteria 2</b><span class="d">TCP by default with automatic fallback — keeps working on networks that shape or block.</span></div>
+              <div><b>Three transports</b><span class="d">Trojan, VLESS&#8239;+&#8239;REALITY and Hysteria&nbsp;2, tried in order as a network gets more hostile — or raced on latency.</span></div>
             </li>
             <li>
               <span class="n">02</span>
@@ -590,24 +592,15 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           <div class="dl">
             <span class="label">Downloads</span>
 
-            <div class="chan empty">
-              <div class="chan-top">
-                <span class="chan-name">Stable</span>
-                <span class="chan-ver">Not released</span>
-                <span class="chan-date">—</span>
-              </div>
-              <p>No stable ConcordeVPN release yet. The 1.0 release candidate below is the only published build.</p>
-            </div>
-
             <div class="chan">
               <div class="chan-top">
-                <span class="chan-name"><abbr title="Release candidate">RC</abbr></span>
+                <span class="chan-name">Stable</span>
                 <span class="chan-ver">1.0</span>
-                <span class="chan-build">build 30</span>
-                <span class="chan-date">Released <time datetime="2026-08-23">23 Aug 2026</time></span>
+                <span class="chan-build">build 31</span>
+                <span class="chan-date">Released <time datetime="2026-08-25">25 Aug 2026</time></span>
               </div>
               <div class="btns">
-                <a class="btn" href="https://github.com/bigmillz/concordevpn-releases/releases/download/v30/ConcordeVPN-1.0.0.dmg">
+                <a class="btn" href="https://github.com/bigmillz/concordevpn-releases/releases/download/v31/ConcordeVPN-1.0.0.dmg">
                   <span class="os">macOS</span>
                   <span class="file">ConcordeVPN-1.0.0.dmg</span>
                   <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -617,7 +610,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <summary>Verify checksum</summary>
                 <div class="sum-body">
 <code>shasum -a 256 -c ConcordeVPN-1.0.0.dmg.sha256</code>
-                  <a href="https://github.com/bigmillz/concordevpn-releases/releases/download/v30/ConcordeVPN-1.0.0.dmg.sha256">ConcordeVPN-1.0.0.dmg.sha256</a>
+                  <a href="https://github.com/bigmillz/concordevpn-releases/releases/download/v31/ConcordeVPN-1.0.0.dmg.sha256">ConcordeVPN-1.0.0.dmg.sha256</a>
                 </div>
               </details>
             </div>
