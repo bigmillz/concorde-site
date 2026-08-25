@@ -674,11 +674,11 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 </footer>
 
 <script>
-/* The sky at 60,000 ft — built to be felt, not looked at. Three star
-   depths in parallax, high cirrus wisps sliding underneath, a satellite
-   crossing every minute or so, a dim meteor on the wing angle. Everything
-   low-alpha; the motion carries it. Static single frame under
-   prefers-reduced-motion; pauses off-screen. */
+/* The sky at 60,000 ft, weather radar reading HEAVY. Silver only, and all
+   motion still runs the wing diagonal — but everything is turned up: three
+   fast parallax depths, glinting hero stars, streaming cirrus, meteors every
+   few seconds with a full volley every minute or so, satellites in between.
+   Static single frame under prefers-reduced-motion; pauses off-screen. */
 (function(){
   var cv = document.getElementById('starfield');
   if (!cv || !cv.getContext) return;
@@ -687,34 +687,35 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
   var TONES = ['245,246,248','200,204,213','154,160,172'];
   var LEN = Math.hypot(17.2, 14);
-  var UX = 17.2/LEN, UY = -14/LEN;          // wing direction (right, up)
-  var W, H, stars = [], wisps = [], meteor = null, sat = null;
-  var nextMeteor = 8, nextSat = 4, raf = 0, on = false, last = 0, t = 0;
+  var UX = 17.2/LEN, UY = -14/LEN;            // wing direction (right, up)
+  var W, H, stars = [], wisps = [], meteors = [], sat = null;
+  var nextMeteor = 2, nextShower = 24, nextSat = 5;
+  var raf = 0, on = false, last = 0, t = 0;
 
   function seed(){
     stars = []; wisps = [];
-    var n = Math.round(W*H/3400);
+    var n = Math.round(W*H/2600);
     for (var i = 0; i < n; i++){
-      var z = Math.random();                 // depth: most stars live far away
-      var far = z < .55, mid = z < .88;
+      var z = Math.random();
+      var far = z < .52, mid = z < .86;
       stars.push({
         x: Math.random()*W, y: Math.random()*H,
-        r: far ? .55+Math.random()*.45 : mid ? .7+Math.random()*.55 : 1+Math.random()*.55,
-        v: far ? 2.6 : mid ? 5.2 : 8.8,      // px/s, three parallax rates
+        r: far ? .55+Math.random()*.5 : mid ? .75+Math.random()*.6 : 1.05+Math.random()*.65,
+        v: far ? 3.5 : mid ? 7 : 12,           // px/s — real motion
         tone: TONES[(Math.random()*TONES.length)|0],
-        a: far ? .16+Math.random()*.22 : mid ? .24+Math.random()*.28 : .32+Math.random()*.32,
-        tw: .9+Math.random()*3.4,           // livelier shimmer, dimmer base
-        ph: Math.random()*6.283
+        a: far ? .18+Math.random()*.24 : mid ? .28+Math.random()*.3 : .38+Math.random()*.34,
+        tw: .7+Math.random()*2.8,
+        ph: Math.random()*6.283,
+        glint: !far && Math.random() < .045    // rare hero stars with spikes
       });
     }
-    for (var j = 0; j < 6; j++){
+    for (var j = 0; j < 7; j++){
       wisps.push({
         x: Math.random()*W, y: Math.random()*H,
-        rx: 220+Math.random()*240,           // wide, flat cirrus sheets
-        ry: 60+Math.random()*70,
-        v: 9+Math.random()*5,              // nearest layer = fastest
-        a: .018+Math.random()*.02,
-        tw: 9+Math.random()*8, ph: Math.random()*6.283
+        rx: 220+Math.random()*260, ry: 60+Math.random()*80,
+        v: 12+Math.random()*7,
+        a: .028+Math.random()*.026,
+        tw: 7+Math.random()*7, ph: Math.random()*6.283
       });
     }
   }
@@ -726,10 +727,18 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     ctx.setTransform(DPR,0,0,DPR,0,0);
     seed();
   }
+  function spawnMeteor(delay){
+    meteors.push({
+      x: W*(-.05+Math.random()*.5), y: H*(.2+Math.random()*.65),
+      life: -(delay||0), dur: .55+Math.random()*.5,
+      run: 460+Math.random()*320, tail: 110+Math.random()*70,
+      w: .9+Math.random()*.9, peak: .5+Math.random()*.3
+    });
+  }
   function frame(dt){
     ctx.clearRect(0,0,W,H);
 
-    // cirrus sheets, sliding aft under everything
+    // cirrus, streaming aft
     for (var k = 0; k < wisps.length; k++){
       var wp = wisps[k];
       wp.x -= UX*wp.v*dt; wp.y -= UY*wp.v*dt;
@@ -750,52 +759,68 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     for (var i = 0; i < stars.length; i++){
       var st = stars[i];
       st.x -= UX*st.v*dt; st.y -= UY*st.v*dt;
-      if (st.x < -4) st.x += W+8; if (st.x > W+4) st.x -= W+8;
-      if (st.y < -4) st.y += H+8; if (st.y > H+4) st.y -= H+8;
-      var a = st.a*(.72+.28*Math.sin(t/st.tw*6.283 + st.ph));
+      if (st.x < -6) st.x += W+12; if (st.x > W+6) st.x -= W+12;
+      if (st.y < -6) st.y += H+12; if (st.y > H+6) st.y -= H+12;
+      var a = st.a*(.62+.38*Math.sin(t/st.tw*6.283 + st.ph));
       ctx.beginPath();
       ctx.arc(st.x, st.y, st.r, 0, 6.283);
       ctx.fillStyle = 'rgba('+st.tone+','+a.toFixed(3)+')';
       ctx.fill();
+      if (st.glint){
+        // 4-point diffraction spike, breathing with the star
+        var g = a*.8, L = st.r*7*(0.8+.2*Math.sin(t/st.tw*6.283+st.ph));
+        ctx.strokeStyle = 'rgba('+st.tone+','+(g*.5).toFixed(3)+')';
+        ctx.lineWidth = .7; ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(st.x-L, st.y); ctx.lineTo(st.x+L, st.y);
+        ctx.moveTo(st.x, st.y-L); ctx.lineTo(st.x, st.y+L);
+        ctx.stroke();
+      }
     }
 
     if (reduce) return;
 
-    // a satellite: slow, steady, faint — the opposite register from a meteor
+    // satellite
     if (!sat && t > nextSat){
       var fromLeft = Math.random() < .5;
-      sat = { x: fromLeft ? -8 : W+8, y: H*(.12+Math.random()*.5),
-              vx: (fromLeft ? 1 : -1)*(20+Math.random()*10),
-              vy: (Math.random()-.5)*7, life: 0, dur: (W+16)/28 };
+      sat = { x: fromLeft ? -8 : W+8, y: H*(.1+Math.random()*.55),
+              vx: (fromLeft ? 1 : -1)*(26+Math.random()*14),
+              vy: (Math.random()-.5)*9, life: 0, dur: (W+16)/32 };
     }
     if (sat){
       sat.life += dt; sat.x += sat.vx*dt; sat.y += sat.vy*dt;
       var sp = sat.life/sat.dur;
-      if (sp >= 1 || sat.x < -12 || sat.x > W+12){ sat = null; nextSat = t + 16 + Math.random()*20; }
+      if (sp >= 1 || sat.x < -12 || sat.x > W+12){ sat = null; nextSat = t + 10 + Math.random()*12; }
       else {
-        var sf = Math.min(1, Math.min(sp, 1-sp)*6) * .3;
-        ctx.beginPath(); ctx.arc(sat.x, sat.y, .8, 0, 6.283);
+        var sf = Math.min(1, Math.min(sp, 1-sp)*6) * .4;
+        ctx.beginPath(); ctx.arc(sat.x, sat.y, .9, 0, 6.283);
         ctx.fillStyle = 'rgba(228,231,236,'+sf.toFixed(3)+')'; ctx.fill();
       }
     }
 
-    // a dim meteor along the wing angle
-    if (!meteor && t > nextMeteor){
-      meteor = { x: W*(.05+Math.random()*.35), y: H*(.25+Math.random()*.55), life: 0 };
+    // meteor traffic: singles every few seconds, a volley every minute or so
+    if (t > nextMeteor){ spawnMeteor(0); nextMeteor = t + 3.5 + Math.random()*4.5; }
+    if (t > nextShower){
+      var count = 3 + (Math.random()*3|0);
+      for (var m = 0; m < count; m++) spawnMeteor(m*(.28+Math.random()*.22));
+      nextShower = t + 50 + Math.random()*40;
     }
-    if (meteor){
-      meteor.life += dt;
-      var p = meteor.life/.9;
-      if (p >= 1){ meteor = null; nextMeteor = t + 6 + Math.random()*9; }
-      else {
-        var d = 560*p, hx = meteor.x + UX*d, hy = meteor.y + UY*d;
-        var tail = 96, fade = p < .5 ? p*2 : (1-p)*2;
-        var g = ctx.createLinearGradient(hx, hy, hx-UX*tail, hy-UY*tail);
-        g.addColorStop(0, 'rgba(228,231,236,'+(.42*fade).toFixed(3)+')');
-        g.addColorStop(1, 'rgba(228,231,236,0)');
-        ctx.strokeStyle = g; ctx.lineWidth = 1.05; ctx.lineCap = 'round';
-        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx-UX*tail, hy-UY*tail); ctx.stroke();
-      }
+    for (var q = meteors.length-1; q >= 0; q--){
+      var mt = meteors[q];
+      mt.life += dt;
+      if (mt.life < 0) continue;               // staggered volley member
+      var p = mt.life/mt.dur;
+      if (p >= 1){ meteors.splice(q,1); continue; }
+      var d = mt.run*p, hx = mt.x + UX*d, hy = mt.y + UY*d;
+      var fade = p < .4 ? p/.4 : (1-p)/.6;
+      var g = ctx.createLinearGradient(hx, hy, hx-UX*mt.tail, hy-UY*mt.tail);
+      g.addColorStop(0, 'rgba(235,238,243,'+(mt.peak*fade).toFixed(3)+')');
+      g.addColorStop(1, 'rgba(235,238,243,0)');
+      ctx.strokeStyle = g; ctx.lineWidth = mt.w; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx-UX*mt.tail, hy-UY*mt.tail); ctx.stroke();
+      // glowing head
+      ctx.beginPath(); ctx.arc(hx, hy, mt.w*1.15, 0, 6.283);
+      ctx.fillStyle = 'rgba(245,246,248,'+(mt.peak*fade*.9).toFixed(3)+')'; ctx.fill();
     }
   }
   function loop(now){
@@ -808,7 +833,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   function stop(){ on = false; cancelAnimationFrame(raf); }
 
   size();
-  cv.renderFrame = function(dt){ frame(dt || 0) };   // static capture / testing hook
+  cv.renderFrame = function(dt){ t += dt || 0; frame(dt || 0) };  // static capture / testing hook
   if (reduce){ frame(0); }
   else {
     start();
