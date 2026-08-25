@@ -210,7 +210,7 @@ main .section:last-child{padding-bottom:104px}
 /* ---------- the grid: the whole point (from A) ---------- */
 .grid{
   display:grid;gap:22px;
-  grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
   align-items:stretch;
 }
 
@@ -648,12 +648,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           </div>
         </article>
 
-        <!-- ============ EMPTY SLOT ============ -->
-        <div class="slot reveal d2">
-          <span class="lockup">Concorde<span class="suffix" aria-hidden="true"></span></span>
-          <span class="label">More coming</span>
-          <p>Same name, same card. The next Concorde app drops into this grid.</p>
-        </div>
+        <!-- Third bay (.slot) returns with app #3 — CSS is still in place -->
 
       </div>
     </div>
