@@ -693,7 +693,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   var LEN = Math.hypot(17.2, 14);
   var UX = 17.2/LEN, UY = -14/LEN;            // wing direction (right, up)
   var W, H, stars = [], wisps = [], meteors = [], sat = null;
-  var nextMeteor = 2, nextShower = 24, nextSat = 5;
+  var INTRO = 3.0;                             // warp-in length, seconds
+  var nextMeteor = 3.6, nextShower = 24, nextSat = 5.5;
   var raf = 0, on = false, last = 0, t = 0;
 
   function seed(){
@@ -759,7 +760,35 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       ctx.restore();
     }
 
-    // stars
+    // stars — for the first three seconds they streak outward from behind
+    // the wordmark (the view from the jump seat), decelerating into the
+    // ambient drift; after that, the normal field
+    if (!reduce && t < INTRO){
+      var k2 = 1 - t/INTRO;
+      var warp = k2*k2*1400;                   // px/s at the rim, easing off
+      var cx = W/2, cy = H*.42;
+      var maxD = Math.hypot(Math.max(cx, W-cx), Math.max(cy, H-cy));
+      for (var i = 0; i < stars.length; i++){
+        var st = stars[i];
+        var dx = st.x-cx, dy = st.y-cy, dist = Math.hypot(dx,dy) || 1;
+        var sp = warp*(.12 + dist/maxD);
+        st.x += dx/dist*sp*dt; st.y += dy/dist*sp*dt;
+        if (st.x < -8 || st.x > W+8 || st.y < -8 || st.y > H+8){
+          var ang = Math.random()*6.283, rr = Math.random()*maxD*.25;
+          st.x = cx + Math.cos(ang)*rr; st.y = cy + Math.sin(ang)*rr;
+          dx = st.x-cx; dy = st.y-cy; dist = Math.hypot(dx,dy) || 1;
+        }
+        var trail = Math.min(90, sp*.055) + st.r;
+        var wa2 = Math.min(.85, st.a*1.7*(.5+.5*dist/maxD));
+        ctx.strokeStyle = 'rgba('+st.tone+','+wa2.toFixed(3)+')';
+        ctx.lineWidth = st.r; ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(st.x - dx/dist*trail, st.y - dy/dist*trail);
+        ctx.lineTo(st.x, st.y);
+        ctx.stroke();
+      }
+      return;                                  // no glints/traffic mid-warp
+    }
     for (var i = 0; i < stars.length; i++){
       var st = stars[i];
       st.x -= UX*st.v*dt; st.y -= UY*st.v*dt;
