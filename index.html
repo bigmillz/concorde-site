@@ -128,7 +128,8 @@ ul{list-style:none;padding:0}
   -webkit-mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
   mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
 }
-/* HDR boost: a PQ/HLG-tagged white glow that only HDR displays ever load.
+/* HDR boost: a PQ/HLG-tagged ANIMATED streak field (no content within 60px
+   of center — nothing circular can form) that only HDR displays load.
    Deliberately NO filters and NO blend modes here — either can force SDR
    compositing and cancel the overbright path. Opacity alone is compositor-
    safe; the glow's soft edge is baked into the video itself. */
@@ -813,7 +814,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             : (function(){ var k = 1-(t-HOLD)/(INTRO-HOLD); return k*k; })();
       var warp = e*1750;
       if (hdrOn){
-        hdr.style.opacity = (e*e*.6).toFixed(3);
+        hdr.style.opacity = (e*e*.68).toFixed(3);
         if (hdr.paused){ var pp = hdr.play(); if (pp && pp.catch) pp.catch(function(){}); }
       }
       var cx = W/2, cy = H*.42;
@@ -822,15 +823,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       ctx.globalCompositeOperation = 'lighter';
       var zoom = 1 + .07*e;                    // the camera eases back to 1:1
       ctx.translate(cx, cy); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy);
-      var ba = .10*e*e;                        // faint under-glow; the HDR starburst owns the center
-      if (ba > .004){
-        var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxD*(.2+.5*e));
-        bg.addColorStop(0, 'rgba(255,255,255,'+ba.toFixed(3)+')');
-        bg.addColorStop(.55, 'rgba(200,204,213,'+(ba*.35).toFixed(3)+')');
-        bg.addColorStop(1, 'rgba(200,204,213,0)');
-        ctx.fillStyle = bg;
-        ctx.fillRect(-W*.1, -H*.1, W*1.2, H*1.2);
-      }
       for (var i = 0; i < stars.length; i++){
         var st = stars[i];
         var dx = st.x-cx, dy = st.y-cy, dist = Math.hypot(dx,dy) || 1;
@@ -850,28 +842,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         ctx.lineTo(st.x, st.y);
         ctx.stroke();
       }
-      // the double boom as debris waves: dashed, irregular, fast — a shock
-      // front, not a drawn circle
-      var RING = 2.2;
-      if (t >= RISE && t < RISE + RING){
-        var bp = (t-RISE)/RING, be = 1-Math.pow(1-bp, 3);
-        ctx.setLineDash([26, 34]); ctx.lineDashOffset = t*140;
-        ctx.strokeStyle = 'rgba(250,251,253,'+(.3*(1-bp)).toFixed(3)+')';
-        ctx.lineWidth = 1.6 + 6*(1-bp);
-        ctx.beginPath();
-        ctx.arc(cx, cy, maxD*(.08+1.05*be), 0, 6.283);
-        ctx.stroke();
-      }
-      if (t >= RISE+.4 && t < RISE+.4 + RING){
-        var bp2 = (t-RISE-.4)/RING, be2 = 1-Math.pow(1-bp2, 3);
-        ctx.setLineDash([12, 44]); ctx.lineDashOffset = -t*110;
-        ctx.strokeStyle = 'rgba(228,231,236,'+(.16*(1-bp2)).toFixed(3)+')';
-        ctx.lineWidth = 1 + 4*(1-bp2);
-        ctx.beginPath();
-        ctx.arc(cx, cy, maxD*(.06+1.05*be2), 0, 6.283);
-        ctx.stroke();
-      }
-      ctx.setLineDash([]);
       // detonation debris: one burst of sparks thrown from the core
       if (!debris && t >= RISE){
         debris = [];
