@@ -693,8 +693,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   var LEN = Math.hypot(17.2, 14);
   var UX = 17.2/LEN, UY = -14/LEN;            // wing direction (right, up)
   var W, H, stars = [], wisps = [], meteors = [], sat = null;
-  var INTRO = 3.0;                             // warp-in length, seconds
-  var nextMeteor = 3.6, nextShower = 24, nextSat = 5.5;
+  var INTRO = 4.2, RISE = .9;                  // warp: spool-up to peak at .9s, glide to 4.2s
+  var nextMeteor = 5.0, nextShower = 26, nextSat = 6.5;
   var raf = 0, on = false, last = 0, t = 0;
 
   function seed(){
@@ -764,10 +764,24 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     // the wordmark (the view from the jump seat), decelerating into the
     // ambient drift; after that, the normal field
     if (!reduce && t < INTRO){
-      var k2 = 1 - t/INTRO;
-      var warp = k2*k2*1400;                   // px/s at the rim, easing off
+      // Envelope: cubic spool-up to a blown-out peak, quadratic glide down.
+      // "HDR" is faked with additive blending + a center bloom, so where the
+      // streaks converge the frame genuinely overexposes, then relaxes.
+      var e = t < RISE ? Math.pow(t/RISE, 3)
+                       : (function(){ var k = 1-(t-RISE)/(INTRO-RISE); return k*k; })();
+      var warp = e*1600;
       var cx = W/2, cy = H*.42;
       var maxD = Math.hypot(Math.max(cx, W-cx), Math.max(cy, H-cy));
+      ctx.globalCompositeOperation = 'lighter';
+      var ba = .26*e*e;                        // center bloom, peaks with the punch
+      if (ba > .004){
+        var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxD*(.2+.5*e));
+        bg.addColorStop(0, 'rgba(235,238,243,'+ba.toFixed(3)+')');
+        bg.addColorStop(.55, 'rgba(200,204,213,'+(ba*.35).toFixed(3)+')');
+        bg.addColorStop(1, 'rgba(200,204,213,0)');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+      }
       for (var i = 0; i < stars.length; i++){
         var st = stars[i];
         var dx = st.x-cx, dy = st.y-cy, dist = Math.hypot(dx,dy) || 1;
@@ -778,15 +792,16 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           st.x = cx + Math.cos(ang)*rr; st.y = cy + Math.sin(ang)*rr;
           dx = st.x-cx; dy = st.y-cy; dist = Math.hypot(dx,dy) || 1;
         }
-        var trail = Math.min(90, sp*.055) + st.r;
-        var wa2 = Math.min(.85, st.a*1.7*(.5+.5*dist/maxD));
+        var trail = Math.min(110, sp*.06) + st.r;
+        var wa2 = Math.min(.9, st.a*(.5+1.5*e))*(.45+.55*dist/maxD);
         ctx.strokeStyle = 'rgba('+st.tone+','+wa2.toFixed(3)+')';
-        ctx.lineWidth = st.r; ctx.lineCap = 'round';
+        ctx.lineWidth = st.r*(1+.7*e); ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(st.x - dx/dist*trail, st.y - dy/dist*trail);
         ctx.lineTo(st.x, st.y);
         ctx.stroke();
       }
+      ctx.globalCompositeOperation = 'source-over';
       return;                                  // no glints/traffic mid-warp
     }
     for (var i = 0; i < stars.length; i++){
