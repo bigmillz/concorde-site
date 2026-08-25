@@ -154,6 +154,24 @@ ul{list-style:none;padding:0}
 }
 @keyframes sheen{from{background-position:118% 0}to{background-position:50% 0}}
 
+/* The reflection: the wordmark caught on a polished surface below. Very
+   faint, cropped, and blurred a hair — felt more than seen. */
+.mirror{
+  height:1.05em;overflow:hidden;margin-top:9px;
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;line-height:1;
+  font-size:clamp(1.4rem,4.2vw,3.4rem);letter-spacing:.15em;padding-right:.15em;
+  opacity:.13;filter:blur(1.2px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 72%);
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 72%);
+  pointer-events:none;user-select:none;-webkit-user-select:none;
+}
+.mirror-text{
+  display:block;transform:scaleY(-1);
+  background:var(--silver);background-size:220% 100%;background-position:50% 0;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+}
+
 .cue{
   position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
   display:flex;flex-direction:column;align-items:center;gap:12px;
@@ -435,6 +453,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       </svg>
       <h1 class="hero-mark">Concorde</h1>
       <p class="slogan">Fly Concorde, Fly.</p>
+      <div class="mirror" aria-hidden="true"><span class="mirror-text">Concorde</span></div>
     </div>
     <div class="cue" aria-hidden="true">
       <span class="label">Scroll</span>
