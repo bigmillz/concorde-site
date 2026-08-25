@@ -1,4 +1,4 @@
-# concorde.millertechnology.net
+# flyconcordefly.com
 
 The Concorde product site — ConcordeAI and ConcordeVPN.
 One hand-written `index.html`, no build step. *Fly Concorde, Fly.*
