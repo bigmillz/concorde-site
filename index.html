@@ -693,8 +693,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   var LEN = Math.hypot(17.2, 14);
   var UX = 17.2/LEN, UY = -14/LEN;            // wing direction (right, up)
   var W, H, stars = [], wisps = [], meteors = [], sat = null;
-  var INTRO = 4.2, RISE = .9;                  // warp: spool-up to peak at .9s, glide to 4.2s
-  var nextMeteor = 5.0, nextShower = 26, nextSat = 6.5;
+  var INTRO = 7.0, RISE = 1.6, HOLD = 2.6;     // warp: spool 1.6s, full power to 2.6s, glide out to 7s
+  var nextMeteor = 7.8, nextShower = 30, nextSat = 9;
   var raf = 0, on = false, last = 0, t = 0;
 
   function seed(){
@@ -764,36 +764,41 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     // the wordmark (the view from the jump seat), decelerating into the
     // ambient drift; after that, the normal field
     if (!reduce && t < INTRO){
-      // Envelope: cubic spool-up to a blown-out peak, quadratic glide down.
-      // "HDR" is faked with additive blending + a center bloom, so where the
-      // streaks converge the frame genuinely overexposes, then relaxes.
+      // Three acts: cubic spool-up, a full-power plateau, a long glide out.
+      // The zoom is real: perspective speeds (edge whips, center crawls) plus
+      // a camera scale on the star layer that relaxes as you decelerate, and
+      // a single shockwave ring the moment the warp reaches full power.
       var e = t < RISE ? Math.pow(t/RISE, 3)
-                       : (function(){ var k = 1-(t-RISE)/(INTRO-RISE); return k*k; })();
-      var warp = e*1600;
+            : t < HOLD ? 1
+            : (function(){ var k = 1-(t-HOLD)/(INTRO-HOLD); return k*k; })();
+      var warp = e*1750;
       var cx = W/2, cy = H*.42;
       var maxD = Math.hypot(Math.max(cx, W-cx), Math.max(cy, H-cy));
+      ctx.save();
       ctx.globalCompositeOperation = 'lighter';
-      var ba = .26*e*e;                        // center bloom, peaks with the punch
+      var zoom = 1 + .07*e;                    // the camera eases back to 1:1
+      ctx.translate(cx, cy); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy);
+      var ba = .24*e*e;                        // center bloom rides the power
       if (ba > .004){
         var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxD*(.2+.5*e));
         bg.addColorStop(0, 'rgba(235,238,243,'+ba.toFixed(3)+')');
         bg.addColorStop(.55, 'rgba(200,204,213,'+(ba*.35).toFixed(3)+')');
         bg.addColorStop(1, 'rgba(200,204,213,0)');
         ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, W, H);
+        ctx.fillRect(-W*.1, -H*.1, W*1.2, H*1.2);
       }
       for (var i = 0; i < stars.length; i++){
         var st = stars[i];
         var dx = st.x-cx, dy = st.y-cy, dist = Math.hypot(dx,dy) || 1;
-        var sp = warp*(.12 + dist/maxD);
+        var sp = warp*(.06 + Math.pow(dist/maxD, 1.6)*1.15);
         st.x += dx/dist*sp*dt; st.y += dy/dist*sp*dt;
         if (st.x < -8 || st.x > W+8 || st.y < -8 || st.y > H+8){
-          var ang = Math.random()*6.283, rr = Math.random()*maxD*.25;
+          var ang = Math.random()*6.283, rr = Math.random()*maxD*.22;
           st.x = cx + Math.cos(ang)*rr; st.y = cy + Math.sin(ang)*rr;
           dx = st.x-cx; dy = st.y-cy; dist = Math.hypot(dx,dy) || 1;
         }
-        var trail = Math.min(110, sp*.06) + st.r;
-        var wa2 = Math.min(.9, st.a*(.5+1.5*e))*(.45+.55*dist/maxD);
+        var trail = Math.min(150, sp*.07) + st.r;
+        var wa2 = Math.min(.9, st.a*(.5+1.5*e))*(.4+.6*dist/maxD);
         ctx.strokeStyle = 'rgba('+st.tone+','+wa2.toFixed(3)+')';
         ctx.lineWidth = st.r*(1+.7*e); ctx.lineCap = 'round';
         ctx.beginPath();
@@ -801,6 +806,16 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         ctx.lineTo(st.x, st.y);
         ctx.stroke();
       }
+      // the boom: one expanding ring, fired as the warp hits full power
+      if (t >= RISE && t < RISE + 1.5){
+        var bp = (t-RISE)/1.5, be = 1-Math.pow(1-bp, 3);
+        ctx.strokeStyle = 'rgba(228,231,236,'+(.26*(1-bp)).toFixed(3)+')';
+        ctx.lineWidth = 1.5 + 7*(1-bp);
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxD*(.08+.82*be), 0, 6.283);
+        ctx.stroke();
+      }
+      ctx.restore();
       ctx.globalCompositeOperation = 'source-over';
       return;                                  // no glints/traffic mid-warp
     }
