@@ -134,6 +134,15 @@ ul{list-style:none;padding:0}
   object-fit:cover;object-position:50% 42%;
   opacity:0;pointer-events:none;
 }
+/* HDR nameplates: on HDR displays the card lockups swap to tiny looping
+   videos — brushed metal with a sheen that flares past SDR white. The real
+   text stays in the DOM (visually hidden) for SDR, a11y, and no-JS. */
+.mark-hdr{display:none;height:1.5em;width:auto}
+html.hdrmarks .card-head .mark-txt{
+  position:absolute;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;
+}
+html.hdrmarks .mark-hdr{display:block}
 .hero .wrap{position:relative;display:flex;flex-direction:column;align-items:center}
 .hero-wing{width:clamp(104px,13vw,164px);margin-bottom:clamp(24px,3.5vw,38px)}
 /* 1.6: between the app's 2.4 (reads blobby blown up — the inter-line gaps
@@ -490,7 +499,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
                 <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
                 <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
-              <h3 id="ai-name" class="lockup">Concorde<span class="tld">AI</span></h3>
+              <h3 id="ai-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">AI</span></span><video class="mark-hdr" data-mark="ai" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
             </div>
             <p class="desc">An AI desktop app that puts cloud models, local models, and your own GPUs in one place.</p>
             <div class="plats label">
@@ -585,7 +594,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
                 <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
                 <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
-              <h3 id="vpn-name" class="lockup">Concorde<span class="tld">VPN</span></h3>
+              <h3 id="vpn-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">VPN</span></span><video class="mark-hdr" data-mark="vpn" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
             </div>
             <p class="desc">A menu-bar VPN client for your own exit node. Bring your own server — the one-command installer is included.</p>
             <div class="plats label">
@@ -700,6 +709,35 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 </footer>
 
 <script>
+/* HDR nameplates: swap card lockups to overbright sheen loops, HDR
+   displays only, playing only while visible. */
+(function(){
+  if (!matchMedia('(dynamic-range: high)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var marks = document.querySelectorAll('video.mark-hdr');
+  if (!marks.length) return;
+  document.documentElement.classList.add('hdrmarks');
+  marks.forEach(function(v){
+    var k = v.getAttribute('data-mark');
+    var sq = document.createElement('source');
+    sq.src = 'assets/mark-'+k+'-pq.mp4'; sq.type = 'video/mp4; codecs="hvc1"';
+    var sh = document.createElement('source');
+    sh.src = 'assets/mark-'+k+'-hlg.webm'; sh.type = 'video/webm; codecs="vp09.02.10.10"';
+    v.appendChild(sq); v.appendChild(sh); v.load();
+  });
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var pr = e.isIntersecting ? e.target.play() : e.target.pause();
+        if (pr && pr.catch) pr.catch(function(){});
+      });
+    }, {threshold: .05});
+    marks.forEach(function(v){ io.observe(v); });
+  } else {
+    marks.forEach(function(v){ var pr = v.play(); if (pr && pr.catch) pr.catch(function(){}); });
+  }
+})();
+
 /* The sky at 60,000 ft, weather radar reading HEAVY. Silver only, and all
    motion still runs the wing diagonal — but everything is turned up: three
    fast parallax depths, glinting hero stars, streaming cirrus, meteors every
