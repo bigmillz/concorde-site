@@ -812,7 +812,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             : (function(){ var k = 1-(t-HOLD)/(INTRO-HOLD); return k*k; })();
       var warp = e*1750;
       if (hdrOn){
-        hdr.style.opacity = (e*e*.9).toFixed(3);
+        hdr.style.opacity = (e*e*.5).toFixed(3);
         if (hdr.paused){ var pp = hdr.play(); if (pp && pp.catch) pp.catch(function(){}); }
       }
       var cx = W/2, cy = H*.42;
@@ -821,7 +821,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       ctx.globalCompositeOperation = 'lighter';
       var zoom = 1 + .07*e;                    // the camera eases back to 1:1
       ctx.translate(cx, cy); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy);
-      var ba = .34*e*e;                        // center bloom rides the power
+      var ba = .22*e*e;                        // center bloom rides the power
       if (ba > .004){
         var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxD*(.2+.5*e));
         bg.addColorStop(0, 'rgba(255,255,255,'+ba.toFixed(3)+')');
