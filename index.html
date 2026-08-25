@@ -99,6 +99,13 @@ ul{list-style:none;padding:0}
   padding:6px 0;border-bottom:1px solid transparent;white-space:nowrap;
 }
 .nav a:hover{color:var(--text);border-bottom-color:var(--accent-dim)}
+/* Install is the one call to action in the header */
+.nav a.nav-cta{
+  color:var(--text);font-weight:600;
+  border:1px solid var(--line);border-radius:999px;border-bottom-color:var(--line);
+  padding:7px 15px;
+}
+.nav a.nav-cta:hover{background:var(--accent-dim);border-color:var(--faint)}
 
 /* ---------- hero (from C) ---------- */
 .hero{
@@ -347,7 +354,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   .site-head .wrap{height:54px}
   .brand .lockup{font-size:11px}
   .nav{gap:14px}
-  .nav a[href="#products"]{display:none}
 }
 @media (max-width:440px){
   .chan-date{margin-left:0;width:100%}
@@ -397,9 +403,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     </a>
     <nav class="nav" aria-label="Primary">
       <a href="#products">Products</a>
-      <a href="#concordeai">AI</a>
-      <a href="#concordevpn">VPN</a>
-      <a href="#install">Install</a>
+      <a class="nav-cta" href="#install">Install</a>
     </nav>
   </div>
 </header>
