@@ -778,10 +778,10 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       ctx.globalCompositeOperation = 'lighter';
       var zoom = 1 + .07*e;                    // the camera eases back to 1:1
       ctx.translate(cx, cy); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy);
-      var ba = .24*e*e;                        // center bloom rides the power
+      var ba = .34*e*e;                        // center bloom rides the power
       if (ba > .004){
         var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxD*(.2+.5*e));
-        bg.addColorStop(0, 'rgba(235,238,243,'+ba.toFixed(3)+')');
+        bg.addColorStop(0, 'rgba(255,255,255,'+ba.toFixed(3)+')');
         bg.addColorStop(.55, 'rgba(200,204,213,'+(ba*.35).toFixed(3)+')');
         bg.addColorStop(1, 'rgba(200,204,213,0)');
         ctx.fillStyle = bg;
@@ -798,21 +798,31 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           dx = st.x-cx; dy = st.y-cy; dist = Math.hypot(dx,dy) || 1;
         }
         var trail = Math.min(150, sp*.07) + st.r;
-        var wa2 = Math.min(.9, st.a*(.5+1.5*e))*(.4+.6*dist/maxD);
+        var wa2 = Math.min(.96, st.a*(.6+1.9*e))*(.42+.58*dist/maxD);
         ctx.strokeStyle = 'rgba('+st.tone+','+wa2.toFixed(3)+')';
-        ctx.lineWidth = st.r*(1+.7*e); ctx.lineCap = 'round';
+        ctx.lineWidth = st.r*(1+.85*e); ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(st.x - dx/dist*trail, st.y - dy/dist*trail);
         ctx.lineTo(st.x, st.y);
         ctx.stroke();
       }
-      // the boom: one expanding ring, fired as the warp hits full power
-      if (t >= RISE && t < RISE + 1.5){
-        var bp = (t-RISE)/1.5, be = 1-Math.pow(1-bp, 3);
-        ctx.strokeStyle = 'rgba(228,231,236,'+(.26*(1-bp)).toFixed(3)+')';
-        ctx.lineWidth = 1.5 + 7*(1-bp);
+      // the double boom: Concorde's N-wave arrived as two cracks, so the
+      // primary ring drags a trailing echo, both riding the additive pass
+      var RING = 2.8;
+      if (t >= RISE && t < RISE + RING){
+        var bp = (t-RISE)/RING, be = 1-Math.pow(1-bp, 3);
+        ctx.strokeStyle = 'rgba(250,251,253,'+(.44*(1-bp)).toFixed(3)+')';
+        ctx.lineWidth = 2 + 9*(1-bp);
         ctx.beginPath();
-        ctx.arc(cx, cy, maxD*(.08+.82*be), 0, 6.283);
+        ctx.arc(cx, cy, maxD*(.08+1.05*be), 0, 6.283);
+        ctx.stroke();
+      }
+      if (t >= RISE+.4 && t < RISE+.4 + RING){
+        var bp2 = (t-RISE-.4)/RING, be2 = 1-Math.pow(1-bp2, 3);
+        ctx.strokeStyle = 'rgba(228,231,236,'+(.22*(1-bp2)).toFixed(3)+')';
+        ctx.lineWidth = 1.2 + 5*(1-bp2);
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxD*(.06+1.05*be2), 0, 6.283);
         ctx.stroke();
       }
       ctx.restore();
