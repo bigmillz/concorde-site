@@ -123,11 +123,7 @@ ul{list-style:none;padding:0}
   content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
   width:min(620px,80%);height:1px;background:var(--silver);opacity:.5;
 }
-.stars{
-  position:absolute;inset:0;
-  -webkit-mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
-  mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
-}
+.stars{position:fixed;inset:0;z-index:-1}
 /* HDR boost: a PQ/HLG-tagged ANIMATED streak field (no content within 60px
    of center — nothing circular can form) that only HDR displays load.
    Deliberately NO filters and NO blend modes here — either can force SDR
@@ -416,6 +412,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   </linearGradient>
 </defs></svg>
 
+<canvas class="stars" id="starfield" aria-hidden="true"></canvas>
+
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-head">
@@ -440,7 +438,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="top">
-    <canvas class="stars" id="starfield" aria-hidden="true"></canvas>
     <video class="hdr-boost" id="hdrboost" muted playsinline loop preload="none" aria-hidden="true"></video>
     <div class="wrap">
       <svg class="wing hero-wing" viewBox="2 2.3 19.6 16.4" role="img" aria-label="Concorde delta wing mark" focusable="false">
@@ -766,8 +763,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     }
   }
   function size(){
-    var r = cv.parentElement.getBoundingClientRect();
-    W = r.width; H = r.height;
+    W = window.innerWidth; H = window.innerHeight;
     cv.width = W*DPR; cv.height = H*DPR;
     cv.style.width = W+'px'; cv.style.height = H+'px';
     ctx.setTransform(DPR,0,0,DPR,0,0);
@@ -954,10 +950,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   else {
     start();
     document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
-    if ('IntersectionObserver' in window){
-      new IntersectionObserver(function(e){ e[0].isIntersecting ? start() : stop(); })
-        .observe(cv.parentElement);
-    }
   }
   var rt; addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(function(){ size(); if (reduce) frame(0); }, 150); });
 })();
