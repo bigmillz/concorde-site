@@ -128,6 +128,14 @@ ul{list-style:none;padding:0}
   -webkit-mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
   mask-image:linear-gradient(180deg,#000 70%,transparent 97%);
 }
+/* HDR boost: a PQ/HLG-tagged white glow that only HDR displays ever load.
+   Deliberately NO filters and NO blend modes here — either can force SDR
+   compositing and cancel the overbright path. Opacity alone is compositor-
+   safe; the glow's soft edge is baked into the video itself. */
+.hdr-boost{
+  position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+  width:min(130vmin,1200px);aspect-ratio:16/9;opacity:0;pointer-events:none;
+}
 .hero .wrap{position:relative;display:flex;flex-direction:column;align-items:center}
 .hero-wing{width:clamp(104px,13vw,164px);margin-bottom:clamp(24px,3.5vw,38px)}
 /* 1.6: between the app's 2.4 (reads blobby blown up — the inter-line gaps
@@ -413,6 +421,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   <!-- ============ HERO ============ -->
   <section class="hero" id="top">
     <canvas class="stars" id="starfield" aria-hidden="true"></canvas>
+    <video class="hdr-boost" id="hdrboost" muted playsinline loop preload="none" aria-hidden="true"></video>
     <div class="wrap">
       <svg class="wing hero-wing" viewBox="2 2.3 19.6 16.4" role="img" aria-label="Concorde delta wing mark" focusable="false">
         <g>
@@ -693,6 +702,16 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   var LEN = Math.hypot(17.2, 14);
   var UX = 17.2/LEN, UY = -14/LEN;            // wing direction (right, up)
   var W, H, stars = [], wisps = [], meteors = [], sat = null;
+  // The HDR layer loads only where it can actually exceed SDR white.
+  var hdr = document.getElementById('hdrboost'), hdrOn = false, hdrDone = false;
+  if (hdr && !reduce && matchMedia('(dynamic-range: high)').matches){
+    var sq = document.createElement('source');
+    sq.src = 'assets/boom-pq.mp4'; sq.type = 'video/mp4; codecs="hvc1"';
+    var sh = document.createElement('source');
+    sh.src = 'assets/boom-hlg.webm'; sh.type = 'video/webm; codecs="vp09.02.10.10"';
+    hdr.appendChild(sq); hdr.appendChild(sh); hdr.load();
+    hdrOn = true;
+  }
   var INTRO = 7.0, RISE = 1.6, HOLD = 2.6;     // warp: spool 1.6s, full power to 2.6s, glide out to 7s
   var nextMeteor = 7.8, nextShower = 30, nextSat = 9;
   var raf = 0, on = false, last = 0, t = 0;
@@ -772,6 +791,10 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             : t < HOLD ? 1
             : (function(){ var k = 1-(t-HOLD)/(INTRO-HOLD); return k*k; })();
       var warp = e*1750;
+      if (hdrOn){
+        hdr.style.opacity = (e*e*.9).toFixed(3);
+        if (hdr.paused){ var pp = hdr.play(); if (pp && pp.catch) pp.catch(function(){}); }
+      }
       var cx = W/2, cy = H*.42;
       var maxD = Math.hypot(Math.max(cx, W-cx), Math.max(cy, H-cy));
       ctx.save();
@@ -828,6 +851,10 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       ctx.restore();
       ctx.globalCompositeOperation = 'source-over';
       return;                                  // no glints/traffic mid-warp
+    }
+    if (hdrOn && !hdrDone){
+      hdrDone = true;
+      hdr.style.opacity = 0; hdr.pause(); hdr.style.display = 'none';
     }
     for (var i = 0; i < stars.length; i++){
       var st = stars[i];
