@@ -733,6 +733,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     hdrOn = true;
   }
   var INTRO = 7.0, RISE = 1.6, HOLD = 2.6;     // warp: spool 1.6s, full power to 2.6s, glide out to 7s
+  var debris = null;                           // one-shot spark burst at detonation
   var nextMeteor = 7.8, nextShower = 30, nextSat = 9;
   var raf = 0, on = false, last = 0, t = 0;
 
@@ -812,7 +813,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             : (function(){ var k = 1-(t-HOLD)/(INTRO-HOLD); return k*k; })();
       var warp = e*1750;
       if (hdrOn){
-        hdr.style.opacity = (e*e*.5).toFixed(3);
+        hdr.style.opacity = (e*e*.6).toFixed(3);
         if (hdr.paused){ var pp = hdr.play(); if (pp && pp.catch) pp.catch(function(){}); }
       }
       var cx = W/2, cy = H*.42;
@@ -821,7 +822,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       ctx.globalCompositeOperation = 'lighter';
       var zoom = 1 + .07*e;                    // the camera eases back to 1:1
       ctx.translate(cx, cy); ctx.scale(zoom, zoom); ctx.translate(-cx, -cy);
-      var ba = .22*e*e;                        // center bloom rides the power
+      var ba = .10*e*e;                        // faint under-glow; the HDR starburst owns the center
       if (ba > .004){
         var bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxD*(.2+.5*e));
         bg.addColorStop(0, 'rgba(255,255,255,'+ba.toFixed(3)+')');
@@ -849,24 +850,49 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         ctx.lineTo(st.x, st.y);
         ctx.stroke();
       }
-      // the double boom: Concorde's N-wave arrived as two cracks, so the
-      // primary ring drags a trailing echo, both riding the additive pass
-      var RING = 2.8;
+      // the double boom as debris waves: dashed, irregular, fast — a shock
+      // front, not a drawn circle
+      var RING = 2.2;
       if (t >= RISE && t < RISE + RING){
         var bp = (t-RISE)/RING, be = 1-Math.pow(1-bp, 3);
-        ctx.strokeStyle = 'rgba(250,251,253,'+(.44*(1-bp)).toFixed(3)+')';
-        ctx.lineWidth = 2 + 9*(1-bp);
+        ctx.setLineDash([26, 34]); ctx.lineDashOffset = t*140;
+        ctx.strokeStyle = 'rgba(250,251,253,'+(.3*(1-bp)).toFixed(3)+')';
+        ctx.lineWidth = 1.6 + 6*(1-bp);
         ctx.beginPath();
         ctx.arc(cx, cy, maxD*(.08+1.05*be), 0, 6.283);
         ctx.stroke();
       }
       if (t >= RISE+.4 && t < RISE+.4 + RING){
         var bp2 = (t-RISE-.4)/RING, be2 = 1-Math.pow(1-bp2, 3);
-        ctx.strokeStyle = 'rgba(228,231,236,'+(.22*(1-bp2)).toFixed(3)+')';
-        ctx.lineWidth = 1.2 + 5*(1-bp2);
+        ctx.setLineDash([12, 44]); ctx.lineDashOffset = -t*110;
+        ctx.strokeStyle = 'rgba(228,231,236,'+(.16*(1-bp2)).toFixed(3)+')';
+        ctx.lineWidth = 1 + 4*(1-bp2);
         ctx.beginPath();
         ctx.arc(cx, cy, maxD*(.06+1.05*be2), 0, 6.283);
         ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      // detonation debris: one burst of sparks thrown from the core
+      if (!debris && t >= RISE){
+        debris = [];
+        for (var db = 0; db < 52; db++){
+          var da = Math.random()*6.283, dv = 260 + Math.random()*680;
+          debris.push({ x: cx, y: cy, vx: Math.cos(da)*dv, vy: Math.sin(da)*dv,
+                        life: -Math.random()*.25, dur: .9+Math.random()*.8,
+                        r: .8+Math.random()*1.4 });
+        }
+      }
+      if (debris){
+        for (var dq = 0; dq < debris.length; dq++){
+          var dd = debris[dq];
+          dd.life += dt;
+          if (dd.life < 0 || dd.life > dd.dur) continue;
+          dd.x += dd.vx*dt; dd.y += dd.vy*dt;
+          dd.vx *= (1-1.1*dt); dd.vy *= (1-1.1*dt);
+          var dp = dd.life/dd.dur, dfade = Math.pow(1-dp, 1.5)*.8;
+          ctx.beginPath(); ctx.arc(dd.x, dd.y, dd.r*(1-dp*.5), 0, 6.283);
+          ctx.fillStyle = 'rgba(245,246,248,'+dfade.toFixed(3)+')'; ctx.fill();
+        }
       }
       ctx.restore();
       ctx.globalCompositeOperation = 'source-over';
