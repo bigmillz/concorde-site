@@ -3,12 +3,15 @@
   // step, so there is no build command and no output directory — the repo
   // root IS the site, and .assetsignore keeps the tooling out of it.
   //
-  // Workers rather than Pages because Cloudflare steers new projects here,
-  // and because it leaves room to add a real Worker later (e.g. an endpoint
-  // that serves live release data instead of baking versions into the HTML).
+  // run_worker_first: without it, a request that matches a static file is
+  // served before worker.js runs, so the security headers would never reach
+  // the pages people actually load.
   "name": "concorde-site",
+  "main": "worker.js",
   "compatibility_date": "2026-09-12",
   "assets": {
-    "directory": "./"
+    "directory": "./",
+    "binding": "ASSETS",
+    "run_worker_first": true
   }
 }

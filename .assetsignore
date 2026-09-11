@@ -1,5 +1,6 @@
 # Kept in the repo, never served.
 wrangler.jsonc
+worker.js
 .assetsignore
 README.md
 tools-make-*.py
