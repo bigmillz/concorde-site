@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers Static Assets. The site is plain files with no build
+  // step, so there is no build command and no output directory — the repo
+  // root IS the site, and .assetsignore keeps the tooling out of it.
+  //
+  // Workers rather than Pages because Cloudflare steers new projects here,
+  // and because it leaves room to add a real Worker later (e.g. an endpoint
+  // that serves live release data instead of baking versions into the HTML).
+  "name": "concorde-site",
+  "compatibility_date": "2026-09-12",
+  "assets": {
+    "directory": "./"
+  }
+}
