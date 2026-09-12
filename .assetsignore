@@ -7,3 +7,4 @@ tools-make-*.py
 # GitHub Pages leftovers — harmless, but not part of the site.
 CNAME
 .nojekyll
+tools/
