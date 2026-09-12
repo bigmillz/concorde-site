@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ConcordeVPN</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Michroma&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#101013; --panel:#0a0a0c; --panel2:#191a1e;
+  --line:#26272c; --line-soft:#1e1f23;
+  --text:#ececec; --dim:#b4b4b4; --faint:#8e8e8e;
+  --accent:#ececec; --accent-hot:#fff; --accent-dim:rgba(255,255,255,.10);
+  --red:#e26d5a; --radius:10px;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --disp:'Michroma','Space Grotesk',system-ui,sans-serif;
+  --silver:linear-gradient(90deg,#f5f6f8,#c8ccd5,#9aa0ac,#e2e5ea,#8f95a1,#d5d8df,#f5f6f8);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:transparent}
+body{
+  display:grid;place-items:center;min-height:100vh;padding:40px;
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;
+}
+
+/* ---------- window ---------- */
+.window{
+  width:470px;height:800px;
+  border-radius:12px;overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.04);
+}
+
+/* ---------- titlebar ---------- */
+.titlebar{
+  height:38px;flex:0 0 38px;background:#1b1c20;
+  border-bottom:1px solid var(--line-soft);
+  display:flex;align-items:center;padding:0 12px;position:relative;
+}
+.lights{display:flex;gap:8px;align-items:center}
+.lights i{width:12px;height:12px;border-radius:50%;display:block}
+.lights i:nth-child(1){background:#ff5f57}
+.lights i:nth-child(2){background:#febc2e}
+.lights i:nth-child(3){background:#28c840}
+.lockup{
+  position:absolute;left:0;right:0;top:0;bottom:0;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  pointer-events:none;
+}
+.lockup b{
+  font-family:var(--disp);font-weight:400;font-size:10.5px;
+  letter-spacing:.15em;color:var(--text);text-transform:uppercase;
+}
+.lockup .tld{font-weight:800;-webkit-text-stroke:.55px currentColor}
+.wing{width:16px;height:16px;display:block;overflow:visible}
+.gear{margin-left:auto;position:relative;z-index:2;display:block;opacity:.55}
+
+/* ---------- body ---------- */
+.body{
+  flex:1;position:relative;background:var(--bg);
+  padding:30px 26px 18px;display:flex;flex-direction:column;align-items:center;
+  overflow:hidden;
+}
+.constellation{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.body > *:not(.constellation){position:relative;z-index:1}
+
+/* ---------- power ring ---------- */
+.ring{
+  margin-top:14px;width:150px;height:150px;position:relative;
+  filter:drop-shadow(0 0 18px rgba(255,255,255,.16)) drop-shadow(0 0 42px rgba(255,255,255,.07));
+}
+.ring svg{display:block;width:150px;height:150px}
+
+.status{
+  margin-top:24px;font-family:var(--disp);font-weight:400;font-size:22px;
+  letter-spacing:.2em;color:#fff;line-height:1;text-indent:.2em;
+}
+.mode{
+  margin-top:12px;font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
+}
+.sentence{
+  margin-top:16px;font-size:15px;color:var(--dim);letter-spacing:.005em;
+}
+.verified{
+  margin-top:9px;font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+  display:flex;align-items:center;gap:6px;
+}
+.verified .tick{color:var(--dim);font-size:11px;line-height:1;transform:translateY(-.5px)}
+
+/* ---------- panels ---------- */
+.panel{
+  width:100%;background:var(--panel2);border:1px solid var(--line);
+  border-radius:var(--radius);padding:16px;
+}
+.panel.speed{margin-top:26px}
+.panel.route{margin-top:14px}
+.plabel{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--faint);line-height:1.2;
+}
+.chart{margin-top:12px;display:block;width:100%;height:62px}
+.readout{
+  margin-top:12px;display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--disp);font-weight:400;font-size:14px;color:var(--text);
+  letter-spacing:.07em;line-height:1.25;
+}
+.readout > div{display:flex;align-items:baseline;white-space:nowrap}
+.readout .u{
+  font-family:var(--mono);font-weight:500;font-size:10px;color:var(--faint);
+  margin-left:5px;letter-spacing:.06em;
+}
+.readout .arrow{
+  font-family:var(--mono);font-weight:400;font-size:10px;color:var(--faint);
+  margin-right:5px;letter-spacing:0;
+}
+
+.routeline{
+  margin-top:10px;display:flex;align-items:center;gap:8px;
+  font-size:15px;color:var(--text);
+}
+.routeline .sep{color:var(--faint);margin:0 1px}
+.routeline .right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.routeline .ms{
+  font-family:var(--disp);font-weight:400;font-size:9.5px;color:var(--dim);
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.routeline .dot{
+  width:7px;height:7px;border-radius:50%;background:var(--text);display:block;
+  box-shadow:0 0 7px rgba(255,255,255,.35);
+}
+
+.rowlabel{
+  margin-top:14px;font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--faint);line-height:1.2;
+}
+.chips{margin-top:8px;display:flex;gap:7px}
+.chip{
+  font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;padding:7px 11px;border-radius:6px;
+  background:var(--panel);border:1px solid var(--line);color:var(--dim);
+  line-height:1;white-space:nowrap;
+}
+.chip.on{
+  background:var(--text);border-color:var(--text);color:var(--bg);font-weight:600;
+}
+
+.version{
+  margin-top:auto;padding-top:16px;
+  font-size:11.5px;font-style:italic;color:var(--faint);opacity:.8;letter-spacing:.01em;
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="wgrad" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#787e89"/>
+    <stop offset=".55" stop-color="#b7bcc6"/>
+    <stop offset="1" stop-color="#f4f5f8"/>
+  </linearGradient>
+  <linearGradient id="ringgrad" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#787e89"/>
+    <stop offset=".35" stop-color="#c8ccd5"/>
+    <stop offset=".62" stop-color="#f5f6f8"/>
+    <stop offset="1" stop-color="#9aa0ac"/>
+  </linearGradient>
+  <linearGradient id="sparkline" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#9aa0ac"/>
+    <stop offset=".45" stop-color="#e2e5ea"/>
+    <stop offset="1" stop-color="#c8ccd5"/>
+  </linearGradient>
+  <linearGradient id="sparkfill" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#d5d8df" stop-opacity=".22"/>
+    <stop offset="1" stop-color="#d5d8df" stop-opacity="0"/>
+  </linearGradient>
+</defs></svg>
+
+<div class="window">
+
+  <!-- titlebar -->
+  <div class="titlebar">
+    <div class="lights"><i></i><i></i><i></i></div>
+    <div class="lockup">
+      <svg class="wing" viewBox="2 2.3 19.6 16.4"><g stroke="url(#wgrad)" stroke-width="2.4" stroke-linecap="round">
+        <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/><line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+        <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/><line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+        <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+      <b>CONCORDE<span class="tld">VPN</span></b>
+    </div>
+    <svg class="gear" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--dim)">
+      <g stroke-width="2.7" stroke-linecap="butt">
+        <line x1="18.6" y1="12" x2="21.2" y2="12"/>
+        <line x1="16.67" y1="7.33" x2="18.51" y2="5.49"/>
+        <line x1="12" y1="5.4" x2="12" y2="2.8"/>
+        <line x1="7.33" y1="7.33" x2="5.49" y2="5.49"/>
+        <line x1="5.4" y1="12" x2="2.8" y2="12"/>
+        <line x1="7.33" y1="16.67" x2="5.49" y2="18.51"/>
+        <line x1="12" y1="18.6" x2="12" y2="21.2"/>
+        <line x1="16.67" y1="16.67" x2="18.51" y2="18.51"/>
+      </g>
+      <circle cx="12" cy="12" r="6.6" stroke-width="2.1"/>
+      <circle cx="12" cy="12" r="2.7" stroke-width="1.8"/>
+    </svg>
+  </div>
+
+  <!-- body -->
+  <div class="body">
+
+    <!-- constellation texture -->
+    <svg class="constellation" viewBox="0 0 468 760" aria-hidden="true">
+      <g stroke="#ffffff" stroke-width="1" fill="none">
+        <line x1="-10" y1="126" x2="148" y2="55" opacity=".05"/>
+        <line x1="320" y1="36" x2="482" y2="102" opacity=".04"/>
+        <line x1="148" y1="55" x2="320" y2="36" opacity=".03"/>
+        <line x1="-10" y1="500" x2="108" y2="549" opacity=".04"/>
+        <line x1="369" y1="651" x2="482" y2="602" opacity=".035"/>
+        <line x1="27" y1="730" x2="168" y2="690" opacity=".03"/>
+        <line x1="401" y1="253" x2="482" y2="226" opacity=".04"/>
+      </g>
+      <g fill="#ffffff">
+        <circle cx="148" cy="55" r="1.4" opacity=".06"/>
+        <circle cx="320" cy="36" r="1.2" opacity=".055"/>
+        <circle cx="108" cy="549" r="1.3" opacity=".05"/>
+        <circle cx="369" cy="651" r="1.2" opacity=".045"/>
+        <circle cx="401" cy="253" r="1.3" opacity=".05"/>
+        <circle cx="168" cy="690" r="1.1" opacity=".04"/>
+        <circle cx="54" cy="279" r="1" opacity=".045"/>
+        <circle cx="441" cy="447" r="1.1" opacity=".04"/>
+        <circle cx="237" cy="745" r="1" opacity=".035"/>
+        <circle cx="22" cy="417" r="1" opacity=".035"/>
+      </g>
+    </svg>
+
+    <!-- power ring -->
+    <div class="ring">
+      <svg viewBox="0 0 150 150">
+        <circle cx="75" cy="75" r="70" fill="none" stroke="url(#ringgrad)" stroke-width="2"/>
+        <circle cx="75" cy="75" r="70" fill="none" stroke="#ffffff" stroke-width="6" opacity=".05"/>
+        <!-- power glyph: arc with a gap at top + vertical bar, centred on 75,75 -->
+        <g stroke="#ffffff" stroke-width="4.4" stroke-linecap="round" fill="none">
+          <path d="M58.93 59.85a25 25 0 1 0 32.14 0"/>
+          <line x1="75" y1="47" x2="75" y2="76"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="status">CONNECTED</div>
+    <div class="mode">Mode: Performance</div>
+    <div class="sentence">Your traffic leaves through Singapore.</div>
+    <div class="verified">exit verified <span class="tick">&#10003;</span></div>
+
+    <!-- speed -->
+    <div class="panel speed">
+      <div class="plabel">Speed</div>
+      <svg class="chart" viewBox="0 0 382 62" preserveAspectRatio="none">
+        <path fill="url(#sparkfill)"
+          d="M0,44 L22,38 L45,41 L67,31 L90,35 L112,23 L135,28 L157,14 L180,7 L202,20 L225,26 L247,20 L270,29 L292,13 L315,6 L337,18 L360,23 L382,17 L382,62 L0,62 Z"/>
+        <path fill="none" stroke="url(#sparkline)" stroke-width="1.7"
+          stroke-linejoin="round" stroke-linecap="round"
+          d="M0,44 L22,38 L45,41 L67,31 L90,35 L112,23 L135,28 L157,14 L180,7 L202,20 L225,26 L247,20 L270,29 L292,13 L315,6 L337,18 L360,23 L382,17"/>
+      </svg>
+      <div class="readout">
+        <div><span class="arrow">&#8595;</span>238.4<span class="u">Mbps</span></div>
+        <div><span class="arrow">&#8593;</span>41.7<span class="u">Mbps</span></div>
+      </div>
+    </div>
+
+    <!-- route -->
+    <div class="panel route">
+      <div class="plabel">Route</div>
+      <div class="routeline">
+        <span>Auto<span class="sep"> &middot; </span>Singapore<span class="sep"> &middot; </span>Performance</span>
+        <span class="right"><span class="ms">11 ms</span><span class="dot"></span></span>
+      </div>
+
+      <div class="rowlabel">Location</div>
+      <div class="chips">
+        <span class="chip on">Auto</span>
+        <span class="chip">New York</span>
+        <span class="chip">Singapore</span>
+      </div>
+
+      <div class="rowlabel">Optimize</div>
+      <div class="chips">
+        <span class="chip">Stealth</span>
+        <span class="chip">Stability</span>
+        <span class="chip on">Performance</span>
+      </div>
+    </div>
+
+    <div class="version">Version 1.2</div>
+
+  </div>
+</div>
+
+</body>
+</html>

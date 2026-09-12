@@ -426,6 +426,33 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   .js .reveal{opacity:1!important;transform:none!important}
   .cue i::after{display:none}
 }
+
+/* ---------- product bands ----------
+   The window images are PNG/WebP with an alpha channel and their own drop
+   shadow baked in, so they get NO frame and NO card: the page's own starfield
+   drifts behind and around them. Each app keeps its natural aspect — the AI
+   is landscape, the VPN is portrait — which is why they are sized separately
+   rather than forced into one uniform slot.
+   Regenerate the images from tools/windows/*.html (see tools/README). */
+.band{padding:104px 0 0}
+.band + .band{padding-top:88px}
+.band-in{display:grid;gap:clamp(30px,4.5vw,64px);align-items:center;
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.25fr)}
+.band.flip .band-in{grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr)}
+.band.flip .band-copy{order:2}
+.band.flip .band-shot{order:1}
+.band-copy .lab{display:block;margin-bottom:12px}
+.band-copy h3{font-family:var(--disp);font-size:15px;text-transform:uppercase;
+  letter-spacing:.15em;font-weight:400;color:var(--text);margin-bottom:16px}
+.band-copy h3 .tld{font-weight:800;-webkit-text-stroke:.55px currentColor}
+.band-copy p{color:var(--dim);font-size:15.5px;line-height:1.6;max-width:44ch}
+.band-shot img{display:block;width:100%;height:auto}
+.band.flip .band-shot img{max-width:330px;margin:0 auto}
+@media (max-width:820px){
+  .band-in,.band.flip .band-in{grid-template-columns:1fr}
+  .band.flip .band-copy{order:1}.band.flip .band-shot{order:2}
+}
+
 </style>
 </head>
 <body>
@@ -676,6 +703,46 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 
         <!-- Third bay (.slot) returns with app #3 — CSS is still in place -->
 
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ PRODUCT BANDS ============ -->
+  <section class="section band" aria-label="ConcordeAI in use">
+    <div class="wrap band-in">
+      <div class="band-copy">
+        <span class="label lab">01 &mdash; Pooled</span>
+        <h3>Concorde<span class="tld">AI</span></h3>
+        <p>Chat, Code and Funnels in one window. Your own GPUs pool across
+           machines, and the big cloud models sit beside them &mdash; same
+           workflow, you pick per task.</p>
+      </div>
+      <div class="band-shot">
+        <picture>
+          <source srcset="assets/shot-ai.webp" type="image/webp">
+          <img src="assets/shot-ai.png" width="1100" height="704" loading="lazy" decoding="async"
+               alt="The ConcordeAI window: three machines pooled into one workbench.">
+        </picture>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band flip" aria-label="ConcordeVPN in use">
+    <div class="wrap band-in">
+      <div class="band-shot">
+        <picture>
+          <source srcset="assets/shot-vpn.webp" type="image/webp">
+          <img src="assets/shot-vpn.png" width="420" height="675" loading="lazy" decoding="async"
+               alt="The ConcordeVPN window: connected, with the exit verified.">
+        </picture>
+      </div>
+      <div class="band-copy">
+        <span class="label lab">02 &mdash; Verified</span>
+        <h3>Concorde<span class="tld">VPN</span></h3>
+        <p>One switch, three transports underneath. It checks the exit really
+           is the exit before it says connected, and shows you the line it is
+           actually getting.</p>
       </div>
     </div>
   </section>

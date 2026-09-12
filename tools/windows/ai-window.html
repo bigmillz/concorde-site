@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ConcordeAI Window</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Michroma&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#101013; --panel:#0a0a0c; --panel2:#191a1e;
+  --line:#26272c; --line-soft:#1e1f23;
+  --text:#ececec; --dim:#b4b4b4; --faint:#8e8e8e;
+  --accent:#ececec; --accent-hot:#fff; --accent-dim:rgba(255,255,255,.10);
+  --red:#e26d5a; --radius:10px;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --disp:'Michroma','Space Grotesk',system-ui,sans-serif;
+  --silver:linear-gradient(90deg,#f5f6f8,#c8ccd5,#9aa0ac,#e2e5ea,#8f95a1,#d5d8df,#f5f6f8);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:transparent}
+body{
+  display:grid;place-items:center;min-height:100vh;padding:40px;
+  font-family:var(--sans);color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- window shell ---------- */
+.win{
+  width:1180px;height:700px;
+  border-radius:12px;overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--bg);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.04);
+  display:flex;flex-direction:column;
+}
+.titlebar{
+  height:38px;flex:0 0 38px;background:#1b1c20;
+  border-bottom:1px solid var(--line-soft);
+  display:flex;align-items:center;position:relative;padding:0 14px;
+}
+.lights{display:flex;gap:8px}
+.lights i{width:12px;height:12px;border-radius:50%;display:block}
+.l1{background:#ff5f57}.l2{background:#febc2e}.l3{background:#28c840}
+.tb-lockup{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:8px;
+}
+.wing{display:block}
+.lockup{
+  font-family:var(--disp);font-weight:400;text-transform:uppercase;letter-spacing:.15em;
+  color:var(--text);line-height:1;white-space:nowrap;
+}
+.lockup .tld{font-weight:800;-webkit-text-stroke:.55px currentColor}
+.tb-lockup .lockup{font-size:11px}
+
+.body{flex:1;display:flex;min-height:0}
+
+/* ---------- sidebar ---------- */
+.side{
+  width:250px;flex:0 0 250px;background:var(--panel);
+  border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;padding:16px 14px 14px;
+}
+.side-head{display:flex;align-items:center;gap:8px;padding:0 4px 0 2px}
+.side-head .lockup{font-size:13px}
+.compose{margin-left:auto;display:block;color:var(--dim);opacity:.72}
+
+/* segmented tabs */
+.seg{
+  display:flex;margin-top:18px;background:var(--panel2);
+  border:1px solid var(--line);border-radius:8px;padding:3px;gap:3px;
+}
+.seg span{
+  flex:1;text-align:center;font-family:var(--mono);font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+  padding:6px 0;border-radius:6px;
+}
+.seg span.on{background:var(--accent);color:var(--panel);font-weight:600}
+
+.label{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--faint);
+}
+.sec{margin-top:22px;padding-left:4px}
+.sub{margin:14px 0 7px;padding-left:4px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--faint);opacity:.72}
+.row{
+  font-size:12.5px;color:var(--dim);padding:6px 8px;border-radius:7px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;
+}
+.row.on{background:var(--accent-dim);color:var(--text)}
+
+/* instrument panel */
+.instr{
+  margin-top:auto;border-top:1px solid var(--line-soft);
+  padding:14px 4px 0;
+}
+.chip-row{display:flex;align-items:center;justify-content:space-between}
+.chiplet{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);
+  border:1px solid var(--line);border-radius:5px;padding:3px 7px;
+}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--dim);display:inline-block;margin-right:6px;vertical-align:1px}
+.meter-lab{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin:13px 0 6px;font-family:var(--mono);font-size:10px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
+}
+.meter{height:3px;border-radius:2px;background:var(--accent-dim);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--silver);border-radius:2px}
+.pooled{margin-top:9px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  color:var(--faint);opacity:.78}
+.ver{margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--faint);opacity:.6}
+
+/* ---------- main ---------- */
+.main{
+  flex:1;min-width:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 90px;
+}
+h1{
+  font-family:var(--disp);font-weight:400;font-size:30px;line-height:1.3;
+  letter-spacing:.10em;text-transform:uppercase;
+  -webkit-text-stroke:.3px currentColor;
+  color:var(--text);text-align:center;max-width:100%;
+}
+.sugg{display:flex;gap:10px;margin-top:26px}
+.sugg span{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:999px;padding:8px 15px;white-space:nowrap;
+}
+.composer{
+  margin-top:42px;width:100%;max-width:660px;
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:18px;
+}
+.ph{font-size:14.5px;color:var(--faint);padding:2px 2px 26px}
+.cbar{display:flex;align-items:center}
+.cbar .left{display:flex;gap:8px}
+.cchip{
+  display:flex;align-items:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text);border:1px solid var(--line);border-radius:7px;padding:5px 10px;
+}
+.cchip em{
+  font-style:normal;color:var(--faint);opacity:.8;margin-right:9px;padding-right:9px;
+  border-right:1px solid var(--line);
+}
+.cbar .right{margin-left:auto;display:flex;align-items:center;gap:9px}
+.ibtn{
+  width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
+  display:grid;place-items:center;color:var(--dim);
+}
+.ibtn.send{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="wgrad" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#787e89"/>
+    <stop offset=".55" stop-color="#b7bcc6"/>
+    <stop offset="1" stop-color="#f4f5f8"/>
+  </linearGradient></defs></svg>
+
+<div class="win">
+
+  <div class="titlebar">
+    <div class="lights"><i class="l1"></i><i class="l2"></i><i class="l3"></i></div>
+    <div class="tb-lockup">
+      <svg class="wing" width="16" height="16" viewBox="2 2.3 19.6 16.4"><g stroke="url(#wgrad)" stroke-width="2.4" stroke-linecap="round">
+        <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/><line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+        <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/><line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+        <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+      <b class="lockup">CONCORDE<span class="tld">AI</span></b>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="side-head">
+        <svg class="wing" width="17" height="17" viewBox="2 2.3 19.6 16.4"><g stroke="url(#wgrad)" stroke-width="2.4" stroke-linecap="round">
+          <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/><line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+          <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/><line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+          <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+        <b class="lockup">CONCORDE<span class="tld">AI</span></b>
+        <svg class="compose" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13.4 2.6a1.4 1.4 0 0 1 0 2L6.2 11.8 3.4 12.6l.8-2.8 7.2-7.2a1.4 1.4 0 0 1 2 0Z"/>
+          <path d="M2.6 14.2h10.8"/>
+        </svg>
+      </div>
+
+      <div class="seg">
+        <span class="on">Chat</span><span>Code</span><span>Funnels</span>
+      </div>
+
+      <div class="sec label">Chats</div>
+
+      <div class="sub">Pinned</div>
+      <div class="row on">Batch-resize 400 product photos</div>
+      <div class="row">Refactor the ingest worker</div>
+      <div class="row">Compare local vs cloud latency</div>
+
+      <div class="sub">This week</div>
+      <div class="row">Summarise Q3 support tickets</div>
+      <div class="row">Draft the release notes</div>
+      <div class="row">Explain this stack trace</div>
+      <div class="row">Benchmark the 70B on two nodes</div>
+
+      <div class="instr">
+        <div class="chip-row">
+          <span class="chiplet">M4 Pro</span>
+          <span class="chiplet"><i class="dot"></i>Online</span>
+        </div>
+
+        <div class="meter-lab"><span>Memory pressure</span><span>30%</span></div>
+        <div class="meter"><i style="width:30%"></i></div>
+
+        <div class="meter-lab"><span>Community GPU</span><span>70%</span></div>
+        <div class="meter"><i style="width:70%"></i></div>
+
+        <div class="pooled">3 machines · 58 GB pooled</div>
+        <div class="ver">Version 6.1</div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <h1>Three machines.<br>One workbench.</h1>
+
+      <div class="sugg">
+        <span>Run it locally</span>
+        <span>Use the big cloud model</span>
+        <span>Split across my GPUs</span>
+      </div>
+
+      <div class="composer">
+        <div class="ph">How can I help you today?</div>
+        <div class="cbar">
+          <div class="left">
+            <span class="cchip"><em>engine</em>Fast</span>
+            <span class="cchip"><i class="dot"></i>MLX</span>
+          </div>
+          <div class="right">
+            <span class="ibtn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.8 5.2 5.9 10.1a1.7 1.7 0 0 0 2.4 2.4l5.1-5.1a3 3 0 0 0-4.2-4.2L3.7 8.7a4.3 4.3 0 0 0 6.1 6.1"/>
+              </svg>
+            </span>
+            <span class="ibtn">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="1.6" width="4" height="7.6" rx="2"/>
+                <path d="M3.5 7.6a4.5 4.5 0 0 0 9 0"/><path d="M8 12.1v2.3"/>
+              </svg>
+            </span>
+            <span class="ibtn send">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 13V3.4"/><path d="M3.9 7.5 8 3.4l4.1 4.1"/>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>
