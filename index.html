@@ -6,8 +6,12 @@
 <meta name="color-scheme" content="dark">
 <title>Concorde</title>
 <meta name="description" content="CONCORDE — Fly Concorde, Fly. Desktop software that runs on your own machines. ConcordeAI and ConcordeVPN.">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<!-- ?v= is the cache-buster: browsers keep favicons in a separate store they
+     never refetch on reload, so a changed icon needs a changed URL. -->
+<link rel="icon" href="/favicon.ico?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=3">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=3">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3">
 <meta name="theme-color" content="#101013">
 
 <!-- Link previews. og:image must be absolute; regenerate the card with
@@ -427,31 +431,29 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   .cue i::after{display:none}
 }
 
-/* ---------- product bands ----------
-   The window images are PNG/WebP with an alpha channel and their own drop
-   shadow baked in, so they get NO frame and NO card: the page's own starfield
-   drifts behind and around them. Each app keeps its natural aspect — the AI
-   is landscape, the VPN is portrait — which is why they are sized separately
-   rather than forced into one uniform slot.
+/* ---------- gallery ----------
+   The two windows as one matched row, bottoms aligned, a one-line mono
+   caption under each. The images carry their own shadow and an alpha
+   channel, so no frame and no card: the starfield drifts around them.
+   Copy stays out of here on purpose — the product cards directly below do
+   the explaining, and this is meant to be looked at, not read.
    Regenerate the images from tools/windows/*.html (see tools/README). */
-.band{padding:70px 0 0}
-.band + .band{padding-top:54px}
-.band-in{display:grid;gap:clamp(30px,4.5vw,64px);align-items:center;
-  grid-template-columns:minmax(0,.85fr) minmax(0,1.25fr)}
-.band.flip .band-in{grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr)}
-.band.flip .band-copy{order:2}
-.band.flip .band-shot{order:1}
-.band-copy .lab{display:block;margin-bottom:12px}
-.band-copy h3{font-family:var(--disp);font-size:15px;text-transform:uppercase;
-  letter-spacing:.15em;font-weight:400;color:var(--text);margin-bottom:16px}
-.band-copy h3 .tld{font-weight:800;-webkit-text-stroke:.55px currentColor}
-.band-copy p{color:var(--dim);font-size:15.5px;line-height:1.6;max-width:44ch}
-.band-shot img{display:block;width:100%;height:auto}
-.band:last-of-type{padding-bottom:16px}
-.band.flip .band-shot img{max-width:330px;margin:0 auto}
+.gallery{padding:48px 0 8px}
+.gal{display:flex;align-items:flex-end;justify-content:center;gap:clamp(20px,3vw,40px)}
+.gal figure{margin:0;min-width:0}
+.gal-ai{flex:1 1 auto;max-width:760px}
+.gal-vpn{flex:0 0 auto}
+.gal img{display:block;height:auto;max-width:100%;margin:0 auto}
+.gal-vpn img{width:auto;height:clamp(300px,31vw,430px)}
+/* width:0 + min-width:100%: the caption takes the figure's width instead
+   of setting it, so the windows — not the wording — decide the row. The
+   images carry ~30px of transparent shadow margin, which is the caption's
+   real gap; the margin here is only a hair on top of that. */
+.gal figcaption{width:0;min-width:100%;margin-top:4px;text-align:center;letter-spacing:.12em;font-size:10px;line-height:1.7}
 @media (max-width:820px){
-  .band-in,.band.flip .band-in{grid-template-columns:1fr}
-  .band.flip .band-copy{order:1}.band.flip .band-shot{order:2}
+  .gal{flex-direction:column;align-items:center;gap:22px}
+  .gal-ai{max-width:100%}
+  .gal-vpn img{height:auto;width:min(250px,70%)}
 }
 
 </style>
@@ -482,8 +484,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       <span class="lockup">Concorde</span>
     </a>
     <nav class="nav" aria-label="Primary">
-      <a href="#products">Products</a>
-      <a class="nav-cta" href="#install">Install</a>
+      <a class="nav-cta" href="#downloads">Downloads</a>
     </nav>
   </div>
 </header>
@@ -513,47 +514,32 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     </div>
   </section>
 
-  <!-- ============ PRODUCT BANDS ============ -->
-  <section class="section band" aria-label="ConcordeAI in use">
-    <div class="wrap band-in">
-      <div class="band-copy">
-        <span class="label lab">01 &mdash; Pooled</span>
-        <h3>Concorde<span class="tld">AI</span></h3>
-        <p>Chat, Code and Funnels in one window. Your own GPUs pool across
-           machines, and the big cloud models sit beside them &mdash; same
-           workflow, you pick per task.</p>
-      </div>
-      <div class="band-shot">
-        <picture>
-          <source srcset="assets/shot-ai.webp" type="image/webp">
-          <img src="assets/shot-ai.png" width="1100" height="704" loading="lazy" decoding="async"
-               alt="The ConcordeAI window: three machines pooled into one workbench.">
-        </picture>
-      </div>
-    </div>
-  </section>
-
-  <section class="section band flip" aria-label="ConcordeVPN in use">
-    <div class="wrap band-in">
-      <div class="band-shot">
-        <picture>
-          <source srcset="assets/shot-vpn.webp" type="image/webp">
-          <img src="assets/shot-vpn.png" width="420" height="675" loading="lazy" decoding="async"
-               alt="The ConcordeVPN window: connected, with the exit verified.">
-        </picture>
-      </div>
-      <div class="band-copy">
-        <span class="label lab">02 &mdash; Verified</span>
-        <h3>Concorde<span class="tld">VPN</span></h3>
-        <p>One switch, three transports underneath. It checks the exit really
-           is the exit before it says connected, and shows you the line it is
-           actually getting.</p>
+  <!-- ============ GALLERY ============ -->
+  <section class="section gallery" id="gallery" aria-label="The apps">
+    <div class="wrap">
+      <div class="gal">
+        <figure class="gal-ai">
+          <picture>
+            <source srcset="assets/shot-ai.webp" type="image/webp">
+            <img src="assets/shot-ai.png" width="1100" height="704" loading="lazy" decoding="async"
+                 alt="The ConcordeAI window: three machines pooled into one workbench.">
+          </picture>
+          <figcaption class="label">Chat &middot; code &middot; funnels &middot; one window<br>Your GPUs pooled, cloud models beside them</figcaption>
+        </figure>
+        <figure class="gal-vpn">
+          <picture>
+            <source srcset="assets/shot-vpn.webp" type="image/webp">
+            <img src="assets/shot-vpn.png" width="420" height="675" loading="lazy" decoding="async"
+                 alt="The ConcordeVPN window: connected, with the exit verified.">
+          </picture>
+          <figcaption class="label">One switch, three transports<br>Exit verified, then connected</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
   <!-- ============ PRODUCTS ============ -->
-  <section class="section" id="products" aria-labelledby="prod-h">
+  <section class="section" id="downloads" aria-labelledby="prod-h">
     <div class="wrap">
       <div class="sec-head reveal">
         <h2 id="prod-h">Products</h2>
@@ -787,8 +773,9 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     </a>
     <span class="slogan">Fly Concorde, Fly.</span>
     <span class="right label">
-      <span>Direct download only</span>
-      <span>Updated <time datetime="2026-08-23">23 Aug 2026</time></span>
+      <!-- worker.js rewrites this from the repo's latest commit; the baked
+           value is only the no-Worker fallback -->
+      <span>Updated <time id="updated" datetime="2026-09-14">14 Sep 2026</time></span>
     </span>
   </div>
 </footer>

@@ -6,7 +6,7 @@ rather than an archaeology dig through old PNGs.
 
 | Output | Made by |
 |---|---|
-| `favicon.ico`, `apple-touch-icon.png` | `../tools-make-favicon.py` |
+| `favicon.ico`, `favicon-16.png`, `favicon-32.png`, `apple-touch-icon.png` | `../tools-make-favicon.py` |
 | `og.png` | `../tools-make-og.py` |
 | `assets/shot-ai.*`, `assets/shot-vpn.*` | `windows/*.html`, captured (below) |
 
@@ -51,6 +51,12 @@ render looks subtly wrong and nothing warns you.
 
 `--default-background-color=00000000` is what keeps the page transparent, which
 is what lets the site's starfield show around the window instead of a flat box.
+
+**Headless Chrome will not lay out narrower than ~500px.** A
+`--window-size=390,…` capture is a ~500px layout cropped to 390, so it shows
+phantom overflow (the AI window "clipped", the nav pill "cut off") that no
+phone has. Check phone layouts in a real browser with device emulation, not
+with a narrow headless window.
 
 ## Typography, if you restage them
 

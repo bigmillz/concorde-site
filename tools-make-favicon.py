@@ -148,6 +148,12 @@ def main():
     print("  %-24s %s" % ("favicon.ico", "/".join(str(s) for s in ico_sizes)))
     frame(180).save(os.path.join(OUT, "apple-touch-icon.png"))
     print("  %-24s 180x180" % "apple-touch-icon.png")
+    # Loose PNG frames too: some browsers prefer an explicit sizes= PNG over
+    # picking a frame out of the .ico, and they are the same pixels anyway.
+    for s in (16, 32):
+        name = "favicon-%d.png" % s
+        frame(s).save(os.path.join(OUT, name))
+        print("  %-24s %dx%d" % (name, s, s))
 
 
 if __name__ == "__main__":
