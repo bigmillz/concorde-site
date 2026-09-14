@@ -21,8 +21,8 @@ their closing markers in `index.html` is generated; hand edits there are
 overwritten on the next run. Stable is the newest non-prerelease; an RC or
 beta shows as a second channel only while it is newer than stable. Versions
 are read from the asset filenames (release names have drifted from the
-files before — the 6.0 candidates shipped as `ConcordeAI-6.1.0.*`), builds
-from the tag, dates from the publish time in UTC.
+files before — the 6.0 candidates shipped as `ConcordeAI-6.1.0.*`), dates
+from the publish time in UTC.
 
 The VPN repo is private, so its buttons point at the public mirror
 `bigmillz/concordevpn-releases`; a release that is not mirrored never reaches

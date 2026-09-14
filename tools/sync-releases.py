@@ -17,7 +17,7 @@ What is shown, per product:
             once stable overtakes it the second channel disappears
 The version is read from the asset filename (`ConcordeAI-6.0.0.dmg` -> 6.0.0)
 because that is the string people see on disk; release *names* are labels
-and have drifted from the files before. The build is the tag number.
+and have drifted from the files before. Build numbers are not shown.
 Dates are the release's publish time, UTC, same as the footer.
 """
 import html
@@ -82,7 +82,6 @@ def channel_html(name, rel, buttons):
         sys.exit("%s %s has none of the expected assets" % (name, rel["tag_name"]))
     m = re.search(r"(\d+\.\d+\.\d+)", picks[0][1]["name"])
     version = m.group(1) if m else rel["name"]
-    build = re.sub(r"\D", "", rel["tag_name"])
     date = rel["published_at"][:10]
     sha = next((a for a in rel["assets"] if a["name"].endswith(".sha256")), None)
 
@@ -90,7 +89,6 @@ def channel_html(name, rel, buttons):
              '              <div class="chan-top">',
              '                <span class="chan-name">%s</span>' % name,
              '                <span class="chan-ver">%s</span>' % html.escape(version),
-             '                <span class="chan-build">build %s</span>' % build,
              '                <span class="chan-date">Released <time datetime="%s">%s</time></span>'
              % (date, pretty(date)),
              '              </div>',
