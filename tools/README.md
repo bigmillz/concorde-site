@@ -50,13 +50,19 @@ Two rules they exist to enforce:
     python3 tools/make-shots.py
 
 That captures both windows with headless Chrome at 2x, then normalises them
-into a **matched pair**: in each output the opaque window is exactly the same
-pixel height and sits inside the same transparent margin on all four sides.
-The site gives both images one CSS height, so identical geometry is what
-makes the two windows land on the same top and bottom line to the pixel —
-if you ever crop these by hand, that alignment is the first thing to break.
-Both `.png` and `.webp` are written to `assets/`; update the `width`/`height`
-attributes in `index.html` if the printed dimensions change.
+into a **matched pair**: in each output the opaque window occupies exactly
+the same rows (80–980) inside the same 80px transparent margin on all four
+sides — placed by one resize from the pixel-aligned capture, so the edges
+land on pixel boundaries with the same phase in both. The site gives both
+images one CSS height, so identical geometry is what makes the two windows
+land on the same top and bottom line to the pixel — if you ever crop these
+by hand, that alignment is the first thing to break. The box-shadow reaches
+further than the margin; the outer 30px of the margin fade it to nothing
+instead of cutting it (a cut shows on the page as a faint line). The script
+refuses a capture whose shadow runs off the edge, so if it complains,
+enlarge that entry's size in `SOURCES`. Both `.png` and `.webp` are written
+to `assets/`; update the `width`/`height` attributes in `index.html` if the
+printed dimensions change.
 
 **`--virtual-time-budget` is not optional** (the script passes it). Without
 it Chrome captures before the Google Fonts webfonts arrive and silently falls
@@ -72,7 +78,10 @@ is what lets the site's starfield show around the window instead of a flat box.
 
 Drives headless Chrome over the DevTools protocol at an exact viewport
 (device emulation, so phone widths work) and prints what the expression
-returns. **Do not check phone layouts with `--window-size`:** headless
+returns; it exits non-zero if the page fails to load or the expression
+throws. `MEASURE_HOLD=assets/shot-` leaves requests containing that text
+pending, which is what a not-yet-loaded lazy image looks like — measure with
+and without it to prove a layout does not jump when the images arrive. **Do not check phone layouts with `--window-size`:** headless
 Chrome will not lay out narrower than ~500px, so a `--window-size=390,…`
 capture is a 500px layout cropped to 390 — it shows phantom overflow no phone
 has.
