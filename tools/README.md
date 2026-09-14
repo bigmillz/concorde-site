@@ -8,7 +8,25 @@ rather than an archaeology dig through old PNGs.
 |---|---|
 | `favicon.ico`, `favicon-16.png`, `favicon-32.png`, `apple-touch-icon.png` | `../tools-make-favicon.py` |
 | `og.png` | `../tools-make-og.py` |
-| `assets/shot-ai.*`, `assets/shot-vpn.*` | `windows/*.html`, captured (below) |
+| the download blocks in `index.html` | `sync-releases.py` from GitHub Releases |
+| `assets/shot-ai.*`, `assets/shot-vpn.*` | `make-shots.py` from `windows/*.html` (below) |
+
+## The download blocks
+
+    python3 tools/sync-releases.py            # rewrite from GitHub Releases
+    python3 tools/sync-releases.py --check    # exit 1 if the page is behind
+
+Everything between `<!-- releases:ai -->` / `<!-- releases:vpn -->` and
+their closing markers in `index.html` is generated; hand edits there are
+overwritten on the next run. Stable is the newest non-prerelease; an RC or
+beta shows as a second channel only while it is newer than stable. Versions
+are read from the asset filenames (release names have drifted from the
+files before — the 6.0 candidates shipped as `ConcordeAI-6.1.0.*`), builds
+from the tag, dates from the publish time in UTC.
+
+The VPN repo is private, so its buttons point at the public mirror
+`bigmillz/concordevpn-releases`; a release that is not mirrored never reaches
+the page.
 
 ## The product windows
 
@@ -29,34 +47,35 @@ Two rules they exist to enforce:
 
 ### Regenerating
 
-    CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    python3 tools/make-shots.py
 
-    "$CHROME" --headless=new --disable-gpu --hide-scrollbars \
-      --force-device-scale-factor=2 --default-background-color=00000000 \
-      --virtual-time-budget=9000 \
-      --screenshot=ai.png --window-size=1280,820 "file://$PWD/windows/ai-window.html"
+That captures both windows with headless Chrome at 2x, then normalises them
+into a **matched pair**: in each output the opaque window is exactly the same
+pixel height and sits inside the same transparent margin on all four sides.
+The site gives both images one CSS height, so identical geometry is what
+makes the two windows land on the same top and bottom line to the pixel —
+if you ever crop these by hand, that alignment is the first thing to break.
+Both `.png` and `.webp` are written to `assets/`; update the `width`/`height`
+attributes in `index.html` if the printed dimensions change.
 
-    "$CHROME" --headless=new --disable-gpu --hide-scrollbars \
-      --force-device-scale-factor=2 --default-background-color=00000000 \
-      --virtual-time-budget=9000 \
-      --screenshot=vpn.png --window-size=560,900 "file://$PWD/windows/vpn-window.html"
-
-Then trim the transparent margin (keeping the shadow), resize to 1100px and
-420px wide respectively, and save both `.webp` (quality 88) and `.png` into
-`assets/`.
-
-**`--virtual-time-budget` is not optional.** Without it Chrome captures before
-the Google Fonts webfonts arrive and silently falls back to system faces — the
-render looks subtly wrong and nothing warns you.
+**`--virtual-time-budget` is not optional** (the script passes it). Without
+it Chrome captures before the Google Fonts webfonts arrive and silently falls
+back to system faces — the render looks subtly wrong and nothing warns you.
 
 `--default-background-color=00000000` is what keeps the page transparent, which
 is what lets the site's starfield show around the window instead of a flat box.
 
-**Headless Chrome will not lay out narrower than ~500px.** A
-`--window-size=390,…` capture is a ~500px layout cropped to 390, so it shows
-phantom overflow (the AI window "clipped", the nav pill "cut off") that no
-phone has. Check phone layouts in a real browser with device emulation, not
-with a narrow headless window.
+### Checking a layout
+
+    node tools/measure.mjs https://flyconcordefly.com 375x812 \
+      'document.querySelector(".gal-vpn img").getBoundingClientRect().toJSON()' [shot.png]
+
+Drives headless Chrome over the DevTools protocol at an exact viewport
+(device emulation, so phone widths work) and prints what the expression
+returns. **Do not check phone layouts with `--window-size`:** headless
+Chrome will not lay out narrower than ~500px, so a `--window-size=390,…`
+capture is a 500px layout cropped to 390 — it shows phantom overflow no phone
+has.
 
 ## Typography, if you restage them
 
