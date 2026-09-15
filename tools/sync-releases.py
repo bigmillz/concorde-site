@@ -19,7 +19,9 @@ The version is read from the asset filename (`ConcordeAI-6.0.0.dmg` -> 6.0.0)
 because that is the string people see on disk; release *names* are labels
 and have drifted from the files before. Build numbers are not shown.
 Dates are the release's publish time, UTC, same as the footer. Each channel
-gets a "Release notes" dropdown rendered from the release body.
+gets a "Release notes" dropdown: a few visitor-facing bullets from
+release-notes.json when we have written them, otherwise a condensation of
+the GitHub body (its bullets or first sentence, install boilerplate dropped).
 """
 import html
 import json
@@ -68,50 +70,61 @@ def channels(repo):
     return stable, pre
 
 
-def md_to_html(md):
-    """The subset of GitHub markdown the release notes use — paragraphs,
-    **bold**, `code`, bullet lists, indented or fenced code blocks, headings
-    (shown as bold lines), and plain http(s) links. Everything is escaped
-    first; anything unrecognised is shown as text, never as markup."""
-    def inline(t):
-        t = html.escape(t, quote=False)
-        t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
-        t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
-        t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', t)
-        return t
-    out, para, items, code, fenced = [], [], [], [], False
-    def flush():
-        if para:
-            out.append("<p>%s</p>" % inline(" ".join(para))); para.clear()
-        if items:
-            out.append("<ul>%s</ul>" % "".join("<li>%s</li>" % inline(i) for i in items)); items.clear()
-        if code:
-            out.append("<pre>%s</pre>" % html.escape("\n".join(code), quote=False)); code.clear()
-    for ln in md.replace("\r\n", "\n").split("\n"):
-        if ln.strip().startswith("```"):
-            if not fenced: flush()
-            fenced = not fenced
-            if not fenced: flush()
+CURATED = Path(__file__).with_name("release-notes.json")
+
+
+def inline(t):
+    """Escape, then allow **bold** and `code` only."""
+    t = html.escape(t, quote=False)
+    t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+    t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    return t
+
+
+BOILERPLATE = re.compile(r"^\*\*(macos|windows|linux)\*\*|^verify\b|^bring-your-own|^shasum ", re.I)
+
+
+def condense(md, limit=4):
+    """A release body reduced to what a visitor would want: its bullet
+    items, or failing that the first sentence of the first paragraph —
+    each cut back to its first sentence or clause. Install instructions
+    and sign-offs are dropped."""
+    md = md.replace("\r\n", "\n")
+    items = [re.sub(r"^\s*[-*]\s+", "", ln) for ln in md.split("\n") if re.match(r"^\s*[-*]\s+", ln)]
+    if not items:
+        paras = [" ".join(p.split()) for p in re.split(r"\n\s*\n", md) if p.strip()]
+        paras = [p for p in paras if not BOILERPLATE.match(p) and not p.startswith("    ")]
+        items = re.split(r"(?<=[.!?])\s+", paras[0]) if paras else []
+        # "ConcordeVPN 1.3 beta (build 43)." is a title, not a note
+        if items and re.match(r"^\**Concorde\w+\**\s+[\d.]+", items[0]):
+            items = items[1:]
+        items = [i for i in items if not re.search(r"https?://", i)]     # URLs are for the body, not a bullet
+    out = []
+    for it in items:
+        if BOILERPLATE.match(it):
             continue
-        if fenced or ln.startswith("    ") or ln.startswith("\t"):
-            if not code: flush()
-            code.append(ln if fenced else ln[4:] if ln.startswith("    ") else ln[1:])
+        it = re.sub(r"^\*\*[^*]+\*\*\s*$", "", it).strip()          # a bold-only line is a title, not a note
+        if not it:
             continue
-        if code: flush()
-        st = ln.strip()
-        if not st:
-            flush(); continue
-        m = re.match(r"^[-*] +(.*)", st)
-        if m:
-            if para: flush()
-            items.append(m.group(1)); continue
-        m = re.match(r"^#{1,6} +(.*)", st)
-        if m:
-            flush(); out.append("<p><b>%s</b></p>" % inline(m.group(1))); continue
-        if items: flush()
-        para.append(st)
-    flush()
-    return "\n".join(out)
+        it = re.split(r"(?<=[.!?])\s+", it)[0]                       # first sentence
+        if len(it) > 120:
+            it = re.split(r"\s[—:;]\s", it)[0]                       # first clause
+        if len(it) > 140:
+            it = it[:137].rsplit(" ", 1)[0] + "\u2026"
+        out.append(it.rstrip(".").strip())
+        if len(out) == limit:
+            break
+    return out
+
+
+def notes_for(repo, rel):
+    curated = {}
+    if CURATED.exists():
+        curated = json.loads(CURATED.read_text(encoding="utf-8"))
+    items = (curated.get(repo) or {}).get(rel["tag_name"]) or condense(rel.get("body") or "")
+    if not items:
+        return ""
+    return "<ul>%s</ul>" % "".join("<li>%s</li>" % inline(i) for i in items)
 
 
 def pretty(iso):
@@ -119,7 +132,7 @@ def pretty(iso):
     return "%d %s %s" % (int(d), MONTHS[int(m) - 1], y)
 
 
-def channel_html(name, rel, buttons):
+def channel_html(name, rel, buttons, repo):
     picks = []
     for label, pat in buttons:
         asset = next((a for a in rel["assets"] if re.search(pat, a["name"])), None)
@@ -147,7 +160,7 @@ def channel_html(name, rel, buttons):
                   '                  ' + ARROW,
                   '                </a>']
     lines.append('              </div>')
-    notes = md_to_html((rel.get("body") or "").strip())
+    notes = notes_for(repo, rel)
     if notes:
         lines += ['              <details class="sum notes">',
                   '                <summary>Release notes</summary>',
@@ -170,11 +183,11 @@ def channel_html(name, rel, buttons):
 
 def block(repo, buttons):
     stable, pre = channels(repo)
-    parts = [channel_html("Stable", stable, buttons)]
+    parts = [channel_html("Stable", stable, buttons, repo)]
     if pre:
         kind = ('<abbr title="Release candidate">RC</abbr>'
                 if re.search(r"\bRC\b", pre["name"] or "", re.I) else "Beta")
-        parts.append(channel_html(kind, pre, buttons))
+        parts.append(channel_html(kind, pre, buttons, repo))
     summary = "%s (%s)" % (stable["tag_name"], stable["name"])
     if pre:
         summary += " + prerelease %s (%s)" % (pre["tag_name"], pre["name"])

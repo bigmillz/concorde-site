@@ -346,17 +346,12 @@ details.sum[open] > summary::before{content:"–"}
   font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--dim);
 }
 .sum-body a:hover{color:var(--text)}
-/* Release notes share the box but hold running text, not a command */
-.notes .sum-body{max-height:340px;overflow:auto;font-size:13px;line-height:1.5;color:var(--dim)}
-.notes .sum-body p,.notes .sum-body ul{margin:0 0 9px}
-.notes .sum-body > :last-child{margin-bottom:0}
-.notes .sum-body ul{list-style:disc;padding-left:18px}
+/* Release notes share the box but hold a short bullet list */
+.notes .sum-body{font-size:13px;line-height:1.5;color:var(--dim)}
+.notes .sum-body ul{list-style:disc;padding-left:18px;margin:0}
 .notes .sum-body li{margin:3px 0}
 .notes .sum-body b{color:var(--text);font-weight:600}
 .notes .sum-body code{display:inline;white-space:normal;font-size:12px;color:var(--text)}
-.notes .sum-body pre{margin:0 0 9px;padding:8px 10px;border:1px solid var(--line-soft);border-radius:6px;overflow-x:auto}
-.notes .sum-body pre code{display:block;white-space:pre}
-.notes .sum-body a{display:inline;margin:0;font:inherit;text-decoration:underline;text-underline-offset:2px}
 
 /* ---------- empty product slot (from A) ---------- */
 .slot{
@@ -651,10 +646,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<p><b>ConcordeAI 6.0.2</b></p>
-<ul><li><b>Clean up now</b> — in Manage models, next to the auto-clean switch: a button that shows exactly which superseded models will be removed and how much space comes back, then removes them on your confirmation</li><li>The Manage models panel now scrolls, so nothing sits below the edge of the settings card</li><li>After an update, a clean "Updated to…" dialog with the release notes replaces the full-screen version splash</li><li>Answers frame "today" and "tonight" on your home area's clock wherever your Mac happens to be; short venue lists never become "nothing is open"</li></ul>
-<p><b>macOS</b> — download the .dmg. Existing installs update themselves.</p>
-<p><b>Windows</b> — the .msi installer (attached by CI a few minutes after release) needs nothing else: no Python, no admin. On an NVIDIA machine CUDA is used automatically. The .zip is the same app for people who prefer a portable copy (needs Python 3.10+).</p>
+<ul><li><b>Clean up now</b> removes superseded models and shows the space you get back</li><li>The Manage models panel scrolls</li><li>After an update, a short "Updated to…" dialog replaces the full-screen splash</li><li>"Today" and "tonight" follow your home area's clock wherever your Mac is</li></ul>
                 </div>
               </details>
             </div>
@@ -726,11 +718,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<p>ConcordeVPN 1.2.2 — the chrome disappears into the sky.</p>
-<p>The starfield and wireframe now run unbroken beneath the traffic lights and the lockup — the titlebar floats on the backdrop instead of sitting on it as a bar, with a faint horizon hairline and a true drop shadow marking where the page tucks under. The dropdown menu grew up too: the Concorde sky banner carries the live Optimize mode next to the version, Optimize and Bypass live in pop-out submenus (with a countdown on the Bypass row while a timer runs), and the lockup finally weighs the same everywhere. The whole window tightened — nearly fifty points of dead air reclaimed from the top, sides, and foot.</p>
-<p><b>macOS</b> — download the .dmg, drag to Applications, open once. Not notarized: System Settings › Privacy &amp; Security › "Open Anyway", once. Verify:</p>
-<pre>shasum -a 256 -c ConcordeVPN-1.2.2.dmg.sha256</pre>
-<p>Bring-your-own-server. Fly Concorde, Fly.</p>
+<ul><li>The title bar floats on the starfield instead of sitting on it as a bar</li><li>The menu shows the live Optimize mode, with Optimize and Bypass as submenus</li><li>A tighter window: dead space trimmed from the top, sides and foot</li></ul>
                 </div>
               </details>
               <details class="sum">
@@ -758,7 +746,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<p>ConcordeVPN 1.3 beta (build 44). First run can now create your server on DigitalOcean end to end (token, region, size — the app does the rest), or take your own server's keys. Installer renamed concordevpn-server.sh at https://flyconcordefly.com/concordevpn-server.sh</p>
+<ul><li>First run can now create your server on DigitalOcean end to end (token, region, size</li></ul>
                 </div>
               </details>
               <details class="sum">

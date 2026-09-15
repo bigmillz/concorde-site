@@ -1,0 +1,22 @@
+{
+  "_": "Curated, visitor-facing bullets per release, keyed by repo then tag. sync-releases.py prefers these; a release without an entry gets an automatic condensation of its GitHub body (first bullets or first sentence, install boilerplate dropped). Keep each bullet to one line and to what a user would notice.",
+  "bigmillz/concordeai": {
+    "v271": [
+      "**Clean up now** removes superseded models and shows the space you get back",
+      "The Manage models panel scrolls",
+      "After an update, a short \"Updated to…\" dialog replaces the full-screen splash",
+      "\"Today\" and \"tonight\" follow your home area's clock wherever your Mac is"
+    ]
+  },
+  "bigmillz/concordevpn-releases": {
+    "v35": [
+      "The title bar floats on the starfield instead of sitting on it as a bar",
+      "The menu shows the live Optimize mode, with Optimize and Bypass as submenus",
+      "A tighter window: dead space trimmed from the top, sides and foot"
+    ],
+    "v43": [
+      "First-run setup: hints on every field and a paste box for the server installer's output",
+      "Settings gains **Flush the DNS cache**"
+    ]
+  }
+}
