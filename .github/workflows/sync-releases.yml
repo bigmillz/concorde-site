@@ -1,0 +1,50 @@
+# Keep the download blocks on the site in step with GitHub Releases.
+#
+# The VPN's release.sh syncs the site itself, but ConcordeAI's nightly is
+# rebuilt by GitHub Actions on every push and nothing on that side can
+# touch this repo — so this runs the same sync on a schedule and commits
+# only when something actually changed. A commit here is a push to main,
+# which is what Cloudflare Workers Builds deploys from.
+#
+# Every 15 minutes is the cadence, not a promise: GitHub delays scheduled
+# runs under load, and it switches schedules off after 60 days without a
+# commit to the repo (any release re-arms it). "Run workflow" in the
+# Actions tab runs it on demand.
+name: Sync releases
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# never two syncs racing each other; a queued one just waits
+concurrency:
+  group: sync-releases
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rewrite the download blocks from GitHub Releases
+        env:
+          GH_TOKEN: ${{ github.token }}   # both source repos are public; the token only lifts the rate limit
+        run: python3 tools/sync-releases.py
+
+      - name: Commit and push if anything changed
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "site is current"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Sync releases"
+          # a release script may have pushed meanwhile; land on top of it
+          git pull --rebase origin main
+          git push origin main
