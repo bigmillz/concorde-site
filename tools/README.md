@@ -29,6 +29,11 @@ the bullets in `release-notes.json` for that tag when we have written them
 (keep them to what a visitor would notice — nobody needs the two-pixel
 starfield tweak), otherwise an automatic condensation of the GitHub body.
 
+`.github/workflows/sync-releases.yml` runs the same sync every 15 minutes
+and commits when something changed, so a ConcordeAI nightly built by
+Actions reaches the page without anyone running anything. (The VPN's
+release.sh still syncs on the spot.)
+
 The VPN repo is private, so its buttons point at the public mirror
 `bigmillz/concordevpn-releases`; a release that is not mirrored never reaches
 the page.
