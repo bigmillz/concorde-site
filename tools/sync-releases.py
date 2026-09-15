@@ -158,10 +158,13 @@ def notes_items(repo, rel):
     curated = {}
     if CURATED.exists():
         curated = json.loads(CURATED.read_text(encoding="utf-8"))
-    return (curated.get(repo) or {}).get(rel["tag_name"]) or condense(rel.get("body") or "")
+    ours = (curated.get(repo) or {})
+    if rel["tag_name"] in ours:            # an entry — even an empty one — is the last word
+        return ours[rel["tag_name"]]
+    return condense(rel.get("body") or "")
 
 
-def notes_for(repo, rels, limit=8):
+def notes_for(repo, rels, limit=10):
     """One bullet list for a channel. A prerelease is handed every cut in
     its line since stable (newest first), so its notes summarise the whole
     line; duplicates across cuts collapse."""

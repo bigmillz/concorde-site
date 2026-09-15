@@ -9,18 +9,44 @@
     ]
   },
   "bigmillz/concordevpn-releases": {
-    "v35": [
-      "The title bar floats on the starfield instead of sitting on it as a bar",
-      "The menu shows the live Optimize mode, with Optimize and Bypass as submenus",
-      "A tighter window: dead space trimmed from the top, sides and foot"
+    "v47": [
+      "Settings is a proper dialog, with the version at the top and an update channel: stable, beta or nightly",
+      "A nightly build channel, stamped with the commit it was built from"
+    ],
+    "v45": [
+      "NextDNS is optional at first run; without it DNS runs encrypted via Cloudflare"
+    ],
+    "v44": [
+      "First run can set up your server on DigitalOcean end to end, or take your own server's keys",
+      "Settings gains **Flush the DNS cache**"
     ],
     "v43": [
       "First-run setup: hints on every field and a paste box for the server installer's output",
       "Settings gains **Flush the DNS cache**"
     ],
-    "v44": [
-      "First run can set up your server on DigitalOcean end to end, or take your own server's keys",
+    "v42": [
       "Settings gains **Flush the DNS cache**"
+    ],
+    "v41": [
+      "The Performance-mode speed test re-runs when the Mac changes network, and every 30 minutes while connected"
+    ],
+    "v40": [
+      "⌘Q and Quit actually quit"
+    ],
+    "v39": [
+      "The automatic speed test waits until the exit is verified before measuring"
+    ],
+    "v38": [],
+    "v37": [
+      "The app runs as its own identity: notifications carry the ConcordeVPN icon, and the menu bar icon survives a login-time launch",
+      "An automatic speed test in Performance mode (switch in Settings)",
+      "A drifting starfield, and the settings gear fixed"
+    ],
+    "v36": [],
+    "v35": [
+      "The title bar floats on the starfield instead of sitting on it as a bar",
+      "The menu shows the live Optimize mode, with Optimize and Bypass as submenus",
+      "A tighter window: dead space trimmed from the top, sides and foot"
     ]
   }
 }
