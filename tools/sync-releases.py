@@ -27,6 +27,8 @@ Dates are the release's publish time, UTC, same as the footer. Each channel
 gets a "Release notes" dropdown: a few visitor-facing bullets from
 release-notes.json when we have written them, otherwise a condensation of
 the GitHub body (its bullets or first sentence, install boilerplate dropped).
+The prerelease's notes cover its whole line — every beta/RC cut since the
+last stable, merged newest first — so they read as "what's new in 1.3".
 """
 import html
 import json
@@ -80,14 +82,15 @@ def channels(repo):
     stable = next((r for r in rels if not r["prerelease"]), None)
     if stable is None:
         sys.exit("%s has no stable release" % repo)
-    beta = next((r for r in rels if r["prerelease"] and not is_nightly(r)
-                 and r["published_at"] > stable["published_at"]), None)
+    line = [r for r in rels if r["prerelease"] and not is_nightly(r)
+            and r["published_at"] > stable["published_at"]]       # newest first
+    beta = line[0] if line else None
     # the rolling tag first; a numbered nightly only as long as no rolling one
     # exists. Shown whenever it exists — even at the same version as the
     # prerelease or stable, since it is the newest code either way.
     nightly = next((r for r in rels if r["tag_name"] == NIGHTLY_TAG), None) \
         or next((r for r in rels if r["prerelease"] and is_nightly(r)), None)
-    return stable, beta, nightly
+    return stable, beta, nightly, line
 
 
 def stamp(rel):
@@ -151,11 +154,25 @@ def condense(md, limit=4):
     return out
 
 
-def notes_for(repo, rel):
+def notes_items(repo, rel):
     curated = {}
     if CURATED.exists():
         curated = json.loads(CURATED.read_text(encoding="utf-8"))
-    items = (curated.get(repo) or {}).get(rel["tag_name"]) or condense(rel.get("body") or "")
+    return (curated.get(repo) or {}).get(rel["tag_name"]) or condense(rel.get("body") or "")
+
+
+def notes_for(repo, rels, limit=8):
+    """One bullet list for a channel. A prerelease is handed every cut in
+    its line since stable (newest first), so its notes summarise the whole
+    line; duplicates across cuts collapse."""
+    items, seen = [], set()
+    for rel in rels:
+        for it in notes_items(repo, rel):
+            k = re.sub(r"\W+", " ", it).strip().lower()
+            if k and k not in seen:
+                seen.add(k)
+                items.append(it)
+    items = items[:limit]
     if not items:
         return ""
     return "<ul>%s</ul>" % "".join("<li>%s</li>" % inline(i) for i in items)
@@ -171,7 +188,7 @@ def display_version(v):
     return v[:-2] if v.count(".") >= 2 and v.endswith(".0") else v
 
 
-def channel_html(name, rel, buttons, repo, tag=""):
+def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
     picks = []
     for label, pat in buttons:
         asset = next((a for a in rel["assets"] if re.search(pat, a["name"])), None)
@@ -217,7 +234,7 @@ def channel_html(name, rel, buttons, repo, tag=""):
                   '                  ' + ARROW,
                   '                </a>']
     lines.append('              </div>')
-    notes = notes_for(repo, rel)
+    notes = notes_for(repo, notes_rels or [rel])
     if notes:
         lines += ['              <details class="sum notes">',
                   '                <summary>Release notes</summary>',
@@ -239,7 +256,7 @@ def channel_html(name, rel, buttons, repo, tag=""):
 
 
 def block(repo, buttons):
-    stable, beta, nightly = channels(repo)
+    stable, beta, nightly, line = channels(repo)
     parts = [channel_html("Stable", stable, buttons, repo)]
     if beta:
         # Apple-style numbering from the title, shown after the version:
@@ -252,7 +269,7 @@ def block(repo, buttons):
         else:
             m = re.search(r"\bbeta\s+(\d+)\b", name, re.I)
             tag = "beta " + (m.group(1) if m else "1")
-        parts.append(channel_html("Prerelease", beta, buttons, repo, tag))
+        parts.append(channel_html("Prerelease", beta, buttons, repo, tag, notes_rels=line))
     if nightly:
         parts.append(channel_html("Nightly", nightly, buttons, repo))
     summary = "%s (%s)" % (stable["tag_name"], stable["name"])
