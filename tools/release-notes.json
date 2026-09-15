@@ -17,6 +17,10 @@
     "v43": [
       "First-run setup: hints on every field and a paste box for the server installer's output",
       "Settings gains **Flush the DNS cache**"
+    ],
+    "v44": [
+      "First run can set up your server on DigitalOcean end to end, or take your own server's keys",
+      "Settings gains **Flush the DNS cache**"
     ]
   }
 }

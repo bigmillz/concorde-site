@@ -107,10 +107,13 @@ def condense(md, limit=4):
         if not it:
             continue
         it = re.split(r"(?<=[.!?])\s+", it)[0]                       # first sentence
-        if len(it) > 120:
-            it = re.split(r"\s[—:;]\s", it)[0]                       # first clause
+        if len(it) > 120:                                           # then its first clause,
+            head = re.split(r"\s[:;]\s", it)[0]                     # unless that is just a bold lead
+            it = head if len(re.sub(r"\W", "", head)) > 24 else it
         if len(it) > 140:
             it = it[:137].rsplit(" ", 1)[0] + "\u2026"
+        if it.count("(") > it.count(")"):                           # never end inside a parenthesis
+            it = it[:it.rfind("(")].rstrip(" ,;:\u2026") + "\u2026"
         out.append(it.rstrip(".").strip())
         if len(out) == limit:
             break
