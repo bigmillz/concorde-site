@@ -65,7 +65,9 @@ def channels(repo):
     stable = next((r for r in rels if not r["prerelease"]), None)
     if stable is None:
         sys.exit("%s has no stable release" % repo)
+    # nightlies (prereleases titled "nightly") are not a download channel
     pre = next((r for r in rels if r["prerelease"]
+                and "nightly" not in (r["name"] or "").lower()
                 and r["published_at"] > stable["published_at"]), None)
     return stable, pre
 
