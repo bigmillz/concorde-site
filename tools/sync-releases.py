@@ -202,9 +202,6 @@ def channel_html(name, rel, buttons, repo):
         lines += ['                <span class="chan-date">Released <time datetime="%s">%s</time></span>'
                   % (date, pretty(date)),
                   '              </div>']
-    if is_nightly(rel):
-        lines.append('              <p class="chan-note">Every landed change, as it lands. '
-                     'Replaced by the next one; expect rough edges.</p>')
     lines += [
              '              <div class="btns">']
     for label, asset in picks:
