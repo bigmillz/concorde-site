@@ -185,13 +185,23 @@ def channel_html(name, rel, buttons, repo):
              '                <span class="chan-name">%s</span>' % name,
              '                <span class="chan-ver">%s</span>' % html.escape(version)]
     if is_nightly(rel):
+        # data-nightly-*: worker.js re-reads the nightly's commit and date
+        # from GitHub at request time and rewrites these two, so the page
+        # is never behind on a nightly even before the next sync
+        key = "ai" if repo == "bigmillz/concordeai" else "vpn"
         commit = commit_of(rel)
-        if commit and not repo.endswith("-releases"):       # a public repo: link the commit
-            commit = '<a href="https://github.com/%s/commit/%s">%s</a>' % (repo, commit, commit)
-        lines.append('                <span class="chan-commit">%s</span>' % (commit or "&mdash;"))
-    lines += ['                <span class="chan-date">%s <time datetime="%s">%s</time></span>'
-              % ("Built" if is_nightly(rel) else "Released", date, pretty(date)),
-              '              </div>']
+        base = "" if repo.endswith("-releases") else "https://github.com/%s/commit/" % repo
+        if commit and base:                                  # a public repo: link the commit
+            commit = '<a href="%s%s">%s</a>' % (base, commit, commit)
+        lines.append('                <span class="chan-commit" data-nightly-commit="%s"%s>%s</span>'
+                     % (key, ' data-commit-base="%s"' % base if base else "", commit or "&mdash;"))
+        lines += ['                <span class="chan-date">Built <time datetime="%s" data-nightly-date="%s">%s</time></span>'
+                  % (date, key, pretty(date)),
+                  '              </div>']
+    else:
+        lines += ['                <span class="chan-date">Released <time datetime="%s">%s</time></span>'
+                  % (date, pretty(date)),
+                  '              </div>']
     if is_nightly(rel):
         lines.append('              <p class="chan-note">Every landed change, as it lands. '
                      'Replaced by the next one; expect rough edges.</p>')
