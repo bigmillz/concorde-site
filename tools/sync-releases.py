@@ -13,8 +13,12 @@ Needs the `gh` CLI (authenticated, or unauthenticated for the public repos).
 
 What is shown, per product:
   Stable    the newest non-draft, non-prerelease release
-  RC/Beta   the newest prerelease, only while it is newer than stable —
-            once stable overtakes it the second channel disappears
+  RC/Beta   the newest prerelease not titled "nightly", only while it is
+            newer than stable — once stable overtakes it, it disappears
+  Nightly   the one rolling release tagged `nightly` (title "1.3 nightly
+            <commit>"), only while newer than beta and stable; shown with
+            the commit it was built from and a "Built" date taken from
+            when its files last changed
 The version is read from the asset filename (`ConcordeAI-6.0.0.dmg` -> 6.0.0)
 because that is the string people see on disk; release *names* are labels
 and have drifted from the files before. Build numbers are not shown.
@@ -60,16 +64,41 @@ def gh(path):
     return json.loads(out.stdout)
 
 
+NIGHTLY_TAG = "nightly"          # one rolling release per repo; its title carries the commit
+
+
+def is_nightly(rel):
+    return rel["tag_name"] == NIGHTLY_TAG or "nightly" in (rel.get("name") or "").lower()
+
+
 def channels(repo):
+    """stable, beta (or RC), nightly — each None when absent. A prerelease
+    counts only while it is newer than what is above it, so a channel
+    disappears the moment stable (or beta) overtakes it."""
     rels = [r for r in gh("repos/%s/releases?per_page=40" % repo) if not r["draft"]]
     stable = next((r for r in rels if not r["prerelease"]), None)
     if stable is None:
         sys.exit("%s has no stable release" % repo)
-    # nightlies (prereleases titled "nightly") are not a download channel
-    pre = next((r for r in rels if r["prerelease"]
-                and "nightly" not in (r["name"] or "").lower()
-                and r["published_at"] > stable["published_at"]), None)
-    return stable, pre
+    beta = next((r for r in rels if r["prerelease"] and not is_nightly(r)
+                 and r["published_at"] > stable["published_at"]), None)
+    floor = (beta or stable)["published_at"]
+    # the rolling tag first; a numbered nightly only as long as no rolling one exists
+    nightly = next((r for r in rels if r["tag_name"] == NIGHTLY_TAG), None) \
+        or next((r for r in rels if r["prerelease"] and is_nightly(r)), None)
+    if nightly and stamp(nightly) <= floor:
+        nightly = None
+    return stable, beta, nightly
+
+
+def stamp(rel):
+    """When a release last changed: a rolling tag keeps its original
+    published_at when its files are replaced, so look at the assets too."""
+    return max([rel["published_at"]] + [a.get("updated_at") or "" for a in rel["assets"]])
+
+
+def commit_of(rel):
+    m = re.search(r"nightly\s+([0-9a-f]{7,40})", rel.get("name") or "", re.I)
+    return m.group(1)[:7] if m else ""
 
 
 CURATED = Path(__file__).with_name("release-notes.json")
@@ -147,16 +176,25 @@ def channel_html(name, rel, buttons, repo):
         sys.exit("%s %s has none of the expected assets" % (name, rel["tag_name"]))
     m = re.search(r"(\d+\.\d+\.\d+)", picks[0][1]["name"])
     version = m.group(1) if m else rel["name"]
-    date = rel["published_at"][:10]
+    date = (stamp(rel) if is_nightly(rel) else rel["published_at"])[:10]
     sha = next((a for a in rel["assets"] if a["name"].endswith(".sha256")), None)
 
     lines = ['            <div class="chan">',
              '              <div class="chan-top">',
              '                <span class="chan-name">%s</span>' % name,
-             '                <span class="chan-ver">%s</span>' % html.escape(version),
-             '                <span class="chan-date">Released <time datetime="%s">%s</time></span>'
-             % (date, pretty(date)),
-             '              </div>',
+             '                <span class="chan-ver">%s</span>' % html.escape(version)]
+    if is_nightly(rel):
+        commit = commit_of(rel)
+        if commit and not repo.endswith("-releases"):       # a public repo: link the commit
+            commit = '<a href="https://github.com/%s/commit/%s">%s</a>' % (repo, commit, commit)
+        lines.append('                <span class="chan-commit">%s</span>' % (commit or "&mdash;"))
+    lines += ['                <span class="chan-date">%s <time datetime="%s">%s</time></span>'
+              % ("Built" if is_nightly(rel) else "Released", date, pretty(date)),
+              '              </div>']
+    if is_nightly(rel):
+        lines.append('              <p class="chan-note">Every landed change, as it lands. '
+                     'Replaced by the next one; expect rough edges.</p>')
+    lines += [
              '              <div class="btns">']
     for label, asset in picks:
         lines += ['                <a class="btn" href="%s">' % html.escape(asset["browser_download_url"]),
@@ -187,15 +225,19 @@ def channel_html(name, rel, buttons, repo):
 
 
 def block(repo, buttons):
-    stable, pre = channels(repo)
+    stable, beta, nightly = channels(repo)
     parts = [channel_html("Stable", stable, buttons, repo)]
-    if pre:
+    if beta:
         kind = ('<abbr title="Release candidate">RC</abbr>'
-                if re.search(r"\bRC\b", pre["name"] or "", re.I) else "Beta")
-        parts.append(channel_html(kind, pre, buttons, repo))
+                if re.search(r"\bRC\b", beta["name"] or "", re.I) else "Beta")
+        parts.append(channel_html(kind, beta, buttons, repo))
+    if nightly:
+        parts.append(channel_html("Nightly", nightly, buttons, repo))
     summary = "%s (%s)" % (stable["tag_name"], stable["name"])
-    if pre:
-        summary += " + prerelease %s (%s)" % (pre["tag_name"], pre["name"])
+    if beta:
+        summary += " + %s (%s)" % (beta["tag_name"], beta["name"])
+    if nightly:
+        summary += " + nightly %s" % (commit_of(nightly) or nightly["tag_name"])
     return "\n\n".join(parts) + "\n", summary
 
 

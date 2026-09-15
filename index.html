@@ -293,6 +293,9 @@ main .section:last-child{padding-bottom:76px}
   font-weight:600;color:var(--text);
 }
 .chan-ver{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);letter-spacing:.01em}
+.chan-commit{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.02em}
+.chan-commit a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--line)}
+.chan-commit a:hover{color:var(--dim)}
 .chan-date{
   margin-left:auto;font-family:var(--mono);font-size:10.5px;
   letter-spacing:.1em;text-transform:uppercase;color:var(--faint);white-space:nowrap;
@@ -754,6 +757,30 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <div class="sum-body">
 <code>shasum -a 256 -c ConcordeVPN-1.3.0.dmg.sha256</code>
                   <a href="https://github.com/bigmillz/concordevpn-releases/releases/download/v45/ConcordeVPN-1.3.0.dmg.sha256">ConcordeVPN-1.3.0.dmg.sha256</a>
+                </div>
+              </details>
+            </div>
+
+            <div class="chan">
+              <div class="chan-top">
+                <span class="chan-name">Nightly</span>
+                <span class="chan-ver">1.3.0</span>
+                <span class="chan-commit">cdf0d8a</span>
+                <span class="chan-date">Built <time datetime="2026-09-15">15 Sep 2026</time></span>
+              </div>
+              <p class="chan-note">Every landed change, as it lands. Replaced by the next one; expect rough edges.</p>
+              <div class="btns">
+                <a class="btn" href="https://github.com/bigmillz/concordevpn-releases/releases/download/v46/ConcordeVPN-1.3.0.dmg">
+                  <span class="os">macOS</span>
+                  <span class="file">ConcordeVPN-1.3.0.dmg</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+              <details class="sum">
+                <summary>Verify checksum</summary>
+                <div class="sum-body">
+<code>shasum -a 256 -c ConcordeVPN-1.3.0.dmg.sha256</code>
+                  <a href="https://github.com/bigmillz/concordevpn-releases/releases/download/v46/ConcordeVPN-1.3.0.dmg.sha256">ConcordeVPN-1.3.0.dmg.sha256</a>
                 </div>
               </details>
             </div>

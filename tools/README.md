@@ -19,7 +19,9 @@ rather than an archaeology dig through old PNGs.
 Everything between `<!-- releases:ai -->` / `<!-- releases:vpn -->` and
 their closing markers in `index.html` is generated; hand edits there are
 overwritten on the next run. Stable is the newest non-prerelease; an RC or
-beta shows as a second channel only while it is newer than stable. Versions
+beta shows as a second channel only while it is newer than stable; Nightly
+is the one rolling release tagged `nightly` (title `1.3 nightly <commit>`),
+shown with its commit and a "Built" date, only while newer than both. Versions
 are read from the asset filenames (release names have drifted from the
 files before — the 6.0 candidates shipped as `ConcordeAI-6.1.0.*`), dates
 from the publish time in UTC. Each channel gets a "Release notes" dropdown:
