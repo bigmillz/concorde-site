@@ -14,7 +14,8 @@ Needs the `gh` CLI (authenticated, or unauthenticated for the public repos).
 What is shown, per product:
   Stable    the newest non-draft, non-prerelease release
   RC/Beta   the newest prerelease not titled "nightly", only while it is
-            newer than stable — once stable overtakes it, it disappears
+            newer than stable — once stable overtakes it, it disappears.
+            Only ever one; labelled from its title ("1.3 beta 3" -> Beta 3)
   Nightly   the one rolling release tagged `nightly` (title "1.3 nightly
             <commit>"), only while newer than beta and stable; shown with
             the commit it was built from and a "Built" date taken from
@@ -228,8 +229,15 @@ def block(repo, buttons):
     stable, beta, nightly = channels(repo)
     parts = [channel_html("Stable", stable, buttons, repo)]
     if beta:
-        kind = ('<abbr title="Release candidate">RC</abbr>'
-                if re.search(r"\bRC\b", beta["name"] or "", re.I) else "Beta")
+        # Apple-style numbering from the title: "1.3 beta 3" -> "Beta 3",
+        # "1.3 RC1" -> "RC 1"; an unnumbered title is just "Beta"
+        name = beta["name"] or ""
+        m = re.search(r"\bRC\s*(\d+)?", name, re.I)
+        if m:
+            kind = '<abbr title="Release candidate">RC</abbr>' + (" " + m.group(1) if m.group(1) else "")
+        else:
+            m = re.search(r"\bbeta\s+(\d+)\b", name, re.I)
+            kind = "Beta " + m.group(1) if m else "Beta"
         parts.append(channel_html(kind, beta, buttons, repo))
     if nightly:
         parts.append(channel_html("Nightly", nightly, buttons, repo))
