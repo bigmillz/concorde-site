@@ -18,7 +18,8 @@ What is shown, per product:
 The version is read from the asset filename (`ConcordeAI-6.0.0.dmg` -> 6.0.0)
 because that is the string people see on disk; release *names* are labels
 and have drifted from the files before. Build numbers are not shown.
-Dates are the release's publish time, UTC, same as the footer.
+Dates are the release's publish time, UTC, same as the footer. Each channel
+gets a "Release notes" dropdown rendered from the release body.
 """
 import html
 import json
@@ -67,6 +68,52 @@ def channels(repo):
     return stable, pre
 
 
+def md_to_html(md):
+    """The subset of GitHub markdown the release notes use — paragraphs,
+    **bold**, `code`, bullet lists, indented or fenced code blocks, headings
+    (shown as bold lines), and plain http(s) links. Everything is escaped
+    first; anything unrecognised is shown as text, never as markup."""
+    def inline(t):
+        t = html.escape(t, quote=False)
+        t = re.sub(r"`([^`]+)`", r"<code>\1</code>", t)
+        t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+        t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', t)
+        return t
+    out, para, items, code, fenced = [], [], [], [], False
+    def flush():
+        if para:
+            out.append("<p>%s</p>" % inline(" ".join(para))); para.clear()
+        if items:
+            out.append("<ul>%s</ul>" % "".join("<li>%s</li>" % inline(i) for i in items)); items.clear()
+        if code:
+            out.append("<pre>%s</pre>" % html.escape("\n".join(code), quote=False)); code.clear()
+    for ln in md.replace("\r\n", "\n").split("\n"):
+        if ln.strip().startswith("```"):
+            if not fenced: flush()
+            fenced = not fenced
+            if not fenced: flush()
+            continue
+        if fenced or ln.startswith("    ") or ln.startswith("\t"):
+            if not code: flush()
+            code.append(ln if fenced else ln[4:] if ln.startswith("    ") else ln[1:])
+            continue
+        if code: flush()
+        st = ln.strip()
+        if not st:
+            flush(); continue
+        m = re.match(r"^[-*] +(.*)", st)
+        if m:
+            if para: flush()
+            items.append(m.group(1)); continue
+        m = re.match(r"^#{1,6} +(.*)", st)
+        if m:
+            flush(); out.append("<p><b>%s</b></p>" % inline(m.group(1))); continue
+        if items: flush()
+        para.append(st)
+    flush()
+    return "\n".join(out)
+
+
 def pretty(iso):
     y, m, d = iso[:10].split("-")
     return "%d %s %s" % (int(d), MONTHS[int(m) - 1], y)
@@ -100,6 +147,14 @@ def channel_html(name, rel, buttons):
                   '                  ' + ARROW,
                   '                </a>']
     lines.append('              </div>')
+    notes = md_to_html((rel.get("body") or "").strip())
+    if notes:
+        lines += ['              <details class="sum notes">',
+                  '                <summary>Release notes</summary>',
+                  '                <div class="sum-body">',
+                  notes,
+                  '                </div>',
+                  '              </details>']
     if sha:
         lines += ['              <details class="sum">',
                   '                <summary>Verify checksum</summary>',
