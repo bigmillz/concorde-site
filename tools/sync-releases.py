@@ -167,7 +167,12 @@ def pretty(iso):
     return "%d %s %s" % (int(d), MONTHS[int(m) - 1], y)
 
 
-def channel_html(name, rel, buttons, repo):
+def display_version(v):
+    """As the apps show it: one trailing ".0" dropped — 1.3.0 -> 1.3, 6.0.0 -> 6.0."""
+    return v[:-2] if v.count(".") >= 2 and v.endswith(".0") else v
+
+
+def channel_html(name, rel, buttons, repo, stamp=""):
     picks = []
     for label, pat in buttons:
         asset = next((a for a in rel["assets"] if re.search(pat, a["name"])), None)
@@ -183,7 +188,9 @@ def channel_html(name, rel, buttons, repo):
     lines = ['            <div class="chan">',
              '              <div class="chan-top">',
              '                <span class="chan-name">%s</span>' % name,
-             '                <span class="chan-ver">%s</span>' % html.escape(version)]
+             '                <span class="chan-ver">%s</span>' % html.escape(display_version(version))]
+    if stamp:                                                # "beta 1" / "RC 1", after the version
+        lines.append('                <span class="chan-commit">%s</span>' % stamp)
     if is_nightly(rel):
         # data-nightly-*: worker.js re-reads the nightly's commit and date
         # from GitHub at request time and rewrites these two, so the page
@@ -236,16 +243,17 @@ def block(repo, buttons):
     stable, beta, nightly = channels(repo)
     parts = [channel_html("Stable", stable, buttons, repo)]
     if beta:
-        # Apple-style numbering from the title: "1.3 beta 3" -> "Beta 3",
-        # "1.3 RC1" -> "RC 1"; an unnumbered title is just "Beta"
+        # Apple-style numbering from the title, shown after the version:
+        # "1.3 beta 3" -> Prerelease 1.3 beta 3; "1.3 RC1" -> RC 1. An
+        # unnumbered title is the first beta of its line.
         name = beta["name"] or ""
         m = re.search(r"\bRC\s*(\d+)?", name, re.I)
         if m:
-            kind = '<abbr title="Release candidate">RC</abbr>' + (" " + m.group(1) if m.group(1) else "")
+            stamp = "RC " + (m.group(1) or "1")
         else:
             m = re.search(r"\bbeta\s+(\d+)\b", name, re.I)
-            kind = "Beta " + m.group(1) if m else "Beta"
-        parts.append(channel_html(kind, beta, buttons, repo))
+            stamp = "beta " + (m.group(1) if m else "1")
+        parts.append(channel_html("Prerelease", beta, buttons, repo, stamp))
     if nightly:
         parts.append(channel_html("Nightly", nightly, buttons, repo))
     summary = "%s (%s)" % (stable["tag_name"], stable["name"])
