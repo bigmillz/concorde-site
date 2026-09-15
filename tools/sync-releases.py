@@ -172,7 +172,7 @@ def display_version(v):
     return v[:-2] if v.count(".") >= 2 and v.endswith(".0") else v
 
 
-def channel_html(name, rel, buttons, repo, stamp=""):
+def channel_html(name, rel, buttons, repo, tag=""):
     picks = []
     for label, pat in buttons:
         asset = next((a for a in rel["assets"] if re.search(pat, a["name"])), None)
@@ -189,8 +189,8 @@ def channel_html(name, rel, buttons, repo, stamp=""):
              '              <div class="chan-top">',
              '                <span class="chan-name">%s</span>' % name,
              '                <span class="chan-ver">%s</span>' % html.escape(display_version(version))]
-    if stamp:                                                # "beta 1" / "RC 1", after the version
-        lines.append('                <span class="chan-commit">%s</span>' % stamp)
+    if tag:                                                  # "beta 1" / "RC 1", after the version
+        lines.append('                <span class="chan-commit">%s</span>' % tag)
     if is_nightly(rel):
         # data-nightly-*: worker.js re-reads the nightly's commit and date
         # from GitHub at request time and rewrites these two, so the page
@@ -249,11 +249,11 @@ def block(repo, buttons):
         name = beta["name"] or ""
         m = re.search(r"\bRC\s*(\d+)?", name, re.I)
         if m:
-            stamp = "RC " + (m.group(1) or "1")
+            tag = "RC " + (m.group(1) or "1")
         else:
             m = re.search(r"\bbeta\s+(\d+)\b", name, re.I)
-            stamp = "beta " + (m.group(1) if m else "1")
-        parts.append(channel_html("Prerelease", beta, buttons, repo, stamp))
+            tag = "beta " + (m.group(1) if m else "1")
+        parts.append(channel_html("Prerelease", beta, buttons, repo, tag))
     if nightly:
         parts.append(channel_html("Nightly", nightly, buttons, repo))
     summary = "%s (%s)" % (stable["tag_name"], stable["name"])
