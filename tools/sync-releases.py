@@ -17,9 +17,9 @@ What is shown, per product:
             newer than stable — once stable overtakes it, it disappears.
             Only ever one; labelled from its title ("1.3 beta 3" -> Beta 3)
   Nightly   the one rolling release tagged `nightly` (title "1.3 nightly
-            <commit>"), only while newer than beta and stable; shown with
-            the commit it was built from and a "Built" date taken from
-            when its files last changed
+            <commit>"), shown whenever it exists — same version as the
+            prerelease or not; with the commit it was built from and a
+            "Built" date taken from when its files last changed
 The version is read from the asset filename (`ConcordeAI-6.0.0.dmg` -> 6.0.0)
 because that is the string people see on disk; release *names* are labels
 and have drifted from the files before. Build numbers are not shown.
@@ -73,21 +73,20 @@ def is_nightly(rel):
 
 
 def channels(repo):
-    """stable, beta (or RC), nightly — each None when absent. A prerelease
-    counts only while it is newer than what is above it, so a channel
-    disappears the moment stable (or beta) overtakes it."""
+    """stable, beta (or RC), nightly — each None when absent. A beta counts
+    only while it is newer than stable, so that block disappears the moment
+    stable overtakes it; the nightly is shown whenever one exists."""
     rels = [r for r in gh("repos/%s/releases?per_page=40" % repo) if not r["draft"]]
     stable = next((r for r in rels if not r["prerelease"]), None)
     if stable is None:
         sys.exit("%s has no stable release" % repo)
     beta = next((r for r in rels if r["prerelease"] and not is_nightly(r)
                  and r["published_at"] > stable["published_at"]), None)
-    floor = (beta or stable)["published_at"]
-    # the rolling tag first; a numbered nightly only as long as no rolling one exists
+    # the rolling tag first; a numbered nightly only as long as no rolling one
+    # exists. Shown whenever it exists — even at the same version as the
+    # prerelease or stable, since it is the newest code either way.
     nightly = next((r for r in rels if r["tag_name"] == NIGHTLY_TAG), None) \
         or next((r for r in rels if r["prerelease"] and is_nightly(r)), None)
-    if nightly and stamp(nightly) <= floor:
-        nightly = None
     return stable, beta, nightly
 
 
