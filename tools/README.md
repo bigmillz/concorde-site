@@ -22,8 +22,10 @@ overwritten on the next run. Stable is the newest non-prerelease; an RC or
 beta shows as a second channel only while it is newer than stable. Versions
 are read from the asset filenames (release names have drifted from the
 files before — the 6.0 candidates shipped as `ConcordeAI-6.1.0.*`), dates
-from the publish time in UTC. Each channel gets a "Release notes" dropdown
-rendered from the release body (a small strict markdown subset, escaped).
+from the publish time in UTC. Each channel gets a "Release notes" dropdown:
+the bullets in `release-notes.json` for that tag when we have written them
+(keep them to what a visitor would notice — nobody needs the two-pixel
+starfield tweak), otherwise an automatic condensation of the GitHub body.
 
 The VPN repo is private, so its buttons point at the public mirror
 `bigmillz/concordevpn-releases`; a release that is not mirrored never reaches
