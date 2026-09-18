@@ -328,7 +328,7 @@ main .section:last-child{padding-bottom:76px}
 .chan.empty .chan-ver{color:var(--faint)}
 .chan.empty p{margin-top:12px;color:var(--faint);font-size:14px;line-height:1.5}
 
-/* checksum disclosure */
+/* disclosure: the release-notes dropdown under each channel */
 details.sum{margin-top:10px}
 details.sum > summary{
   cursor:pointer;list-style:none;
@@ -343,12 +343,6 @@ details.sum[open] > summary::before{content:"–"}
   margin-top:8px;border:1px solid var(--line-soft);border-radius:8px;
   background:var(--bg);padding:11px 12px;overflow-x:auto;
 }
-.sum-body code{font-family:var(--mono);font-size:11px;color:var(--dim);white-space:pre;display:block}
-.sum-body a{
-  display:inline-block;margin-top:9px;
-  font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--dim);
-}
-.sum-body a:hover{color:var(--text)}
 /* Release notes share the box but hold a short bullet list */
 .notes .sum-body{font-size:13px;line-height:1.5;color:var(--dim)}
 .notes .sum-body ul{list-style:disc;padding-left:18px;margin:0}
@@ -356,7 +350,8 @@ details.sum[open] > summary::before{content:"–"}
 .notes .sum-body b{color:var(--text);font-weight:600}
 .notes .sum-body code{display:inline;white-space:normal;font-size:12px;color:var(--text)}
 .notes .sum-body li.more{list-style:none;margin-left:-18px;color:var(--faint)}
-.notes .sum-body li.more a{text-decoration:underline;text-underline-offset:2px}
+.notes .sum-body li.more a{color:var(--dim);text-decoration:underline;text-underline-offset:2px}
+.notes .sum-body li.more a:hover{color:var(--text)}
 
 /* ---------- empty product slot (from A) ---------- */
 .slot{
@@ -785,13 +780,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 <ul><li>The app runs as its own identity: notifications carry the ConcordeVPN icon, and the menu bar icon survives a login-time launch</li><li>Settings is a proper dialog, with the version at the top and an update channel — stable, beta or nightly</li><li>First run can set up your server on DigitalOcean end to end, or take your own server's keys</li><li>NextDNS is optional at first run; without it DNS runs encrypted through Cloudflare</li><li>An automatic speed test in Performance mode, which waits until the exit is verified before measuring</li><li>Settings gains <b>Flush the DNS cache</b></li><li>⌘Q and Quit actually quit, and the starfield drifts behind the window</li></ul>
                 </div>
               </details>
-              <details class="sum">
-                <summary>Verify checksum</summary>
-                <div class="sum-body">
-<code>shasum -a 256 -c ConcordeVPN-1.3.0.dmg.sha256</code>
-                  <a href="https://github.com/bigmillz/concordevpn-releases/releases/download/v48/ConcordeVPN-1.3.0.dmg.sha256">ConcordeVPN-1.3.0.dmg.sha256</a>
-                </div>
-              </details>
             </div>
 
             <div class="chan">
@@ -812,13 +800,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <summary>Release notes</summary>
                 <div class="sum-body">
 <ul><li>An exit's hint follows what it is, not what it is called</li></ul>
-                </div>
-              </details>
-              <details class="sum">
-                <summary>Verify checksum</summary>
-                <div class="sum-body">
-<code>shasum -a 256 -c ConcordeVPN-1.4.0.dmg.sha256</code>
-                  <a href="https://github.com/bigmillz/concordevpn-releases/releases/download/nightly/ConcordeVPN-1.4.0.dmg.sha256">ConcordeVPN-1.4.0.dmg.sha256</a>
                 </div>
               </details>
             </div>
