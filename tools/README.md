@@ -18,7 +18,12 @@ rather than an archaeology dig through old PNGs.
 
 Everything between `<!-- releases:ai -->` / `<!-- releases:vpn -->` and
 their closing markers in `index.html` is generated; hand edits there are
-overwritten on the next run. Stable is the newest non-prerelease; an RC or
+overwritten on the next run. **Never rebase a generated change onto
+another one** — two syncs that each insert the same block replay as two
+insertions with no conflict, and the page ships a channel twice. Land on
+the new tip and regenerate instead; that is what the Action and
+`release.sh` do. The script repairs a duplicate it finds and refuses to
+write a page that still has one. Stable is the newest non-prerelease; an RC or
 beta shows as a second channel only while it is newer than stable; Nightly
 is the one rolling release tagged `nightly` (title `1.3 nightly <commit>`),
 shown with its commit and a "Built" date whenever one exists. Versions
