@@ -27,8 +27,11 @@ Dates are the release's publish time, UTC, same as the footer. Each channel
 gets a "Release notes" dropdown: a few visitor-facing bullets from
 release-notes.json when we have written them, otherwise a condensation of
 the GitHub body (its bullets or first sentence, install boilerplate dropped).
-The prerelease's notes cover its whole line — every beta/RC cut since the
-last stable, merged newest first — so they read as "what's new in 1.3".
+Notes cover everything a channel stands for: a prerelease covers every
+beta/RC cut since the last stable, a stable covers everything since the
+previous stable — so the list grows as a line matures. Past NOTES_MAX
+bullets each is cut to its first clause and the remainder is linked, and
+a hand-written "lines" entry replaces the accumulation outright.
 """
 import html
 import json
@@ -82,22 +85,35 @@ def is_nightly(rel):
 
 
 def channels(repo):
-    """stable, beta (or RC), nightly — each None when absent. A beta counts
-    only while it is newer than stable, so that block disappears the moment
-    stable overtakes it; the nightly is shown whenever one exists."""
-    rels = [r for r in gh("repos/%s/releases?per_page=40" % repo) if not r["draft"]]
-    stable = next((r for r in rels if not r["prerelease"]), None)
-    if stable is None:
+    """stable, beta (or RC), nightly, and the release lines each stands for:
+    beta_line is every prerelease since stable, stable_line is stable plus
+    every prerelease that led to it. A beta counts only while it is newer
+    than stable, so that block disappears the moment stable overtakes it;
+    the nightly is shown whenever one exists."""
+    rels = [r for r in gh("repos/%s/releases?per_page=100" % repo) if not r["draft"]]
+    rels.sort(key=lambda r: r["published_at"], reverse=True)
+    stables = [r for r in rels if not r["prerelease"]]
+    if not stables:
         sys.exit("%s has no stable release" % repo)
-    line = [r for r in rels if r["prerelease"] and not is_nightly(r)
-            and r["published_at"] > stable["published_at"]]       # newest first
-    beta = line[0] if line else None
+    stable = stables[0]
+    beta_line = [r for r in rels if r["prerelease"] and not is_nightly(r)
+                 and r["published_at"] > stable["published_at"]]  # newest first
+    beta = beta_line[0] if beta_line else None
+    # What this stable brought: itself, plus every prerelease that led to it.
+    # Its notes cover the whole span since the previous stable, the way the
+    # prerelease's cover the span since this one.
+    floor = stables[1]["published_at"] if len(stables) > 1 else ""
+    stable_line = [r for r in rels if not is_nightly(r)
+                   and floor < r["published_at"] <= stable["published_at"]]
+    if len(stables) < 2 and len(rels) >= 100:
+        print("  %s: 100 releases fetched and no previous stable among them —"
+              " the stable's line may be truncated" % repo)
     # the rolling tag first; a numbered nightly only as long as no rolling one
     # exists. Shown whenever it exists — even at the same version as the
     # prerelease or stable, since it is the newest code either way.
     nightly = next((r for r in rels if r["tag_name"] == NIGHTLY_TAG), None) \
         or next((r for r in rels if r["prerelease"] and is_nightly(r)), None)
-    return stable, beta, nightly, line
+    return stable, beta, nightly, beta_line, stable_line
 
 
 def stamp(rel):
@@ -161,31 +177,75 @@ def condense(md, limit=4):
     return out
 
 
-def notes_items(repo, rel):
-    curated = {}
-    if CURATED.exists():
-        curated = json.loads(CURATED.read_text(encoding="utf-8"))
+def load_curated():
+    return json.loads(CURATED.read_text(encoding="utf-8")) if CURATED.exists() else {}
+
+
+def tighten(item):
+    """A bullet cut back to its first clause — applied once a list is long
+    enough that every line has to earn its width. The clause is only taken
+    when what is left still says something (a bold lead alone does not)."""
+    t = re.sub(r"\s*\([^)]*\)", "", item).strip()
+    if len(t) > 90:
+        for sep in (r"\s[\u2014\u2013]\s", r":\s", r";\s"):
+            head = re.split(sep, t, maxsplit=1)[0]
+            if len(head) < len(t) and len(re.sub(r"\W", "", head)) > 28:
+                t = head
+                break
+    if len(t) > 120:
+        t = t[:117].rsplit(" ", 1)[0] + "\u2026"
+    return t.rstrip(" .,;:\u2014\u2013").strip()
+
+
+def notes_items(repo, rel, curated):
     ours = (curated.get(repo) or {})
     if rel["tag_name"] in ours:            # an entry — even an empty one — is the last word
         return ours[rel["tag_name"]]
     return condense(rel.get("body") or "")
 
 
-def notes_for(repo, rels, limit=10):
-    """One bullet list for a channel. A prerelease is handed every cut in
-    its line since stable (newest first), so its notes summarise the whole
-    line; duplicates across cuts collapse."""
+NOTES_MAX = 8            # bullets before the list compresses
+
+
+def notes_for(repo, rels, version="", limit=NOTES_MAX):
+    """One bullet list for a channel, covering every release it stands for:
+    a prerelease covers its line since the last stable, a stable covers
+    everything since the previous stable. So the list grows as a line
+    matures — and because that would end up absurd by the time a stable
+    lands, past the cap every bullet is cut to its first clause and the
+    remainder is named and linked rather than silently dropped.
+
+    A hand-written summary for the whole line (release-notes.json ->
+    "lines" -> repo -> version) replaces the accumulation outright; that is
+    the lever to pull when a line has too much history to list."""
+    curated = load_curated()
+    summary = ((curated.get("lines") or {}).get(repo) or {}).get(version)
+    if summary:
+        return "<ul>%s</ul>" % "".join("<li>%s</li>" % inline(i) for i in summary)
+
     items, seen = [], set()
     for rel in rels:
-        for it in notes_items(repo, rel):
+        for it in notes_items(repo, rel, curated):
             k = re.sub(r"\W+", " ", it).strip().lower()
             if k and k not in seen:
                 seen.add(k)
                 items.append(it)
-    items = items[:limit]
     if not items:
         return ""
-    return "<ul>%s</ul>" % "".join("<li>%s</li>" % inline(i) for i in items)
+
+    extra = 0
+    if len(items) > limit:
+        extra = len(items) - limit
+        items = [tighten(i) for i in items[:limit]]
+    lis = ["<li>%s</li>" % inline(i) for i in items]
+    if extra:
+        # the whole releases list, not one tag: a channel's notes span
+        # several releases, and no single tag page shows all of them
+        url = "https://github.com/%s/releases" % repo
+        more = "and %d more change%s" % (extra, "" if extra == 1 else "s")
+        lis.append('<li class="more"><a href="%s">%s, on GitHub</a></li>'
+                   % (html.escape(url), more))
+    return "<ul>%s</ul>" % "".join(lis)
 
 
 def pretty(iso):
@@ -244,7 +304,7 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
                   '                  ' + ARROW,
                   '                </a>']
     lines.append('              </div>')
-    notes = notes_for(repo, notes_rels or [rel])
+    notes = notes_for(repo, notes_rels or [rel], display_version(version))
     if notes:
         lines += ['              <details class="sum notes">',
                   '                <summary>Release notes</summary>',
@@ -266,8 +326,8 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
 
 
 def block(key, repo, buttons):
-    stable, beta, nightly, line = channels(repo)
-    parts = [channel_html("Stable", stable, buttons, repo)]
+    stable, beta, nightly, beta_line, stable_line = channels(repo)
+    parts = [channel_html("Stable", stable, buttons, repo, notes_rels=stable_line)]
     if key in HIDE_PRERELEASE:
         beta = None                      # see HIDE_PRERELEASE above
     if beta:
@@ -281,7 +341,7 @@ def block(key, repo, buttons):
         else:
             m = re.search(r"\bbeta\s+(\d+)\b", name, re.I)
             tag = "beta " + (m.group(1) if m else "1")
-        parts.append(channel_html("Prerelease", beta, buttons, repo, tag, notes_rels=line))
+        parts.append(channel_html("Prerelease", beta, buttons, repo, tag, notes_rels=beta_line))
     if nightly:
         parts.append(channel_html("Nightly", nightly, buttons, repo))
     summary = "%s (%s)" % (stable["tag_name"], stable["name"])
