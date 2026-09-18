@@ -63,6 +63,13 @@ MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
+class Incomplete(Exception):
+    """This product's releases are not in a state we can render — almost
+    always a window rather than a decision, because both nightly producers
+    delete the rolling release and recreate it on every cut. The product's
+    block is left exactly as it is and the OTHER product still updates."""
+
+
 def gh(path):
     out = subprocess.run(["gh", "api", path], capture_output=True, text=True)
     if out.returncode:
@@ -91,10 +98,13 @@ def channels(repo):
     than stable, so that block disappears the moment stable overtakes it;
     the nightly is shown whenever one exists."""
     rels = [r for r in gh("repos/%s/releases?per_page=100" % repo) if not r["draft"]]
+    # CORRECTNESS-CRITICAL. The API sorts by (created_at, tag_name) desc, and
+    # the mirror's releases all share one created_at — so without this the
+    # order falls back to the tag STRING and "v99" sorts above "v100".
     rels.sort(key=lambda r: r["published_at"], reverse=True)
     stables = [r for r in rels if not r["prerelease"]]
     if not stables:
-        sys.exit("%s has no stable release" % repo)
+        raise Incomplete("no stable release")
     stable = stables[0]
     beta_line = [r for r in rels if r["prerelease"] and not is_nightly(r)
                  and r["published_at"] > stable["published_at"]]  # newest first
@@ -267,7 +277,9 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
         if asset:
             picks.append((label, asset))
     if not picks:
-        sys.exit("%s %s has none of the expected assets" % (name, rel["tag_name"]))
+        # the upload window of a delete-then-create nightly, usually
+        raise Incomplete("%s (%s) has none of the expected assets"
+                         % (name, rel["tag_name"]))
     m = re.search(r"(\d+\.\d+\.\d+)", picks[0][1]["name"])
     version = m.group(1) if m else rel["name"]
     date = (stamp(rel) if is_nightly(rel) else rel["published_at"])[:10]
@@ -288,8 +300,14 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
         base = "" if repo.endswith("-releases") else "https://github.com/%s/commit/" % repo
         if commit and base:                                  # a public repo: link the commit
             commit = '<a href="%s%s">%s</a>' % (base, commit, commit)
-        lines.append('                <span class="chan-commit" data-nightly-commit="%s"%s>%s</span>'
-                     % (key, ' data-commit-base="%s"' % base if base else "", commit or "&mdash;"))
+        # data-nightly-ver lets the Worker check that the live nightly is
+        # still THIS version before it rewrites anything: the download
+        # buttons below are generated and it cannot rewrite those, so a
+        # version bump must leave the whole block alone rather than make a
+        # stale block look freshly built while its download 404s.
+        lines.append('                <span class="chan-commit" data-nightly-commit="%s" data-nightly-ver="%s"%s>%s</span>'
+                     % (key, html.escape(display_version(version)),
+                        ' data-commit-base="%s"' % base if base else "", commit or "&mdash;"))
         lines += ['                <span class="chan-date">Built <time datetime="%s" data-nightly-date="%s">%s</time></span>'
                   % (date, key, pretty(date)),
                   '              </div>']
@@ -359,6 +377,9 @@ def block(key, repo, buttons):
     return "\n\n".join(parts) + "\n", summary
 
 
+CHAN_NAME = '<span class="chan-name">'
+
+
 def region(page, key):
     """The generated span for one product, as (start, end) offsets. Exactly
     one marker pair must exist: with two, there is no safe place to write."""
@@ -383,13 +404,19 @@ def repeats(page, key):
 def main():
     check = "--check" in sys.argv
     page = INDEX.read_text(encoding="utf-8")
-    behind = []
+    behind, incomplete = [], []
     for key, repo, buttons in PRODUCTS:
+        try:
+            probe = block(key, repo, buttons)
+        except Incomplete as exc:
+            print("  %-4s %s — leaving its block untouched" % (key, exc))
+            incomplete.append(key)
+            continue
         was = repeats(page, key)
         if was:
             print("  %-4s repeating %s — regenerating fixes it" % (key, ", ".join(was)))
         i, j = region(page, key)
-        new, summary = block(key, repo, buttons)
+        new, summary = probe
         if page[i:j] != new:
             behind.append(key)
             page = page[:i] + new + page[j:]
@@ -403,6 +430,14 @@ def main():
         if still:
             sys.exit("index.html: %s block still repeats %s after generating"
                      % (key, ", ".join(still)))
+    # …and nothing pretending to be a channel outside the generated regions:
+    # a block pasted one line past a close marker would otherwise show on the
+    # page twice with every check reporting the page as current.
+    inside = sum(page[slice(*region(page, k))].count(CHAN_NAME)
+                 for k, _r, _b in PRODUCTS)
+    if page.count(CHAN_NAME) != inside:
+        sys.exit("index.html: %d channel block(s) outside the releases markers"
+                 % (page.count(CHAN_NAME) - inside))
     if check:
         if behind:
             sys.exit("index.html is behind for: %s — run tools/sync-releases.py" % ", ".join(behind))

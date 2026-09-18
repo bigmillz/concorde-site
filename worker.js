@@ -148,11 +148,18 @@ async function stampNightlies(res, ctx) {
   res = new Response(res.body, res);
   res.headers.set("X-Nightly", Object.entries(live).map(([k, v]) => `${k}=${v.sha}`).join(" "));
   const rw = new HTMLRewriter();
-  for (const [key, { sha, date }] of Object.entries(live)) {
+  for (const [key, { ver, sha, date }] of Object.entries(live)) {
     const d = new Date(date);
     const label = `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+    // Only when the live nightly is still the version this block was built
+    // for. The download buttons are generated and cannot be rewritten here,
+    // so on a version bump the whole block stays as generated — stale, but
+    // honest and with a link that works — until the next sync.
+    let sameVersion = true;
     rw.on(`[data-nightly-commit="${key}"]`, {
       element(el) {
+        sameVersion = el.getAttribute("data-nightly-ver") === ver;
+        if (!sameVersion) return;
         const base = el.getAttribute("data-commit-base");
         if (base) el.setInnerContent(`<a href="${base}${sha}">${sha}</a>`, { html: true });
         else el.setInnerContent(sha);
@@ -160,6 +167,7 @@ async function stampNightlies(res, ctx) {
     });
     rw.on(`[data-nightly-date="${key}"]`, {
       element(el) {
+        if (!sameVersion) return;       // the commit span precedes this one
         el.setAttribute("datetime", date.slice(0, 10));
         el.setInnerContent(label);
       },
@@ -185,10 +193,10 @@ async function nightlyInfo(repo, ctx) {
     if (r.ok) {
       const html = await r.text();
       // "<title>Release 1.3 nightly 7caf38d · bigmillz/concordevpn-releases</title>"
-      const t = html.match(/<title>Release [^<]*?nightly\s+([0-9a-f]{7,40})\b/i);
+      const t = html.match(/<title>Release\s+(.+?)\s+nightly\s+([0-9a-f]{7,40})\b/i);
       // the first timestamp on the page is the release's own
       const d = html.match(/datetime="(\d{4}-\d{2}-\d{2}T[^"]+)"/);
-      if (t && d) info = { sha: t[1].slice(0, 7), date: d[1] };
+      if (t && d) info = { ver: t[1].trim(), sha: t[2].slice(0, 7), date: d[1] };
     }
   } catch (_) {
     return null;
