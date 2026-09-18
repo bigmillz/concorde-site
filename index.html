@@ -384,6 +384,33 @@ details.sum[open] > summary::before{content:"–"}
   border-radius:6px;padding:1px 6px;white-space:nowrap;
 }
 .note .body p + p{margin-top:10px}
+/* the three ways to get a ConcordeVPN server — the card feature lists'
+   numbering, which is the house idiom for "here are the options" */
+.ways{counter-reset:way;margin:14px 0 0;padding:0;list-style:none}
+.ways li{
+  counter-increment:way;display:grid;grid-template-columns:22px 1fr;gap:12px;
+  padding:13px 0;border-bottom:1px solid var(--line-soft);
+}
+.ways li:last-child{border-bottom:0;padding-bottom:4px}
+/* one element per row after the numeral, and min-width:0 so the command
+   block scrolls inside its column instead of widening it */
+.ways li > div{min-width:0}
+.ways li::before{
+  content:counter(way,decimal-leading-zero);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+  color:var(--faint);padding-top:3px;
+}
+.ways b{
+  display:block;font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--text);margin-bottom:6px;
+}
+.ways code{
+  display:block;margin:8px 0;padding:9px 11px;overflow-x:auto;
+  border:1px solid var(--line-soft);border-radius:8px;background:var(--bg);
+  font-family:var(--mono);font-size:11.5px;color:var(--dim);white-space:pre;
+}
+.ways code.in{display:inline;margin:0;padding:1px 5px;white-space:normal;font-size:12px}
+.note .body .ways + p{margin-top:16px}
 
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--line-soft);padding:34px 0 46px}
@@ -830,10 +857,15 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 
         <h3>ConcordeVPN servers</h3>
         <div class="body">
-          <p>ConcordeVPN is bring-your-own-server. There is no network to sign up for. You run your own exit node, and the installer sets up the server side, including DNS filtering. On a fresh Ubuntu 22.04/24.04 machine, as root:</p>
-          <p><code>curl -fsSL https://flyconcordefly.com/concordevpn-server.sh -o concordevpn-server.sh &amp;&amp; bash concordevpn-server.sh install</code></p>
-          <p>When it finishes it prints a block to paste into the app&rsquo;s first-run screen &mdash; and <code>concordevpn show</code> prints it again any time. The six keys plus your NextDNS profile ID are all the app asks for.</p>
-          <p>What that gets you is a tunnel you operate end to end. It is not an anonymity tool, and we make no claims about what your server, your host or your network records.</p>
+          <p>Bring your own server &mdash; there is no network to sign up for. Three ways to get one:</p>
+          <ol class="ways">
+            <li><div><b>Let the app build it</b>Paste a DigitalOcean token, pick a region and a size. Five minutes, from $6 a month.</div></li>
+            <li><div><b>Run the installer</b>On a fresh Ubuntu 22.04 or 24.04 server, as root:
+              <code>curl -fsSL https://flyconcordefly.com/concordevpn-server.sh -o concordevpn-server.sh &amp;&amp; bash concordevpn-server.sh install</code>
+              It prints a block to paste into the app. <code class="in">concordevpn show</code> prints it again.</div></li>
+            <li><div><b>Enter it yourself</b>For a server you already run: address, three passwords, certificate fingerprint. A NextDNS profile ID is optional.</div></li>
+          </ol>
+          <p>The tunnel is yours end to end. It is not an anonymity tool, and we make no claims about what your server, your host or your network records.</p>
         </div>
       </div>
 
