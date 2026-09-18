@@ -69,6 +69,13 @@ def gh(path):
 
 NIGHTLY_TAG = "nightly"          # one rolling release per repo; its title carries the commit
 
+# Products whose Prerelease (beta/RC) block is SUPPRESSED on the site, however
+# many prereleases exist upstream. Pat, 2026-09-18: 1.3 went stable and the 1.4
+# line ships as nightlies only — no beta block until he says "cut 1.4 beta".
+# TO SHOW IT AGAIN: take the key out of this set. Nothing else to change.
+# Nightly and Stable blocks are unaffected.
+HIDE_PRERELEASE = {"vpn"}
+
 
 def is_nightly(rel):
     return rel["tag_name"] == NIGHTLY_TAG or "nightly" in (rel.get("name") or "").lower()
@@ -258,9 +265,11 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
     return "\n".join(lines)
 
 
-def block(repo, buttons):
+def block(key, repo, buttons):
     stable, beta, nightly, line = channels(repo)
     parts = [channel_html("Stable", stable, buttons, repo)]
+    if key in HIDE_PRERELEASE:
+        beta = None                      # see HIDE_PRERELEASE above
     if beta:
         # Apple-style numbering from the title, shown after the version:
         # "1.3 beta 3" -> Prerelease 1.3 beta 3; "1.3 RC1" -> RC 1. An
@@ -291,7 +300,7 @@ def main():
         begin, end = "            <!-- releases:%s -->\n" % key, "            <!-- /releases:%s -->" % key
         i = page.index(begin) + len(begin)
         j = page.index(end, i)
-        new, summary = block(repo, buttons)
+        new, summary = block(key, repo, buttons)
         if page[i:j] != new:
             behind.append(key)
             page = page[:i] + new + page[j:]
