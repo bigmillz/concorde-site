@@ -31,20 +31,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Rewrite the download blocks from GitHub Releases
+      # NEVER rebase generated content. Two syncs that each INSERT the same
+      # block at the same anchor rebase into two copies, with no conflict to
+      # notice — that is how the page once shipped a channel twice. Instead:
+      # land on whatever origin/main is now, regenerate the whole marker
+      # region from scratch, and push. On a rejection, do it again.
+      - name: Sync the download blocks and push
         env:
           GH_TOKEN: ${{ github.token }}   # both source repos are public; the token only lifts the rate limit
-        run: python3 tools/sync-releases.py
-
-      - name: Commit and push if anything changed
         run: |
-          if git diff --quiet -- index.html; then
-            echo "site is current"; exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git commit -m "Sync releases"
-          # a release script may have pushed meanwhile; land on top of it
-          git pull --rebase origin main
-          git push origin main
+          for attempt in 1 2 3; do
+            git fetch --quiet origin main
+            git reset --quiet --hard origin/main
+            python3 tools/sync-releases.py
+            if git diff --quiet -- index.html; then
+              echo "site is current"; exit 0
+            fi
+            git add index.html
+            git commit --quiet -m "Sync releases"
+            if git push --quiet origin main; then
+              echo "pushed"; exit 0
+            fi
+            echo "push rejected (attempt $attempt) — regenerating on the new tip"
+          done
+          echo "could not push after 3 attempts"; exit 1

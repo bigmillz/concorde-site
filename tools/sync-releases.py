@@ -292,19 +292,50 @@ def block(key, repo, buttons):
     return "\n\n".join(parts) + "\n", summary
 
 
+def region(page, key):
+    """The generated span for one product, as (start, end) offsets. Exactly
+    one marker pair must exist: with two, there is no safe place to write."""
+    begin, end = "            <!-- releases:%s -->\n" % key, "            <!-- /releases:%s -->" % key
+    if page.count(begin) != 1 or page.count(end) != 1:
+        sys.exit("index.html: %s has %d open / %d close markers, expected 1 each"
+                 % (key, page.count(begin), page.count(end)))
+    i = page.index(begin) + len(begin)
+    return i, page.index(end, i)
+
+
+def repeats(page, key):
+    """Channel names appearing more than once in one product's block. A
+    merge can produce this without a conflict — two syncs that each INSERT
+    the same block at the same anchor replay as two insertions — which is
+    how the page once shipped a channel twice. Generation cannot."""
+    i, j = region(page, key)
+    names = re.findall(r'<span class="chan-name">(.*?)</span>', page[i:j])
+    return sorted({n for n in names if names.count(n) > 1})
+
+
 def main():
     check = "--check" in sys.argv
     page = INDEX.read_text(encoding="utf-8")
     behind = []
     for key, repo, buttons in PRODUCTS:
-        begin, end = "            <!-- releases:%s -->\n" % key, "            <!-- /releases:%s -->" % key
-        i = page.index(begin) + len(begin)
-        j = page.index(end, i)
+        was = repeats(page, key)
+        if was:
+            print("  %-4s repeating %s — regenerating fixes it" % (key, ", ".join(was)))
+        i, j = region(page, key)
         new, summary = block(key, repo, buttons)
         if page[i:j] != new:
             behind.append(key)
             page = page[:i] + new + page[j:]
+        elif was:
+            behind.append(key)
         print("  %-4s %s%s" % (key, summary, "" if key in behind else "  (unchanged)"))
+    # Generation replaces the whole region, so the result cannot repeat a
+    # channel; if it somehow does, that is a bug and the page must not ship.
+    for key, _repo, _buttons in PRODUCTS:
+        still = repeats(page, key)
+        if still:
+            sys.exit("index.html: %s block still repeats %s after generating"
+                     % (key, ", ".join(still)))
     if check:
         if behind:
             sys.exit("index.html is behind for: %s — run tools/sync-releases.py" % ", ".join(behind))
