@@ -34,10 +34,16 @@ the bullets in `release-notes.json` for that tag when we have written them
 (keep them to what a visitor would notice — nobody needs the two-pixel
 starfield tweak), otherwise an automatic condensation of the GitHub body.
 
-`.github/workflows/sync-releases.yml` runs the same sync every 15 minutes
-and commits when something changed, so a ConcordeAI nightly built by
-Actions reaches the page without anyone running anything. (The VPN's
-release.sh still syncs on the spot.)
+Both apps' `release.sh` run this as the last step of a cut, so a beta, RC
+or stable is on the page within seconds. `.github/workflows/sync-releases.yml`
+is the safety net for everything else — chiefly the nightlies, which are
+built by Actions and can touch nothing here. Its cron asks for every 15
+minutes; GitHub delivers it every few HOURS, so do not rely on it for
+anything a person is waiting to see.
+
+All three writers land on the current tip and REGENERATE rather than
+rebasing a generated change, and each refuses to reset over a checkout
+with unpushed work in it.
 
 The VPN repo is private, so its buttons point at the public mirror
 `bigmillz/concordevpn-releases`; a release that is not mirrored never reaches
