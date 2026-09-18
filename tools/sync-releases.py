@@ -280,10 +280,11 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
         # the upload window of a delete-then-create nightly, usually
         raise Incomplete("%s (%s) has none of the expected assets"
                          % (name, rel["tag_name"]))
+    # .sha256 files still ship with every release; they are just not put in
+    # front of someone who came to download an app (Pat, 2026-09-18).
     m = re.search(r"(\d+\.\d+\.\d+)", picks[0][1]["name"])
     version = m.group(1) if m else rel["name"]
     date = (stamp(rel) if is_nightly(rel) else rel["published_at"])[:10]
-    sha = next((a for a in rel["assets"] if a["name"].endswith(".sha256")), None)
 
     lines = ['            <div class="chan">',
              '              <div class="chan-top">',
@@ -335,15 +336,6 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
                   '                <summary>Release notes</summary>',
                   '                <div class="sum-body">',
                   notes,
-                  '                </div>',
-                  '              </details>']
-    if sha:
-        lines += ['              <details class="sum">',
-                  '                <summary>Verify checksum</summary>',
-                  '                <div class="sum-body">',
-                  '<code>shasum -a 256 -c %s</code>' % html.escape(sha["name"]),
-                  '                  <a href="%s">%s</a>' % (html.escape(sha["browser_download_url"]),
-                                                            html.escape(sha["name"])),
                   '                </div>',
                   '              </details>']
     lines.append('            </div>')
