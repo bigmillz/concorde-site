@@ -217,7 +217,9 @@ def notes_for(repo, rels, version="", limit=NOTES_MAX):
 
     A hand-written summary for the whole line (release-notes.json ->
     "lines" -> repo -> version) replaces the accumulation outright; that is
-    the lever to pull when a line has too much history to list."""
+    the lever to pull when a line has too much history to list. It applies
+    only when `version` is given, i.e. to a channel standing for a line —
+    never to a nightly, which is one build and says what that build did."""
     curated = load_curated()
     summary = ((curated.get("lines") or {}).get(repo) or {}).get(version)
     if summary:
@@ -304,7 +306,12 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
                   '                  ' + ARROW,
                   '                </a>']
     lines.append('              </div>')
-    notes = notes_for(repo, notes_rels or [rel], display_version(version))
+    # The line key is only meaningful for a channel that STANDS FOR a line
+    # (stable, prerelease). A nightly is one build and speaks for itself —
+    # without this it would inherit the line summary of whatever version it
+    # happens to share a number with.
+    notes = notes_for(repo, notes_rels or [rel],
+                      display_version(version) if notes_rels else "")
     if notes:
         lines += ['              <details class="sum notes">',
                   '                <summary>Release notes</summary>',
