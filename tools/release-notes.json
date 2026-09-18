@@ -1,6 +1,15 @@
 {
   "_": "Curated, visitor-facing bullets per release, keyed by repo then tag. sync-releases.py prefers these; a release without an entry gets an automatic condensation of its GitHub body (first bullets or first sentence, install boilerplate dropped). Keep each bullet to one line and to what a user would notice.",
   "bigmillz/concordeai": {
+    "v273": [
+      "**Image generation** — ask for a picture and you get one; FLUX.1 schnell runs on your Mac, or a cloud model fills in",
+      "Model downloads show real progress, and name what is actually downloading",
+      "**Enable visual effects** now switches only the moving backdrop, not spinners and animations",
+      "**Check for updates automatically** is yours to choose: at launch and once a day, or never"
+    ],
+    "v272": [
+      "The clean-up dialog wears the house chrome and tells you exactly what it will remove"
+    ],
     "v271": [
       "**Clean up now** removes superseded models and shows the space you get back",
       "The Manage models panel scrolls",
