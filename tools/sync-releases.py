@@ -80,11 +80,10 @@ def gh(path):
 NIGHTLY_TAG = "nightly"          # one rolling release per repo; its title carries the commit
 
 # Products whose Prerelease (beta/RC) block is SUPPRESSED on the site, however
-# many prereleases exist upstream. Pat, 2026-09-18: 1.3 went stable and the 1.4
-# line ships as nightlies only — no beta block until he says "cut 1.4 beta".
-# TO SHOW IT AGAIN: take the key out of this set. Nothing else to change.
-# Nightly and Stable blocks are unaffected.
-HIDE_PRERELEASE = {"vpn"}
+# many prereleases exist upstream. Empty as of 2026-09-20, when 1.4 beta 1 was
+# cut: the VPN's beta block is visible again. Put a product key back in here to
+# hide its Prerelease block; Nightly and Stable are unaffected either way.
+HIDE_PRERELEASE = set()
 
 
 def is_nightly(rel):

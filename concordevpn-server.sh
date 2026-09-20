@@ -843,13 +843,24 @@ masquerade:
     rewriteHost: true
 ${MASQ_TCP_BLOCK}
 
-# No bandwidth block on purpose: with none set, Hysteria uses BBR, which probes
-# and adapts to whatever line you're on (100-500+ Mbps) with no fixed rate to
-# reconfigure per network. A fixed Brutal rate would overshoot a slow line
-# (Brutal ignores loss, so it floods and bufferbloats) and cap a fast one.
-# ignoreClientBandwidth forces clients onto BBR too, so a stray client-side
-# rate can't reintroduce Brutal. V23_SRV_UP/V23_SRV_DOWN are intentionally unused.
-ignoreClientBandwidth: true
+# No server bandwidth block on purpose, and the client IS listened to.
+# Hysteria decides per connection: a client that declares a rate gets Brutal
+# at that rate, a client that declares nothing gets BBR. That is exactly the
+# split the app wants - Performance and Ultra Performance declare a measured
+# rate, Balanced, Stealth and Ultra Stealth declare none and stay on BBR.
+#
+# Deliberately NO 'bandwidth:' block (unlike the config before 2026-08-15):
+# a fixed server ceiling is a guess that caps a fast line, whereas the
+# client's number comes from an actual measurement of the line in front of
+# it. V23_SRV_UP/V23_SRV_DOWN stay unused for that reason.
+#
+# This was 'true' from 2026-08-15 to 2026-09-18, which silently discarded
+# every rate the app measured: Performance's turbo tuning and the Ultra
+# controller were both writing numbers nothing read. Measured on the live
+# NYC exit before and after - a client asking for a 1 Mbps cap got 13.96
+# Mbps with it true, and 0.97 with it false, while a client declaring
+# nothing got ~14 either way.
+ignoreClientBandwidth: false
 
 # Big QUIC windows are what let one flow fill a fat pipe.
 quic:
