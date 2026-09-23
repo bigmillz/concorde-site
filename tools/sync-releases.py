@@ -216,6 +216,17 @@ def notes_items(repo, rel, curated):
 NOTES_MAX = 8            # bullets before the list compresses
 
 
+def release_version(rel):
+    """X.Y.Z from the release's files — the same source the version on the
+    page comes from; the title only as a fallback."""
+    for a in rel.get("assets") or []:
+        m = re.search(r"(\d+\.\d+\.\d+)", a["name"])
+        if m:
+            return m.group(1)
+    m = re.search(r"(\d+\.\d+(?:\.\d+)?)", rel.get("name") or "")
+    return m.group(1) if m else ""
+
+
 def notes_for(repo, rels, version="", limit=NOTES_MAX):
     """One bullet list for a channel, covering every release it stands for:
     a prerelease covers its line since the last stable, a stable covers
@@ -234,13 +245,30 @@ def notes_for(repo, rels, version="", limit=NOTES_MAX):
     if summary:
         return "<ul>%s</ul>" % "".join("<li>%s</li>" % inline(i) for i in summary)
 
-    items, seen = [], set()
-    for rel in rels:
-        for it in notes_items(repo, rel, curated):
-            k = re.sub(r"\W+", " ", it).strip().lower()
-            if k and k not in seen:
-                seen.add(k)
-                items.append(it)
+    # A PROMOTED BETA. A stable whose version already went out as a
+    # prerelease in this span almost always re-describes that line in fresh
+    # words, which exact-text de-duplication cannot catch — the page showed
+    # every 6.0.4 change twice, once as the curated beta bullets and once as
+    # the stable's own paraphrase. Unless someone wrote notes for the stable
+    # itself, the prereleases speak for it.
+    ours = curated.get(repo) or {}
+    shipped_as_pre = {release_version(r) for r in rels if r.get("prerelease")}
+
+    def restates(rel):
+        return (not rel.get("prerelease") and rel["tag_name"] not in ours
+                and release_version(rel) in shipped_as_pre)
+
+    def gather(sources):
+        got, seen = [], set()
+        for rel in sources:
+            for it in notes_items(repo, rel, curated):
+                k = re.sub(r"\W+", " ", it).strip().lower()
+                if k and k not in seen:
+                    seen.add(k)
+                    got.append(it)
+        return got
+
+    items = gather([r for r in rels if not restates(r)]) or gather(rels)
     if not items:
         return ""
 
