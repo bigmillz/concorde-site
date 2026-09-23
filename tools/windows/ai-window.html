@@ -26,7 +26,7 @@ body{
 
 /* ---------- window shell ---------- */
 .win{
-  width:1180px;height:700px;
+  width:1000px;height:1060px;
   border-radius:12px;overflow:hidden;
   border:1px solid var(--line);
   background:var(--bg);
@@ -118,9 +118,26 @@ body{
 /* ---------- main ---------- */
 .main{
   flex:1;min-width:0;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:0 90px;
+  display:flex;flex-direction:column;padding:34px 44px 28px;
 }
+/* ---------- conversation ---------- */
+.thread{flex:1;display:flex;flex-direction:column;gap:26px}
+.msg-u{
+  align-self:flex-end;max-width:78%;background:var(--panel2);border:1px solid var(--line);
+  border-radius:14px 14px 4px 14px;padding:12px 16px;font-size:14px;line-height:1.5;color:var(--text);
+}
+.msg-a{max-width:92%;font-size:14px;line-height:1.6;color:var(--dim)}
+.msg-a .who{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.msg-a .who .cchip{padding:3px 8px}
+.msg-a p{color:var(--text)}
+.msg-a h4{margin:14px 0 6px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--text)}
+.msg-a ul{list-style:none;display:grid;gap:6px}
+.msg-a li{position:relative;padding-left:16px}
+.msg-a li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;height:5px;border-radius:50%;background:var(--faint)}
+.msg-a b{color:var(--text);font-weight:600}
+.acts{margin-top:12px;display:flex;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);opacity:.8}
 h1{
   font-family:var(--disp);font-weight:400;font-size:30px;line-height:1.3;
   letter-spacing:.10em;text-transform:uppercase;
@@ -134,7 +151,7 @@ h1{
   border-radius:999px;padding:8px 15px;white-space:nowrap;
 }
 .composer{
-  margin-top:42px;width:100%;max-width:660px;
+  margin-top:24px;width:100%;
   background:var(--panel);border:1px solid var(--line);
   border-radius:12px;padding:18px;
 }
@@ -203,15 +220,21 @@ h1{
       <div class="sec label">Chats</div>
 
       <div class="sub">Pinned</div>
-      <div class="row on">Batch-resize 400 product photos</div>
+      <div class="row">Batch-resize 400 product photos</div>
       <div class="row">Refactor the ingest worker</div>
       <div class="row">Compare local vs cloud latency</div>
 
       <div class="sub">This week</div>
       <div class="row">Summarise Q3 support tickets</div>
-      <div class="row">Draft the release notes</div>
+      <div class="row on">Draft the release notes</div>
       <div class="row">Explain this stack trace</div>
       <div class="row">Benchmark the 70B on two nodes</div>
+
+      <div class="sub">Earlier</div>
+      <div class="row">Plan the Lisbon offsite</div>
+      <div class="row">Tidy the onboarding checklist</div>
+      <div class="row">Rewrite the pricing FAQ</div>
+      <div class="row">Compare three NAS options</div>
 
       <div class="instr">
         <div class="chip-row">
@@ -232,16 +255,34 @@ h1{
 
     <!-- MAIN -->
     <main class="main">
-      <h1>Three machines.<br>One workbench.</h1>
-
-      <div class="sugg">
-        <span>Run it locally</span>
-        <span>Use the big cloud model</span>
-        <span>Split across my GPUs</span>
+      <div class="thread">
+        <div class="msg-u">Turn this week&rsquo;s changes into release notes for users. Plain words, no developer detail.</div>
+        <div class="msg-a">
+          <div class="who"><span class="cchip"><em>engine</em>Fast</span><span class="cchip"><i class="dot"></i>MLX &middot; on this Mac</span></div>
+          <p>Here&rsquo;s a draft:</p>
+          <h4>What&rsquo;s new</h4>
+          <ul>
+            <li><b>Image generation.</b> Ask for a picture and you get one, made on your Mac.</li>
+            <li><b>Honest downloads.</b> Model downloads show real progress and name what is moving.</li>
+            <li><b>Visual effects</b> now switch only the moving backdrop.</li>
+            <li><b>Update checks</b> are yours to choose: at launch and daily, or never.</li>
+          </ul>
+          <div class="acts"><span>Copy</span><span>Regenerate</span></div>
+        </div>
+        <div class="msg-u">Shorter. Three bullets, and lead with image generation.</div>
+        <div class="msg-a">
+          <div class="who"><span class="cchip"><em>engine</em>Fast</span><span class="cchip"><i class="dot"></i>MLX &middot; on this Mac</span></div>
+          <ul>
+            <li><b>Image generation:</b> ask for a picture, get one.</li>
+            <li><b>Downloads</b> show real progress.</li>
+            <li><b>Update checks</b> are your call.</li>
+          </ul>
+          <div class="acts"><span>Copy</span><span>Regenerate</span></div>
+        </div>
       </div>
 
       <div class="composer">
-        <div class="ph">How can I help you today?</div>
+        <div class="ph">Reply&hellip;</div>
         <div class="cbar">
           <div class="left">
             <span class="cchip"><em>engine</em>Fast</span>

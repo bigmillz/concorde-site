@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>ConcordeGo Window</title>
+<!-- A browser frame round go-capture.png, a signed-out capture of the live
+     app's "What matters to you?" step. Retake it as tools/README.md says,
+     never from a signed-in browser. The capture is 1050 CSS px wide at 2x
+     (2100 px), and the page area below is exactly 1050x1075 CSS px, so it
+     is drawn 1:1; the window keeps the 1000x1060 frame's proportions, so
+     shot-go stays 1458x1532. -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:transparent}
+body{display:grid;place-items:center;min-height:100vh;padding:40px;box-sizing:border-box}
+.win{width:1050px;height:1113px;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;
+  background:#101013;box-shadow:0 40px 90px -30px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.04)}
+.titlebar{height:38px;flex:0 0 38px;background:#1b1c20;display:flex;align-items:center;padding:0 14px;position:relative;
+  border-bottom:1px solid #26272c}
+.lights{display:flex;gap:8px}.lights i{width:12px;height:12px;border-radius:50%;display:block}
+.l1{background:#ff5f57}.l2{background:#febc2e}.l3{background:#28c840}
+/* a browser, not an app: the URL is the title */
+.url{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;
+  height:24px;padding:0 16px;border-radius:7px;background:#101013;border:1px solid #26272c;
+  font:500 12px/1 'IBM Plex Mono',ui-monospace,monospace;color:#b4b4b4;letter-spacing:.02em}
+.url svg{width:10px;height:10px;opacity:.7}
+.page{flex:1;min-height:0;background:#101013 url(go-capture.png) top center/1050px auto no-repeat}
+</style></head><body>
+<div class="win">
+  <div class="titlebar"><div class="lights"><i class="l1"></i><i class="l2"></i><i class="l3"></i></div>
+    <div class="url"><svg viewBox="0 0 10 12" fill="none"><rect x="1" y="5" width="8" height="6.5" rx="1.2" fill="#b4b4b4"/><path d="M3 5V3.5a2 2 0 0 1 4 0V5" stroke="#b4b4b4" stroke-width="1.2"/></svg>go.flyconcordefly.com</div></div>
+  <div class="page"></div>
+</div></body></html>

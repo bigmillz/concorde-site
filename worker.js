@@ -15,6 +15,10 @@
  *    (CONTACT_TO), never in this repo — the repo is public. Without the
  *    binding and the secret the form is stripped from the page, so taking
  *    it down is deleting the secret.
+ * 7. ConcordeGo's build and date, read from go.flyconcordefly.com itself.
+ *    It is a website, not a release: it deploys on every push and has no
+ *    GitHub release for tools/sync-releases.py to read, so its card is
+ *    hand-written and only these two values are kept live.
  *
  * These live here rather than in dashboard toggles so they travel with the
  * repo and are reviewable. `run_worker_first` in wrangler.jsonc is what
@@ -45,6 +49,21 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 // commit's date, so the mirror's nightly never surfaces in it).
 const NIGHTLIES = { ai: "bigmillz/concordeai", vpn: "bigmillz/concordevpn-releases" };
 const NIGHTLY_TTL = 300;
+
+// ConcordeGo publishes what is deployed in its own footer, machine-readably:
+//   <time id="updated" data-updated="2026-09-22">…</time> · build <code id="build" data-build="6ccedc4">…</code>
+// The page is ~2.7 MB and the stamp sits in its first ~100 KB, so it is
+// read only until the stamp has gone by (GO_SCAN_MAX bounds a page that
+// has lost it). A miss is cached for GO_TTL too: a page without its stamp
+// costs one read per location every five minutes, not one per page view.
+const GO_URL = "https://go.flyconcordefly.com/";
+const GO_TTL = 300;
+const GO_SCAN_MAX = 512 * 1024;
+const GO_BUILD = /\bdata-build="([0-9a-f]{7,40})"/i;
+const GO_UPDATED = /\bdata-updated="(\d{4}-\d{2}-\d{2})"/;
+// each chunk is searched with this many characters of the text before it,
+// so a stamp split across two chunks is still found (both are < 60 long)
+const GO_OVERLAP = 128;
 
 export default {
   async fetch(request, env, ctx) {
@@ -78,8 +97,10 @@ export default {
 
     let res = await env.ASSETS.fetch(request);
     if ((res.headers.get("content-type") || "").startsWith("text/html")) {
+      const go = goInfo(ctx).catch(() => null);   // in flight while the two below run
       res = await stampUpdated(res, ctx);
       res = await stampNightlies(res, ctx);
+      res = stampGo(res, await go);
       if (!contactReady(env)) res = stripContact(res);
     }
     if (isWorkersDev) return res;
@@ -234,6 +255,89 @@ async function nightlyInfo(repo, ctx) {
     })));
   } catch (_) { /* fine without */ }
   return info;
+}
+
+/** Rewrite ConcordeGo's build and "Updated" date ([data-go-build],
+ *  time[data-go-date]) from what the live app says it is running. On any
+ *  failure the page keeps the values baked into index.html. */
+function stampGo(res, info) {
+  if (!info) return res;
+  const d = new Date(`${info.date}T00:00:00Z`);
+  const label = `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+  res = new Response(res.body, res);
+  res.headers.set("X-Go", `${info.sha} ${info.date}`);   // `curl -I` breadcrumb, like X-Nightly
+  return new HTMLRewriter()
+    .on("[data-go-build]", { element(el) { el.setInnerContent(info.sha); } })
+    .on("time[data-go-date]", {
+      element(el) {
+        el.setAttribute("datetime", info.date);
+        el.setInnerContent(label);
+      },
+    })
+    .transform(res);
+}
+
+async function goInfo(ctx) {
+  const cache = caches.default;
+  const key = new Request(`https://${CANONICAL}/.cache/go`);
+  try {
+    const hit = await cache.match(key);
+    if (hit) {
+      const j = await hit.json();
+      return j && j.sha ? j : null;       // {miss: true}: read and failed lately
+    }
+  } catch (_) { /* no cache in this runtime */ }
+
+  let info = null;
+  try {
+    const r = await within(2500, fetch(GO_URL, {
+      headers: { "User-Agent": "concorde-site-worker (+https://flyconcordefly.com)", Accept: "text/html" },
+      signal: AbortSignal.timeout(2500),
+    }));
+    if (r && r.ok && r.body) info = await within(1500, scanGo(r.body));
+  } catch (_) { /* info stays null, and the miss is cached below */ }
+
+  try {
+    ctx.waitUntil(cache.put(key, new Response(JSON.stringify(info || { miss: true }), {
+      headers: { "Content-Type": "application/json", "Cache-Control": `max-age=${GO_TTL}` },
+    })));
+  } catch (_) { /* fine without */ }
+  return info;
+}
+
+/** Read a body only until both halves of the stamp have gone by, then hang
+ *  up. Each chunk is searched once (with GO_OVERLAP characters of the text
+ *  before it), never the whole text so far again, so a page that has lost
+ *  its stamp costs one pass over GO_SCAN_MAX, not one per chunk. */
+async function scanGo(body) {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let carry = "", bytes = 0, build = null, updated = null;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      const text = carry + (done ? decoder.decode() : decoder.decode(value, { stream: true }));
+      if (!build) build = (text.match(GO_BUILD) || [])[1] || null;
+      if (!updated) updated = (text.match(GO_UPDATED) || [])[1] || null;
+      if (build && updated) return goStamp(build, updated);
+      if (done) return null;
+      bytes += value.byteLength;
+      if (bytes > GO_SCAN_MAX) return null;
+      carry = text.slice(-GO_OVERLAP);
+    }
+  } finally {
+    reader.cancel().catch(() => {});
+  }
+}
+
+/** { sha, date } from ConcordeGo's footer stamp, or null. Both must be
+ *  there and well formed: a half-read or reshaped page changes nothing.
+ *  The date must be a real one: Date.parse takes 2026-02-31 as 3 March,
+ *  which would put one date in datetime and another in the text. */
+function goStamp(build, updated) {
+  const d = new Date(`${updated}T00:00:00Z`);
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== updated) return null;
+  return { sha: build.slice(0, 7).toLowerCase(), date: updated };
 }
 
 /* ---------------------------------------------------------------- contact */

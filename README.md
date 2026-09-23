@@ -1,6 +1,6 @@
 # flyconcordefly.com
 
-The Concorde product site — ConcordeAI and ConcordeVPN.
+The Concorde product site — ConcordeAI, ConcordeVPN and ConcordeGo.
 One hand-written `index.html`, no build step. *Fly Concorde, Fly.*
 
 The release data (versions, dates, download URLs) is baked into the

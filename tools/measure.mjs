@@ -19,6 +19,11 @@
 // make them FAIL, and a failed <img> renders its alt text at a different
 // size, which is not the case being tested.)
 //
+// MEASURE_DPR=2 lays out at the same CSS size with a Retina device pixel
+// ratio, so the screenshot is twice the viewport in each direction — what a
+// capture that the site will show at 2x needs (tools/README.md, go-capture).
+// Coordinates the expression returns are CSS px either way.
+//
 // Exits non-zero, with Chrome cleaned up, on any failure: no DevTools port,
 // a navigation that fails (a dead server lands on chrome-error://, which
 // used to be measured as if it were the page), or an expression that throws.
@@ -85,7 +90,8 @@ try {
     const requestStage = process.env.MEASURE_HOLD_STAGE === "Request" ? "Request" : "Response";
     await send("Fetch.enable", { patterns: [{ urlPattern: `*${process.env.MEASURE_HOLD}*`, requestStage }] });
   }
-  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile: width < 768 });
+  const dpr = Number(process.env.MEASURE_DPR) || 1;
+  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: dpr, mobile: width < 768 });
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
 
   const nav = await send("Page.navigate", { url });
