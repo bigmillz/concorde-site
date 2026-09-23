@@ -9,6 +9,11 @@
   "name": "concorde-site",
   "main": "worker.js",
   "compatibility_date": "2026-09-12",
+  // The contact form's mail. Deliberately NO destination here: this repo is
+  // public, so the address lives only in the CONTACT_TO Worker secret. The
+  // binding can send to any address verified in Email Routing. Without the
+  // secret, worker.js takes the form off the page.
+  "send_email": [{ "name": "CONTACT" }],
   "assets": {
     "directory": "./",
     "binding": "ASSETS",
