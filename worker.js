@@ -10,6 +10,11 @@
  * 5. The nightly channels' commit and build date, read from GitHub at
  *    request time: a nightly is rebuilt on every push and the page's
  *    generated copy of it is only as fresh as the last sync.
+ * 6. The contact form: POST /api/contact mails the message through
+ *    Cloudflare Email Routing. The destination address is a Worker SECRET
+ *    (CONTACT_TO), never in this repo — the repo is public. Without the
+ *    binding and the secret the form is stripped from the page, so taking
+ *    it down is deleting the secret.
  *
  * These live here rather than in dashboard toggles so they travel with the
  * repo and are reviewable. `run_worker_first` in wrangler.jsonc is what
@@ -17,6 +22,8 @@
  * are served before the Worker ever sees them, and none of the headers
  * below would apply to the pages people actually load.
  */
+
+import { EmailMessage } from "cloudflare:email";
 
 const CANONICAL = "flyconcordefly.com";
 // One year. No `preload`: that is a one-way door that needs a separate
@@ -65,10 +72,15 @@ export default {
       }
     }
 
+    if (url.pathname === "/api/contact") {
+      return withHeaders(await handleContact(request, env, ctx, isWorkersDev), isWorkersDev);
+    }
+
     let res = await env.ASSETS.fetch(request);
     if ((res.headers.get("content-type") || "").startsWith("text/html")) {
       res = await stampUpdated(res, ctx);
       res = await stampNightlies(res, ctx);
+      if (!contactReady(env)) res = stripContact(res);
     }
     if (isWorkersDev) return res;
 
@@ -82,6 +94,18 @@ export default {
     return res;
   },
 };
+
+/** A stalled upstream must never hold the page: race every outbound read
+ *  against a timer. AbortSignal.timeout alone is not enough — a connection
+ *  stuck before the response (seen with a DNS-intercepting VPN in local dev)
+ *  ignored it and the page waited minutes. Resolves null on timeout. */
+function within(ms, promise) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((resolve) => { timer = setTimeout(() => resolve(null), ms); }),
+  ]).finally(() => clearTimeout(timer));
+}
 
 /** Rewrite <time id="updated"> to the latest commit date. On any failure
  *  the page goes out untouched with the date baked into index.html. */
@@ -112,14 +136,15 @@ async function latestCommitDate(ctx) {
 
   let iso = null;
   try {
-    const r = await fetch(COMMITS_FEED, {
+    const r = await within(2500, fetch(COMMITS_FEED, {
       headers: { "User-Agent": "concorde-site-worker (+https://flyconcordefly.com)" },
       signal: AbortSignal.timeout(2500),
-    });
-    if (r.ok) {
+    }));
+    const body = r && r.ok ? await within(1500, r.text()) : null;
+    if (body) {
       // The feed-level <updated> is the newest entry's commit time and
       // comes before any <entry>, so the first match is the one we want.
-      const m = (await r.text()).match(/<updated>(\d{4}-\d{2}-\d{2}T[^<]+)<\/updated>/);
+      const m = body.match(/<updated>(\d{4}-\d{2}-\d{2}T[^<]+)<\/updated>/);
       if (m && !Number.isNaN(Date.parse(m[1]))) iso = m[1];
     }
   } catch (_) {
@@ -186,12 +211,12 @@ async function nightlyInfo(repo, ctx) {
 
   let info = null;
   try {
-    const r = await fetch(`https://github.com/${repo}/releases/tag/nightly`, {
+    const r = await within(2500, fetch(`https://github.com/${repo}/releases/tag/nightly`, {
       headers: { "User-Agent": "concorde-site-worker (+https://flyconcordefly.com)", Accept: "text/html" },
       signal: AbortSignal.timeout(2500),
-    });
-    if (r.ok) {
-      const html = await r.text();
+    }));
+    const html = r && r.ok ? await within(1500, r.text()) : null;
+    if (html) {
       // "<title>Release 1.3 nightly 7caf38d · bigmillz/concordevpn-releases</title>"
       const t = html.match(/<title>Release\s+(.+?)\s+nightly\s+([0-9a-f]{7,40})\b/i);
       // the first timestamp on the page is the release's own
@@ -209,4 +234,151 @@ async function nightlyInfo(repo, ctx) {
     })));
   } catch (_) { /* fine without */ }
   return info;
+}
+
+/* ---------------------------------------------------------------- contact */
+
+// The sender must be an address on a zone with Email Routing enabled; it
+// needs no mailbox. The visitor's own address goes in Reply-To, never From,
+// so the message passes the zone's own SPF/DMARC.
+const CONTACT_FROM = "site@flyconcordefly.com";
+const CONTACT_TOPICS = ["ConcordeAI", "ConcordeVPN", "ConcordeGo", "This website", "Something else"];
+const CONTACT_PER_HOUR = 3;          // per visitor IP, per Cloudflare location
+
+function contactReady(env) {
+  return Boolean(env.CONTACT && env.CONTACT_TO);
+}
+
+function stripContact(res) {
+  return new HTMLRewriter()
+    .on("[data-contact]", { element(el) { el.remove(); } })
+    .transform(res);
+}
+
+function withHeaders(res, isWorkersDev) {
+  if (isWorkersDev) return res;
+  res = new Response(res.body, res);
+  res.headers.set("Strict-Transport-Security", HSTS);
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  return res;
+}
+
+function reply(status, body) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+  });
+}
+
+async function handleContact(request, env, ctx, isWorkersDev) {
+  if (request.method !== "POST") return reply(405, { ok: false, error: "Use the form on the page." });
+  if (!contactReady(env)) return reply(503, { ok: false, error: "The contact form is not available right now." });
+
+  // Only the page itself may post here.
+  const origin = request.headers.get("Origin") || "";
+  let originHost = "";
+  try { originHost = new URL(origin).hostname; } catch (_) { /* no or bad Origin */ }
+  if (originHost !== CANONICAL && !isWorkersDev) return reply(403, { ok: false, error: "Use the form on the page." });
+  if (Number(request.headers.get("Content-Length") || 0) > 20000) return reply(413, { ok: false, error: "That message is too long." });
+
+  let data;
+  try { data = await request.json(); } catch (_) { return reply(400, { ok: false, error: "That didn’t send. Try again." }); }
+  const field = (v, max) => (typeof v === "string" ? v : "").trim().slice(0, max);
+
+  // Bots: the hidden field is filled, or the form was never run as a page,
+  // or it was submitted faster than a person can type. Answer as if it
+  // worked, so there is nothing to tune against.
+  if (field(data.website, 200) || data.js !== 1 || !(Number(data.ms) >= 2500)) {
+    return reply(200, { ok: true });
+  }
+
+  // Header values must never carry a line break (header injection).
+  const oneLine = (v) => v.replace(/[\r\n\u2028\u2029]+/g, " ").replace(/[<>"]/g, "");
+  const name = oneLine(field(data.name, 100));
+  const email = oneLine(field(data.email, 200));
+  const topic = CONTACT_TOPICS.includes(data.product) ? data.product : "Something else";
+  const message = field(data.message, 5000);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return reply(400, { ok: false, error: "Add an email address so I can reply." });
+  if (message.length < 5) return reply(400, { ok: false, error: "Write a message first." });
+
+  if (!(await underLimit(request, ctx))) {
+    return reply(429, { ok: false, error: "Too many messages from here. Try again in an hour." });
+  }
+
+  const cf = request.cf || {};
+  const body = [
+    `From:  ${name || "(no name)"} <${email}>`,
+    `About: ${topic}`,
+    `Where: ${[cf.city, cf.country].filter(Boolean).join(", ") || "unknown"}`,
+    "",
+    message,
+    "",
+    "--",
+    "Sent from the contact form on https://flyconcordefly.com/#about",
+    "Reply to this email to answer them.",
+  ].join("\n");
+
+  const raw = mime({
+    from: `flyconcordefly.com <${CONTACT_FROM}>`,
+    to: env.CONTACT_TO,
+    replyTo: name ? `${encodeWord(name)} <${email}>` : email,
+    subject: `[flyconcordefly] ${topic}${name ? " — " + name : ""}`,
+    text: body,
+  });
+  try {
+    await env.CONTACT.send(new EmailMessage(CONTACT_FROM, env.CONTACT_TO, raw));
+  } catch (err) {
+    console.log("contact: send failed", String(err));
+    return reply(502, { ok: false, error: "That didn’t send. Try again in a minute." });
+  }
+  return reply(200, { ok: true });
+}
+
+async function underLimit(request, ctx) {
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const hour = Math.floor(Date.now() / 3600000);
+  const key = new Request(`https://${CANONICAL}/.cache/contact/${encodeURIComponent(ip)}/${hour}`);
+  try {
+    const hit = await caches.default.match(key);
+    const n = hit ? Number(await hit.text()) || 0 : 0;
+    if (n >= CONTACT_PER_HOUR) return false;
+    ctx.waitUntil(caches.default.put(key, new Response(String(n + 1), {
+      headers: { "Cache-Control": "max-age=3600" },
+    })));
+  } catch (_) { /* no cache here: let it through */ }
+  return true;
+}
+
+// RFC 2047 encoded-word, for any header value that is not plain ASCII.
+function encodeWord(s) {
+  return /^[\x20-\x7e]*$/.test(s) ? `"${s}"` : `=?UTF-8?B?${b64(s)}?=`;
+}
+
+function b64(s) {
+  const bytes = new TextEncoder().encode(s);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(bin);
+}
+
+// A minimal, correct text/plain message: base64 body so any language and
+// any line length survive transport untouched.
+function mime({ from, to, replyTo, subject, text }) {
+  const body = b64(text).replace(/.{1,76}/g, "$&\r\n");
+  return [
+    `From: ${from}`,
+    `To: <${to}>`,
+    `Reply-To: ${replyTo}`,
+    `Subject: ${/^[\x20-\x7e]*$/.test(subject) ? subject : `=?UTF-8?B?${b64(subject)}?=`}`,
+    `Date: ${new Date().toUTCString()}`,
+    `Message-ID: <${crypto.randomUUID()}@${CANONICAL}>`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=utf-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    body,
+  ].join("\r\n");
 }

@@ -119,14 +119,9 @@ ul{list-style:none;padding:0}
   letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
   padding:6px 0;border-bottom:1px solid transparent;white-space:nowrap;
 }
-.nav a:hover{color:var(--text);border-bottom-color:var(--accent-dim)}
-/* Install is the one call to action in the header */
-.nav a.nav-cta{
-  color:var(--text);font-weight:600;
-  border:1px solid var(--line);border-radius:999px;border-bottom-color:var(--line);
-  padding:7px 15px;
-}
-.nav a.nav-cta:hover{background:var(--accent-dim);border-color:var(--faint)}
+.nav a:hover,.nav a:focus-visible{color:#fff;border-bottom-color:var(--faint)}
+/* the short label only takes over where the full one cannot fit */
+.nav .ns{display:none}
 
 /* ---------- hero (from C) ---------- */
 .hero{
@@ -411,6 +406,74 @@ details.sum[open] > summary::before{content:"–"}
 }
 .ways code.in{display:inline;margin:0;padding:1px 5px;white-space:normal;font-size:12px}
 .note .body .ways + p{margin-top:16px}
+.note + .note{margin-top:14px}
+
+/* ---------- FAQ ----------
+   Grouped by product, one disclosure per question, in the same +/- idiom
+   as the release notes. */
+.faq{display:grid;gap:14px}
+.faq-group{
+  border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);
+  padding:22px 26px 10px;display:grid;
+  grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:0 34px;
+}
+.faq-group > h3{display:flex;flex-direction:column;gap:6px;padding-top:2px;font-weight:400}
+.faq-group > h3 .lockup + .sub{margin-top:4px}
+.faq-group > h3 .lockup{font-size:12.5px;color:var(--text)}
+.faq-group > h3 .sub{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.faq-group > h3 .sub a{color:var(--faint);text-decoration:none;border-bottom:1px solid var(--line)}
+.faq-group > h3 .sub a:hover{color:#fff;border-bottom-color:var(--faint)}
+.faq-group .qs{min-width:0}
+.faq-group details{border-bottom:1px solid var(--line-soft)}
+.faq-group details:last-child{border-bottom:0}
+.faq-group summary{
+  cursor:pointer;list-style:none;display:flex;gap:12px;align-items:baseline;
+  padding:0 0 14px;color:var(--text);font-size:15.5px;line-height:1.45;
+}
+.faq-group details + details summary{padding-top:14px}
+.faq-group summary::-webkit-details-marker{display:none}
+.faq-group summary::before{
+  content:"+";flex:0 0 12px;font-family:var(--mono);font-size:13px;color:var(--faint);
+}
+.faq-group details[open] > summary::before{content:"\2013"}
+.faq-group summary:hover{color:#fff}
+.faq-group .a{color:var(--dim);font-size:14.5px;line-height:1.6;max-width:68ch;padding:0 0 16px 24px}
+.faq-group .a p + p{margin-top:8px}
+.faq-group .a strong{color:var(--text);font-weight:600}
+
+/* ---------- About ---------- */
+.note .body .sig{margin-top:14px;font-family:var(--disp);font-size:12px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--text)}
+.chans{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+.chans li{display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:baseline}
+.chans b{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--text)}
+
+/* ---------- contact form ----------
+   Only rendered when the Worker can actually deliver it (worker.js strips
+   [data-contact] otherwise), so the page never offers a form that fails. */
+.contact{margin-top:18px;display:grid;gap:14px;max-width:560px}
+.contact .pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.contact label{display:grid;gap:6px;font-family:var(--mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.contact input,.contact select,.contact textarea{
+  font:15px/1.45 var(--sans);color:var(--text);background:var(--bg);
+  border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;
+  letter-spacing:normal;text-transform:none;
+}
+.contact textarea{min-height:140px;resize:vertical}
+.contact input:focus,.contact select:focus,.contact textarea:focus{outline:none;border-color:var(--faint)}
+.contact .opt{margin-left:6px;color:var(--faint);letter-spacing:.06em;text-transform:none;font-weight:400}
+.contact .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contact .send{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.contact button{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--bg);background:var(--text);border:0;border-radius:999px;padding:11px 22px;cursor:pointer;
+}
+.contact button:hover{background:#fff}
+.contact button:disabled{opacity:.5;cursor:default}
+.contact .status{font-size:14px;color:var(--dim)}
+.contact .status.bad{color:var(--red)}
 
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--line-soft);padding:34px 0 46px}
@@ -437,11 +500,17 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   .btn .os{flex-basis:54px}
 }
 @media (max-width:560px){
+  .site-head .brand .lockup{display:none}
+  .nav .nl{display:none}.nav .ns{display:inline}
+  .faq-group{grid-template-columns:1fr;gap:10px}
+  .contact .pair{grid-template-columns:1fr}
+  .chans li{grid-template-columns:1fr;gap:2px}
   .site-head .wrap{height:54px}
   .brand .lockup{font-size:11px}
   .nav{gap:14px}
 }
 @media (max-width:440px){
+  .nav{gap:12px}.nav a{letter-spacing:.12em}
   .chan-date{margin-left:0;width:100%}
   .note .body .path{white-space:normal}
 }
@@ -531,7 +600,10 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       <span class="lockup">Concorde</span>
     </a>
     <nav class="nav" aria-label="Primary">
-      <a class="nav-cta" href="#downloads">Downloads</a>
+      <a href="#downloads">Products</a>
+      <a href="#install"><span class="nl">Installation</span><span class="ns">Install</span></a>
+      <a href="#faq">FAQ</a>
+      <a href="#about">About</a>
     </nav>
   </div>
 </header>
@@ -741,7 +813,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             </li>
             <li>
               <span class="n">04</span>
-              <div><b>Server-side DNS filtering</b><span class="d">Ad and telemetry blocking with zero client config.</span></div>
+              <div><b>DNS filtering</b><span class="d">Optional NextDNS blocking, with the lists you choose. Without it, DNS is still encrypted.</span></div>
             </li>
             <li>
               <span class="n">05</span>
@@ -859,6 +931,107 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============
+       Answers are checked against each app's source; keep them to what
+       the software does today, not what it might do. -->
+  <section class="section" id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="faq-h">FAQ</h2>
+        <span class="label count">10 questions</span>
+      </div>
+      <div class="faq reveal d1">
+        <div class="faq-group">
+          <h3><span class="lockup">Concorde<span class="tld">AI</span></span></h3>
+          <div class="qs">
+            <details><summary>Does ConcordeAI run locally?</summary><div class="a"><p>Yes. Models download to your computer and run there: MLX on Apple silicon, Ollama on Intel Macs and Windows, using CUDA on NVIDIA cards. Cloud models stay off until you add an API key. Without one, two things still go online: web search, for questions about the world, and image requests, unless local image generation (Apple silicon only) is installed.</p></div></details>
+            <details><summary>How much disk space do I need?</summary><div class="a"><p>The setup wizard shows each model set&#x27;s download size for your machine before anything downloads. Basic is one 0.8 GB model. On a Mac, Pro is 7 to 11 GB, and Max, the largest set, is 22 to 25 GB with 16 GB of memory or about 50 GB with 32 GB. Local image generation, Apple silicon only, adds 9.6 GB.</p></div></details>
+            <details><summary>How much memory do I need?</summary><div class="a"><p>ConcordeAI only lists models your machine can hold: by default, those within 75% of your RAM, or on a PC with an NVIDIA card, 1.25 times the card&#x27;s memory if that is lower. Loading a model needs about one and a half times its size free, so roughly 4 GB for Llama 3.2 3B and 12 GB for Gemma 4 12B. If a model can&#x27;t load, a smaller installed one answers.</p></div></details>
+            <details><summary>Why use it over an online AI tool?</summary><div class="a"><p>With no cloud key, text answers come from models on your computer, your chats are saved in a file on it, and local models work offline. Add a Gemini, Groq, Claude or Kimi key and cloud models join in. Thinking and Pro modes blend several models&#x27; drafts into one answer, and the same window has a Code lane, with an SSH agent that asks before irreversible commands, and Funnels for step-by-step decisions.</p></div></details>
+          </div>
+        </div>
+        <div class="faq-group">
+          <h3><span class="lockup">Concorde<span class="tld">VPN</span></span></h3>
+          <div class="qs">
+            <details><summary>Is a Windows version coming?</summary><div class="a"><p>Not at the moment. ConcordeVPN is macOS only and no Windows version has been announced: it is built from macOS parts, from the background service that runs the tunnel to the menu-bar app itself.</p></div></details>
+            <details><summary>What does it do that other VPN software doesn&#x27;t?</summary><div class="a"><p>It has three ways through, Trojan, VLESS + REALITY and Hysteria 2, and when one stops answering it moves to the next. REALITY answers a probe with the real website whose certificate it borrows. The app names your exit only after checking your public address, has a built-in leak test, and from 1.4 has a kill switch that stops internet traffic leaving outside the tunnel.</p></div></details>
+            <details><summary>Why do I need to run my own server?</summary><div class="a"><p>ConcordeVPN is only the client: there is no ConcordeVPN network or account to sign up for. The tunnel ends at a server you run, where the installer generates the passwords and keeps the system log in memory only. The app can also create one on DigitalOcean for you. It is not an anonymity tool: the server sits in your own hosting account.</p></div></details>
+          </div>
+        </div>
+        <div class="faq-group">
+          <h3><span class="lockup">Concorde<span class="tld">Go</span></span><span class="sub">Beta</span><span class="sub"><a href="https://go.flyconcordefly.com/" target="_blank" rel="noopener">go.flyconcordefly.com&nbsp;&#8599;</a></span></h3>
+          <div class="qs">
+            <details><summary>Why use it over other flight search tools?</summary><div class="a"><p>Every flight site sells the same flights. ConcordeGo ranks them by what the trip costs door to door, in dollars: the ticket, bags the fare leaves out, rides to and from the airports, layovers, your time and comfort. Each flight gets a letter grade on six rubrics, with price judged against a fair fare for that route and date. Same search, same data, same order.</p></div></details>
+            <details><summary>What&#x27;s the Flight Fixer?</summary><div class="a"><p>It is for a flight that is delayed or canceled. It searches the day&#x27;s other flights and prices each one: the ticket, less any refund you may get, less the time it saves at your hourly rate, plus an estimated hotel night and rides if it leaves tomorrow. It says switch, stay or wait, estimates your odds of flying out today, and lists what you may ask the airline for.</p></div></details>
+            <details><summary>How is the all-in cost worked out?</summary><div class="a"><p>All in is what you pay: the ticket with taxes and fees, checked bags the fare doesn&#x27;t include, rides to and from the airports, a hotel night when a layover runs overnight, and extras you ask for, such as a wifi pass. Rides are estimated from your address and the time of day, and lean high; an unpublished bag fee is priced high, never free. Your time and comfort change the order, not the bill.</p></div></details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="section" id="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="about-h">About</h2>
+        <span class="label count">Hobby software</span>
+      </div>
+
+      <div class="note reveal d1">
+        <h3>Why they exist</h3>
+        <div class="body">
+          <p>I built these to fill gaps: things the apps I already used couldn&rsquo;t do, and tools I needed that didn&rsquo;t exist. Once they worked well enough for me every day, I cleaned them up so other people could use them too.</p>
+          <p>This is a hobby, not a business, and I&rsquo;m adding features all the time. If one of these turns out to be useful to you, keep it up to date. ConcordeAI and ConcordeVPN update themselves; ConcordeGo is a website, so it is always current.</p>
+          <p class="sig">&mdash; Pat</p>
+        </div>
+
+        <h3>Channels</h3>
+        <div class="body">
+          <p>ConcordeAI and ConcordeVPN each ship on up to three channels.</p>
+          <ul class="chans">
+            <li><b>Stable</b><span>The finished release. Use this one if you just want it to work.</span></li>
+            <li><b>Prerelease</b><span>Betas with new features and fixes I&rsquo;ve confirmed. Relatively stable.</span></li>
+            <li><b>Nightly</b><span>What I&rsquo;m working on right now: new features, bug fixes, speed. It&rsquo;s what I run myself, and it may have bugs the others don&rsquo;t.</span></li>
+          </ul>
+        </div>
+
+        <!-- The whole feedback row, form included, is removed by worker.js
+             unless the Worker can deliver mail (a send_email binding named
+             CONTACT and a CONTACT_TO secret). Deleting that secret takes the
+             form off the page; the address itself never appears here. -->
+        <h3 data-contact>Feedback</h3>
+        <div class="body" data-contact>
+          <p>Feedback is welcome: use the form below. This is a hobby, so I may not get to every message, and a feature request is a request, not a promise. This isn&rsquo;t commercial software, and it changes when I have the time and a reason to change it.</p>
+          <form class="contact" id="contact" novalidate>
+            <div class="pair">
+              <label for="contact-name"><span>Name <span class="opt">optional</span></span>
+                <input id="contact-name" name="name" type="text" maxlength="100" autocomplete="name"></label>
+              <label for="contact-email"><span>Email <span class="opt">so I can reply</span></span>
+                <input id="contact-email" name="email" type="email" maxlength="200" autocomplete="email" required></label>
+            </div>
+            <label for="contact-product">About
+              <select id="contact-product" name="product">
+                <option>ConcordeAI</option>
+                <option>ConcordeVPN</option>
+                <option>ConcordeGo</option>
+                <option>This website</option>
+                <option>Something else</option>
+              </select></label>
+            <label for="contact-message">Message
+              <textarea id="contact-message" name="message" maxlength="5000" required></textarea></label>
+            <div class="hp" aria-hidden="true"><label for="contact-website">Leave this empty
+              <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+            <div class="send">
+              <button type="submit" id="contact-send">Send</button>
+              <span class="status" id="contact-status" role="status" aria-live="polite"></span>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1178,5 +1351,35 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 })();
 </script>
 
+<script>
+/* Contact form. The form only exists when worker.js can deliver mail; the
+   address it goes to lives in a Worker secret and never reaches this page. */
+(function () {
+  var form = document.getElementById("contact");
+  if (!form) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var status = $("contact-status"), send = $("contact-send"), opened = Date.now();
+  function say(text, bad) { status.textContent = text; status.classList.toggle("bad", !!bad); }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var email = $("contact-email").value.trim(), message = $("contact-message").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Add an email address so I can reply.", true); $("contact-email").focus(); return; }
+    if (message.length < 5) { say("Write a message first.", true); $("contact-message").focus(); return; }
+    send.disabled = true; say("Sending\u2026");
+    fetch("/api/contact", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: $("contact-name").value, email: email, product: $("contact-product").value,
+        message: message, website: $("contact-website").value, ms: Date.now() - opened, js: 1 })
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok, j: j }; });
+    }).then(function (r) {
+      if (r.ok) { form.reset(); say("Sent. Thanks."); }
+      else say(r.j.error || "That didn\u2019t send. Try again in a minute.", true);
+    }).catch(function () {
+      say("That didn\u2019t send. Check your connection and try again.", true);
+    }).then(function () { send.disabled = false; });
+  });
+})();
+</script>
 </body>
 </html>
