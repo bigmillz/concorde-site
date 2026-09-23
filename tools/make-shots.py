@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-"""Capture the product windows and normalise them into a matched pair.
+"""Capture the product windows and normalise them to one geometry.
 
-The two windows sit side by side on the site at ONE CSS height, so the
-assets must agree on geometry or nothing lines up: in each output the
-opaque window occupies exactly rows MARGIN..MARGIN+WIN_H and is surrounded
-by the same MARGIN of transparent shadow room on all four sides. Two images
-with identical window rows, given the same CSS height, render their windows
-on the same top and bottom line — that is the whole trick, and it is why
-the site never has to know how big the shadow is.
+Each product card on the site shows its app's window beside the card's
+text, and a script on the page sizes each window to that text. For the
+page to place and centre a window it has to know where the window is
+inside its image, so every asset agrees on one geometry: the opaque window
+occupies exactly rows MARGIN..MARGIN+WIN_H and is surrounded by the same
+MARGIN of transparent shadow room on all four sides. The page knows that
+one number (SHADOW in index.html's fit script and in its Enlarge dialog)
+and never has to measure an image.
 
 The geometry is exact by construction, not by measurement: the window is
 located in the raw 2x capture (where it is pixel-aligned), and ONE resize
 maps window+margin straight onto the output canvas, so the window's edges
-land on pixel boundaries in both images with the same phase.
+land on pixel boundaries with the same phase in every image.
 
 The box-shadow reaches further than MARGIN. Rather than crop it to a hard
 line (visible as a faint step on the page), the outer FEATHER px of the
 margin fade the alpha to zero, so the shadow ends in nothing.
 
 The captures are 2x (Retina) and the outputs stay 2x: WIN_H is twice the
-largest height the site renders the windows at.
+tallest the site draws a window (about 650 CSS px, the desktop cards), and
+MARGIN and FEATHER keep the proportions the first, shorter windows had
+(80 and 30 on a 900px window).
 
 Run from anywhere:  python3 tools/make-shots.py
 """
@@ -34,19 +37,22 @@ CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.normpath(os.path.join(HERE, "..", "assets"))
 
-WIN_H = 900      # window height in the finished asset (px)
-MARGIN = 80      # transparent room around the window, every side (px). The
-                 # two images abut on the page, so this is also half the
-                 # visible gap between the windows.
-FEATHER = 30     # outer px of the margin over which the shadow fades out
+WIN_H = 1300     # window height in the finished asset (px)
+MARGIN = 116     # transparent room around the window, every side (px).
+                 # index.html knows this number (SHADOW, in the fit
+                 # script and the Enlarge dialog) and the ratio
+                 # (WIN_H + 2 * MARGIN) / WIN_H (1.18, in the stacked
+                 # CSS): change one, change the others.
+FEATHER = 43     # outer px of the margin over which the shadow fades out
 OPAQUE = 250     # alpha at or above this is window; below is shadow or air
 
 # name -> (source page, capture window in CSS px). The capture must hold
 # the window plus MARGIN/k of shadow on every side, where k = WIN_H / the
 # window's 2x pixel height; the script refuses a capture that is too small.
 SOURCES = {
-    "ai":  ("ai-window.html",  (1520, 1120)),
+    "ai":  ("ai-window.html",  (1400, 1520)),
     "vpn": ("vpn-window.html", (780, 1220)),
+    "go":  ("go-window.html",  (1470, 1600)),   # a browser frame round go-capture.png
 }
 
 
@@ -111,7 +117,7 @@ def main():
             out.save(base + ".webp", quality=88, method=6)
             print("  shot-%-4s %4dx%-4d  raw window %4dx%d  shadow reached %dpx, margin %d (fades over the last %d)"
                   % (name, out.width, out.height, ww, wh, reach, MARGIN, FEATHER))
-    print("  window rows %d..%d in both; update the <img width height> in index.html if the sizes changed"
+    print("  window rows %d..%d in every image; update the <img width height> in index.html if the sizes changed"
           % (MARGIN, MARGIN + WIN_H))
 
 
