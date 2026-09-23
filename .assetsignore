@@ -10,3 +10,4 @@ CNAME
 tools/
 .wrangler/
 .github/
+.dev.vars

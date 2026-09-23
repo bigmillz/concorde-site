@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 # wrangler dev / deploy scratch — inside the assets root, so it must never be served either (see .assetsignore)
 .wrangler/
+.dev.vars
