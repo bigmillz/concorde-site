@@ -16,11 +16,16 @@ The Feedback form in the About section posts to `/api/contact` in
 message through Email Routing. Until all four steps below are done the
 Worker strips the form from the page and the endpoint answers 503:
 
-1. Enable Email Routing on the flyconcordefly.com zone.
-2. Verify the destination address in Email Routing.
-3. Create a Turnstile widget: Managed mode, hostname `flyconcordefly.com`.
+1. Enable Email Routing for flyconcordefly.com: account-level
+   **Compute > Email Service > Email Routing > Onboard Domain** (it is no
+   longer under the domain's own Email menu).
+2. Verify the destination address: same place, **Destination Addresses**.
+3. Create a Turnstile widget (**Turnstile > Add widget**): Managed mode,
+   hostname `flyconcordefly.com`.
 4. Add the Worker secrets `CONTACT_TO` (the verified address),
-   `TURNSTILE_SITEKEY` and `TURNSTILE_SECRET` (both from the widget).
+   `TURNSTILE_SITEKEY` and `TURNSTILE_SECRET` (both from the widget):
+   **Workers & Pages > concorde-site > Settings > Variables and Secrets >
+   Add**, type **Secret**.
 
 The `send_email` binding `CONTACT` is already in `wrangler.jsonc`, with no
 address: this repo is public, so the address lives only in the secret.
