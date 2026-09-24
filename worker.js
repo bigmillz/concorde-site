@@ -434,7 +434,7 @@ async function handleContact(request, env, ctx, isWorkersDev) {
   const email = oneLine(field(data.email, 200));
   const topic = CONTACT_TOPICS.includes(data.product) ? data.product : "Something else";
   const message = field(data.message, 5000);
-  if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(email)) return reply(400, { ok: false, error: "Add an email address I can reply to." });
+  if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(email)) return reply(400, { ok: false, error: "Add your email address first." });
   if (message.length < 5) return reply(400, { ok: false, error: "Write a message first." });
 
   // Turnstile before the hourly limit: a post without a valid token must not

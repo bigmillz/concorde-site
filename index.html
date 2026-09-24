@@ -1279,18 +1279,14 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
              key onto [data-turnstile] as it serves the page. -->
         <h3 data-contact>Feedback</h3>
         <div class="body" data-contact>
-          <p>Bug reports, ideas and plain feedback are welcome. It&rsquo;s a hobby, so three things first:</p>
-          <ul class="chans">
-            <li><b>Replies</b><span>I read messages when I have the time, and I may not reply to every one.</span></li>
-            <li><b>Requests</b><span>A message isn&rsquo;t a ticket. Reports and ideas help, but sending one doesn&rsquo;t mean a bug will be fixed or a feature added.</span></li>
-            <li><b>Support</b><span>There&rsquo;s no support line and no timeline.</span></li>
-          </ul>
+          <p>Found a bug, have an idea, or just want to say hi? I&rsquo;d love to hear from you! &#x1F44B;</p>
+          <p>This is a spare-time hobby for me, so I may not be able to reply to every message. Not every idea will make it in either, but they all help.</p>
           <noscript><p class="contact-off">The form needs JavaScript, which is off in this browser.</p></noscript>
           <form class="contact" id="contact" method="post" action="/api/contact" novalidate>
             <div class="pair">
               <label for="contact-name"><span>Name <span class="opt">optional</span></span>
                 <input id="contact-name" name="name" type="text" maxlength="100" autocomplete="name"></label>
-              <label for="contact-email"><span>Email <span class="opt">if I reply</span></span>
+              <label for="contact-email"><span>Email</span>
                 <input id="contact-email" name="email" type="email" maxlength="200" autocomplete="email" required></label>
             </div>
             <label for="contact-product">About
@@ -1876,7 +1872,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
      during the check is what gets sent. */
   function fields() {
     var email = $("contact-email").value.trim(), message = $("contact-message").value.trim();
-    if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(email)) { say("Add an email address I can reply to.", true); $("contact-email").focus(); return null; }
+    if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(email)) { say("Add your email address first.", true); $("contact-email").focus(); return null; }
     if (message.length < 5) { say("Write a message first.", true); $("contact-message").focus(); return null; }
     return { name: $("contact-name").value, email: email, product: $("contact-product").value,
       message: message, website: $("contact-website").value };
@@ -1910,7 +1906,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok, j: j }; });
       }).then(function (r) {
         freeze(false);
-        if (r.ok) { form.reset(); say("Sent. Thanks for writing."); }
+        if (r.ok) { form.reset(); say("Sent! Thanks for writing."); }
         else say(r.j.error || "That didn\u2019t send. Try again in a minute.", true);
       }).catch(function () {
         freeze(false);
