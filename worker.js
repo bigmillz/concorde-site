@@ -10,11 +10,13 @@
  * 5. The nightly channels' commit and build date, read from GitHub at
  *    request time: a nightly is rebuilt on every push and the page's
  *    generated copy of it is only as fresh as the last sync.
- * 6. The contact form: POST /api/contact mails the message through
- *    Cloudflare Email Routing. The destination address is a Worker SECRET
- *    (CONTACT_TO), never in this repo — the repo is public. Without the
- *    binding and the secret the form is stripped from the page, so taking
- *    it down is deleting the secret.
+ * 6. The contact form: POST /api/contact checks a Cloudflare Turnstile
+ *    token, then mails the message through Cloudflare Email Routing. The
+ *    destination address is a Worker SECRET (CONTACT_TO), never in this
+ *    repo — the repo is public. The form needs the send_email binding and
+ *    three secrets (CONTACT_TO, TURNSTILE_SITEKEY, TURNSTILE_SECRET);
+ *    without all four it is stripped from the page, so taking it down is
+ *    deleting any one of the secrets.
  * 7. ConcordeGo's build and date, read from go.flyconcordefly.com itself.
  *    It is a website, not a release: it deploys on every push and has no
  *    GitHub release for tools/sync-releases.py to read, so its card is
@@ -101,7 +103,7 @@ export default {
       res = await stampUpdated(res, ctx);
       res = await stampNightlies(res, ctx);
       res = stampGo(res, await go);
-      if (!contactReady(env)) res = stripContact(res);
+      res = contactReady(env) ? stampTurnstile(res, env) : stripContact(res);
     }
     if (isWorkersDev) return res;
 
@@ -348,14 +350,34 @@ function goStamp(build, updated) {
 const CONTACT_FROM = "site@flyconcordefly.com";
 const CONTACT_TOPICS = ["ConcordeAI", "ConcordeVPN", "ConcordeGo", "This website", "Something else"];
 const CONTACT_PER_HOUR = 3;          // per visitor IP, per Cloudflare location
+const CONTACT_MAX_BYTES = 20000;     // the JSON body; the message itself is cut at 5000 characters
 
+// Turnstile, Cloudflare's CAPTCHA: no third-party tracker, and most people
+// never see it. The widget is created in the dashboard (Managed mode,
+// hostname flyconcordefly.com); its site key and secret are Worker secrets.
+// The site key is public, but as a secret rather than a wrangler.jsonc var
+// a Workers Builds deploy can never wipe it, and creating the widget needs
+// no repo edit.
+const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+const TURNSTILE_ACTION = "contact";  // the page renders the widget with this action
+const TOKEN_MAX = 2048;              // Cloudflare's documented maximum token length
+
+// All four or nothing; README.md, "The contact form", has the switch-on steps.
 function contactReady(env) {
-  return Boolean(env.CONTACT && env.CONTACT_TO);
+  return Boolean(env.CONTACT && env.CONTACT_TO && env.TURNSTILE_SITEKEY && env.TURNSTILE_SECRET);
 }
 
 function stripContact(res) {
   return new HTMLRewriter()
     .on("[data-contact]", { element(el) { el.remove(); } })
+    .transform(res);
+}
+
+/** Put the Turnstile site key on the form's widget box. The key is never in
+ *  index.html, so a page served without it has no key to render with. */
+function stampTurnstile(res, env) {
+  return new HTMLRewriter()
+    .on("[data-turnstile]", { element(el) { el.setAttribute("data-sitekey", env.TURNSTILE_SITEKEY); } })
     .transform(res);
 }
 
@@ -384,10 +406,19 @@ async function handleContact(request, env, ctx, isWorkersDev) {
   let originHost = "";
   try { originHost = new URL(origin).hostname; } catch (_) { /* no or bad Origin */ }
   if (originHost !== CANONICAL && !isWorkersDev) return reply(403, { ok: false, error: "Use the form on the page." });
-  if (Number(request.headers.get("Content-Length") || 0) > 20000) return reply(413, { ok: false, error: "That message is too long." });
+  if (Number(request.headers.get("Content-Length") || 0) > CONTACT_MAX_BYTES) return reply(413, { ok: false, error: "That message is too long." });
 
+  // The header is only a fast path: a chunked or HTTP/2 post can leave it
+  // out, so the body itself is counted as it is read.
   let data;
-  try { data = await request.json(); } catch (_) { return reply(400, { ok: false, error: "That didn’t send. Try again." }); }
+  try {
+    const text = await readCapped(request, CONTACT_MAX_BYTES);
+    if (text === null) return reply(413, { ok: false, error: "That message is too long." });
+    data = JSON.parse(text);
+  } catch (_) { data = null; }
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return reply(400, { ok: false, error: "That didn’t send. Try again." });
+  }
   const field = (v, max) => (typeof v === "string" ? v : "").trim().slice(0, max);
 
   // Bots: the hidden field is filled, or the form was never run as a page,
@@ -398,13 +429,19 @@ async function handleContact(request, env, ctx, isWorkersDev) {
   }
 
   // Header values must never carry a line break (header injection).
-  const oneLine = (v) => v.replace(/[\r\n\u2028\u2029]+/g, " ").replace(/[<>"]/g, "");
+  const oneLine = (v) => v.replace(/[\r\n\u2028\u2029]+/g, " ").replace(/[<>"\\]/g, "");
   const name = oneLine(field(data.name, 100));
   const email = oneLine(field(data.email, 200));
   const topic = CONTACT_TOPICS.includes(data.product) ? data.product : "Something else";
   const message = field(data.message, 5000);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return reply(400, { ok: false, error: "Add an email address so I can reply." });
+  if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(email)) return reply(400, { ok: false, error: "Add an email address I can reply to." });
   if (message.length < 5) return reply(400, { ok: false, error: "Write a message first." });
+
+  // Turnstile before the hourly limit: a post without a valid token must not
+  // use up the allowance of a real visitor behind the same IP.
+  const human = await turnstileOk(data.token, request, env, isWorkersDev);
+  if (human === null) return reply(502, { ok: false, error: "The spam check couldn’t be reached. Try again in a minute." });
+  if (!human) return reply(403, { ok: false, error: "The spam check didn’t pass, so nothing was sent. Try again, or reload the page." });
 
   if (!(await underLimit(request, ctx))) {
     return reply(429, { ok: false, error: "Too many messages from here. Try again in an hour." });
@@ -437,6 +474,75 @@ async function handleContact(request, env, ctx, isWorkersDev) {
     return reply(502, { ok: false, error: "That didn’t send. Try again in a minute." });
   }
   return reply(200, { ok: true });
+}
+
+/** true if Cloudflare vouches for the token, false if it does not, null if
+ *  siteverify could not be asked. Every path that is not a clear yes sends
+ *  nothing. Tokens are single-use and expire after five minutes; the page
+ *  resets its widget after every attempt. */
+async function turnstileOk(token, request, env, isWorkersDev) {
+  if (typeof token !== "string" || !token || token.length > TOKEN_MAX) return false;
+  let r;
+  try {
+    const res = await within(4000, fetch(SITEVERIFY, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        secret: env.TURNSTILE_SECRET,
+        response: token,
+        remoteip: request.headers.get("CF-Connecting-IP") || undefined,
+        // one per check; siteverify answers a repeat of the same key as a
+        // retry of that check rather than as a second use of the token
+        idempotency_key: crypto.randomUUID(),
+      }),
+      signal: AbortSignal.timeout(4000),
+    }));
+    // A bad secret or request comes back 400 with the usual JSON (error
+    // code invalid-input-secret, say), so the body is read whatever the
+    // status: that is what makes the log below say what went wrong.
+    r = res ? await within(1500, res.json().catch(() => null)) : null;
+    // A 5xx, or internal-error in any answer, is Cloudflare's side failing
+    // (documented as retryable), not a verdict on the visitor.
+    if (r && typeof r === "object" && (res.status >= 500 || [].concat(r["error-codes"] || []).includes("internal-error"))) {
+      console.log("contact: siteverify failed", JSON.stringify({ status: res.status, codes: r["error-codes"] || [] }));
+      return null;
+    }
+  } catch (_) {
+    r = null;
+  }
+  if (!r || typeof r !== "object" || typeof r.success !== "boolean") {
+    console.log("contact: siteverify unreachable");
+    return null;
+  }
+  // Cloudflare's test keys answer for hostname example.com and send no
+  // action, so staging and local dev skip the hostname and accept a missing
+  // action. A wrong action fails everywhere.
+  const actionOk = r.action === TURNSTILE_ACTION || (isWorkersDev && r.action === undefined);
+  const hostOk = isWorkersDev || r.hostname === CANONICAL;
+  if (r.success === true && actionOk && hostOk) return true;
+  console.log("contact: turnstile rejected", JSON.stringify({
+    codes: r["error-codes"] || [], action: r.action, hostname: r.hostname,
+  }));
+  return false;
+}
+
+/** The body as text, or null once it passes max bytes (the rest is not read). */
+async function readCapped(request, max) {
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks = [];
+  let n = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    n += value.byteLength;
+    if (n > max) { reader.cancel().catch(() => {}); return null; }
+    chunks.push(value);
+  }
+  const all = new Uint8Array(n);
+  let at = 0;
+  for (const c of chunks) { all.set(c, at); at += c.byteLength; }
+  return new TextDecoder().decode(all);
 }
 
 async function underLimit(request, ctx) {

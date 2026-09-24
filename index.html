@@ -574,8 +574,11 @@ dialog.zoom:focus{outline:none}
 
 /* ---------- contact form ----------
    Only rendered when the Worker can actually deliver it (worker.js strips
-   [data-contact] otherwise), so the page never offers a form that fails. */
-.contact{margin-top:18px;display:grid;gap:14px;max-width:560px}
+   [data-contact] otherwise), so the page never offers a form that fails.
+   It is also hidden without JavaScript, which it needs to send at all. */
+.contact{margin-top:18px;display:none;gap:14px;max-width:560px}
+.js .contact{display:grid}
+.contact-off{margin-top:18px}
 .contact .pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .contact label{display:grid;gap:6px;font-family:var(--mono);font-size:10.5px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
@@ -594,9 +597,14 @@ dialog.zoom:focus{outline:none}
   color:var(--bg);background:var(--text);border:0;border-radius:999px;padding:11px 22px;cursor:pointer;
 }
 .contact button:hover{background:#fff}
-.contact button:disabled{opacity:.5;cursor:default}
+.contact button[aria-disabled="true"]{opacity:.5;cursor:default}
 .contact .status{font-size:14px;color:var(--dim)}
 .contact .status.bad{color:var(--red)}
+/* Turnstile runs in interaction-only mode: most visitors never see it, and
+   then its box takes no room at all (an empty grid item would still add a
+   gap). The script shows it only while Cloudflare wants a click. */
+.contact .ts{display:none}
+.contact .ts.on{display:block;max-width:100%}
 
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--line-soft);padding:34px 0 46px}
@@ -1263,17 +1271,26 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         </div>
 
         <!-- The whole feedback row, form included, is removed by worker.js
-             unless the Worker can deliver mail (a send_email binding named
-             CONTACT and a CONTACT_TO secret). Deleting that secret takes the
-             form off the page; the address itself never appears here. -->
+             unless the Worker can deliver mail and check for bots: the
+             send_email binding CONTACT plus the secrets CONTACT_TO,
+             TURNSTILE_SITEKEY and TURNSTILE_SECRET. Deleting any one of
+             those secrets takes the form off the page. Neither the address
+             nor the Turnstile site key appears here: the Worker writes the
+             key onto [data-turnstile] as it serves the page. -->
         <h3 data-contact>Feedback</h3>
         <div class="body" data-contact>
-          <p>Feedback is welcome: use the form below. This is a hobby, so I may not get to every message, and a feature request is a request, not a promise. This isn&rsquo;t commercial software, and it changes when I have the time and a reason to change it.</p>
-          <form class="contact" id="contact" novalidate>
+          <p>Bug reports, ideas and plain feedback are welcome. It&rsquo;s a hobby, so three things first:</p>
+          <ul class="chans">
+            <li><b>Replies</b><span>I read messages when I have the time, and I may not reply to every one.</span></li>
+            <li><b>Requests</b><span>A message isn&rsquo;t a ticket. Reports and ideas help, but sending one doesn&rsquo;t mean a bug will be fixed or a feature added.</span></li>
+            <li><b>Support</b><span>There&rsquo;s no support line and no timeline.</span></li>
+          </ul>
+          <noscript><p class="contact-off">The form needs JavaScript, which is off in this browser.</p></noscript>
+          <form class="contact" id="contact" method="post" action="/api/contact" novalidate>
             <div class="pair">
               <label for="contact-name"><span>Name <span class="opt">optional</span></span>
                 <input id="contact-name" name="name" type="text" maxlength="100" autocomplete="name"></label>
-              <label for="contact-email"><span>Email <span class="opt">so I can reply</span></span>
+              <label for="contact-email"><span>Email <span class="opt">if I reply</span></span>
                 <input id="contact-email" name="email" type="email" maxlength="200" autocomplete="email" required></label>
             </div>
             <label for="contact-product">About
@@ -1288,6 +1305,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <textarea id="contact-message" name="message" maxlength="5000" required></textarea></label>
             <div class="hp" aria-hidden="true"><label for="contact-website">Leave this empty
               <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+            <div class="ts" data-turnstile></div>
             <div class="send">
               <button type="submit" id="contact-send">Send</button>
               <span class="status" id="contact-status" role="status" aria-live="polite"></span>
@@ -1758,31 +1776,147 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 
 <script>
 /* Contact form. The form only exists when worker.js can deliver mail; the
-   address it goes to lives in a Worker secret and never reaches this page. */
+   address it goes to lives in a Worker secret and never reaches this page.
+   Turnstile's script is loaded only once the form is about to be used (in
+   view or focused), not on every page view, and the widget stays invisible
+   unless Cloudflare wants a click. Its token is single-use: the widget is
+   reset after every attempt, sent or not. */
 (function () {
   var form = document.getElementById("contact");
   if (!form) return;
   var $ = function (id) { return document.getElementById(id); };
   var status = $("contact-status"), send = $("contact-send"), opened = Date.now();
+  var box = form.querySelector("[data-turnstile]");
+  var sitekey = box && box.getAttribute("data-sitekey");
+  var widget = null, token = "", problem = "", loading = false, wake = null, sending = false;
+  var NO_SCRIPT = "The spam check didn\u2019t load, so the form can\u2019t send. Try again in a minute.";
+  var FAILED = "The spam check failed, so the form can\u2019t send. Try again, or reload the page.";
+  var SLOW = "The spam check didn\u2019t finish, so nothing was sent. Try again, or reload the page.";
+  var ASK = "Complete the check above to send.";
   function say(text, bad) { status.textContent = text; status.classList.toggle("bad", !!bad); }
+  // Outside a send the failure shows at once; during one, the send reports it.
+  function fail(text) {
+    token = ""; problem = text;
+    if (wake) wake(); else if (!sending) say(text, true);
+  }
+
+  function render() {
+    loading = false;
+    try {
+      widget = turnstile.render(box, {
+        sitekey: sitekey, action: "contact", theme: "dark",
+        appearance: "interaction-only", "refresh-expired": "auto",
+        size: form.clientWidth < 300 ? "compact" : "normal",   // normal is 300px wide
+        callback: function (t) {
+          if (problem && !sending) say("");
+          token = t; problem = "";
+          if (wake) wake();
+        },
+        "expired-callback": function () { token = ""; },
+        "error-callback": function () { fail(FAILED); },
+        "before-interactive-callback": function () {
+          box.classList.add("on");
+          if (wake) { say(ASK); wake(120000); }
+        },
+        "after-interactive-callback": function () { box.classList.remove("on"); }
+      });
+      if (widget == null) throw new Error("no widget");
+    } catch (e) { widget = null; fail(FAILED); }
+  }
+  function load() {
+    if (loading || widget != null || !sitekey) return;
+    loading = true;
+    if (window.turnstile) { render(); return; }
+    window.onConcordeTurnstile = render;
+    var s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onConcordeTurnstile";
+    s.async = true;
+    s.onerror = function () { s.remove(); loading = false; fail(NO_SCRIPT); };
+    document.head.appendChild(s);
+  }
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); }
+    }, { rootMargin: "600px 0px" });
+    io.observe(form);
+  }
+  form.addEventListener("focusin", load);
+
+  /* Resolves with a token, or "" once the check has failed or taken too
+     long. wake(ms) restarts the wait instead: the widget has asked for a
+     click, which takes a person longer than the silent check does. */
+  function tokenReady() {
+    if (token) return Promise.resolve(token);
+    if (!sitekey) { problem = FAILED; return Promise.resolve(""); }
+    if (problem) {                       // a new attempt: start the check over
+      problem = "";
+      if (widget != null) try { turnstile.reset(widget); } catch (e) {}
+    }
+    load();
+    var asking = box.classList.contains("on");
+    say(asking ? ASK : "Checking this browser\u2026");
+    return new Promise(function (resolve) {
+      var timer;
+      wake = function (ms) {
+        clearTimeout(timer);
+        if (ms && !token && !problem) { timer = setTimeout(wake, ms); return; }
+        wake = null;
+        resolve(token);
+      };
+      if (token || problem) wake(); else wake(asking ? 120000 : 20000);
+    });
+  }
+  function reset() {
+    token = "";
+    if (widget != null) try { turnstile.reset(widget); } catch (e) {}
+  }
+
+  /* The fields as they are now, or null (with the reason shown) if they
+     cannot be sent. Read again once the token arrives, so whatever was typed
+     during the check is what gets sent. */
+  function fields() {
+    var email = $("contact-email").value.trim(), message = $("contact-message").value.trim();
+    if (!/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(email)) { say("Add an email address I can reply to.", true); $("contact-email").focus(); return null; }
+    if (message.length < 5) { say("Write a message first.", true); $("contact-message").focus(); return null; }
+    return { name: $("contact-name").value, email: email, product: $("contact-product").value,
+      message: message, website: $("contact-website").value };
+  }
+  // aria-disabled, not disabled: a disabled button drops keyboard focus to
+  // the page for the whole check. The sending flag is what blocks a resend.
+  function busy(on) {
+    sending = on;
+    if (on) send.setAttribute("aria-disabled", "true"); else send.removeAttribute("aria-disabled");
+  }
+  // Text fields are read-only only while the POST is out, so a reset on
+  // success cannot wipe words typed after they were sent.
+  function freeze(on) {
+    [].forEach.call(form.querySelectorAll("input,textarea"), function (el) { el.readOnly = on; });
+  }
+
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var email = $("contact-email").value.trim(), message = $("contact-message").value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("Add an email address so I can reply.", true); $("contact-email").focus(); return; }
-    if (message.length < 5) { say("Write a message first.", true); $("contact-message").focus(); return; }
-    send.disabled = true; say("Sending\u2026");
-    fetch("/api/contact", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: $("contact-name").value, email: email, product: $("contact-product").value,
-        message: message, website: $("contact-website").value, ms: Date.now() - opened, js: 1 })
-    }).then(function (r) {
-      return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok, j: j }; });
-    }).then(function (r) {
-      if (r.ok) { form.reset(); say("Sent. Thanks."); }
-      else say(r.j.error || "That didn\u2019t send. Try again in a minute.", true);
-    }).catch(function () {
-      say("That didn\u2019t send. Check your connection and try again.", true);
-    }).then(function () { send.disabled = false; });
+    if (sending || !fields()) return;
+    busy(true);
+    tokenReady().then(function (t) {
+      if (!t) { say(problem || SLOW, true); return; }
+      var f = fields();
+      if (!f) return;                    // emptied during the check; the token keeps
+      f.ms = Date.now() - opened; f.js = 1; f.token = t;
+      say("Sending\u2026");
+      freeze(true);
+      return fetch("/api/contact", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(f)
+      }).then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok && j.ok, j: j }; });
+      }).then(function (r) {
+        freeze(false);
+        if (r.ok) { form.reset(); say("Sent. Thanks for writing."); }
+        else say(r.j.error || "That didn\u2019t send. Try again in a minute.", true);
+      }).catch(function () {
+        freeze(false);
+        say("That didn\u2019t send. Check your connection and try again.", true);
+      }).then(reset);
+    }).then(function () { busy(false); });
   });
 })();
 </script>
