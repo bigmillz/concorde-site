@@ -87,7 +87,11 @@ CLI_DOWN_MBPS=110     # set to ~90% of the MEASURED line rate, not the plan rate
 CLI_UP_MBPS=14
 CC_MODE="bbr"    # BBR adapts to any line (100-500+ Mbps); no per-network tuning
 TUN_MTU=1400
-HARDEN_SSH=0
+# A new server is locked down by default; each has an opt-out flag.
+FIREWALL=1       # ufw: nothing in but SSH and the VPN's own ports
+HARDEN_SSH=1     # key-only SSH (skipped, never forced, if root has no key)
+FAIL2BAN=1       # only where OpenSSH lacks its own repeat-failure blocking
+AUTO_REBOOT=1    # reboot for security updates at 04:00 in the region's time
 ASSUME_YES=0
 
 # ------------------------------------------------------------------- output --
@@ -124,7 +128,12 @@ Options:
   --mtu N             Client TUN MTU (default: 1400; v23-mac.sh measures this)
   --hop A-B           UDP port-hop range (default: 20000-45000)
   --no-hop            Disable port hopping
-  --harden-ssh        Disable SSH password auth
+  --no-firewall       Leave the firewall off (default: on, SSH + VPN ports only)
+  --keep-ssh-passwords  Leave SSH password login alone (default: key-only,
+                      applied only when root already has an authorized key)
+  --no-fail2ban       No fail2ban on an OpenSSH older than 9.8 (newer ones
+                      block repeat login failures themselves)
+  --no-auto-reboot    Install security updates but never reboot for them
   --hy-version TAG    Hysteria release tag (default: app/v2.10.0)
   --no-reality        Skip the VLESS/REALITY transport (Xray-core)
   --reality-port N    TCP port for REALITY (default: 8443)
@@ -168,7 +177,11 @@ while [[ $# -gt 0 ]]; do
     --mtu)         TUN_MTU="$2"; shift 2 ;;
     --hop)         HOP_START="${2%%-*}"; HOP_END="${2##*-}"; HOP_ENABLED=1; shift 2 ;;
     --no-hop)      HOP_ENABLED=0; shift ;;
-    --harden-ssh)  HARDEN_SSH=1; shift ;;
+    --harden-ssh)  HARDEN_SSH=1; shift ;;          # the default now; kept for old scripts
+    --keep-ssh-passwords) HARDEN_SSH=0; shift ;;
+    --no-firewall) FIREWALL=0; shift ;;
+    --no-fail2ban) FAIL2BAN=0; shift ;;
+    --no-auto-reboot) AUTO_REBOOT=0; shift ;;
     --hy-version)  HY_VERSION="$2"; shift 2 ;;
     --no-reality)     REALITY_ENABLED=0; shift ;;
     # remembered separately so the standalone `reality` path can tell an
@@ -208,12 +221,15 @@ do_uninstall() {
   rm -rf /etc/sing-box /var/lib/sing-box /usr/local/etc/xray /var/log/xray
   userdel xray 2>/dev/null || true
   rm -f /etc/systemd/journald.conf.d/99-v23.conf
+  rm -f /etc/sysctl.d/98-concordevpn-recovery.conf /etc/apt/apt.conf.d/52concordevpn-reboot \
+        /etc/fail2ban/jail.d/concordevpn.local
+  rm -f /etc/systemd/system/{hysteria-server,sing-box,xray}.service.d/10-concordevpn-restart.conf
   rm -rf "$CFG_DIR" "$V23_DIR" "$STATE_DIR" "$LIB_DIR"
   systemctl daemon-reload
   systemctl restart systemd-journald 2>/dev/null || true
   sysctl --system >/dev/null 2>&1 || true
   userdel "$SVC_USER" 2>/dev/null || true
-  ok "concordevpn removed (ufw rules left in place)"
+  ok "concordevpn removed (the firewall, SSH settings and swap are left in place)"
   exit 0
 }
 [[ "$ACTION" == "uninstall" ]] && do_uninstall
@@ -1248,25 +1264,52 @@ UNIT
 fi
 
 # ---------------------------------------------------------------- firewall --
-# Only touch ufw if already active; enabling it here risks an SSH lockout.
-if command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q "^Status: active"; then
-  say "Adding ufw rules"
-  SSH_PORT="$(awk '/^[[:space:]]*Port[[:space:]]+[0-9]+/{print $2; exit}' /etc/ssh/sshd_config 2>/dev/null || true)"
-  ufw allow "${SSH_PORT:-22}/tcp" >/dev/null 2>&1 || true
-  ufw allow "${PORT}/udp" >/dev/null 2>&1 || true
-  ufw allow "${PORT}/tcp" >/dev/null 2>&1 || true
-  if [[ $REALITY_ENABLED -eq 1 ]]; then
-    ufw allow "${REALITY_PORT}/tcp" >/dev/null 2>&1 || true
+# A new server takes nothing but SSH and the VPN's own ports: ufw, default
+# deny inbound, IPv4 and IPv6. SSH is allowed on every port sshd really
+# listens on (sshd -T reads the drop-ins too) BEFORE the firewall comes up,
+# and ufw keeps established connections, so the session running this is
+# never cut. TCP 80 only where something uses it: the decoy site of a server
+# without Trojan, or certificate renewal for --domain. The UDP hop range is
+# redirected to the Hysteria port before the firewall sees it, but is opened
+# too so a firewall in front of this one can mirror these rules. A ufw that
+# is already on keeps its own defaults and just gains these rules.
+# sshd's effective settings, read once: under pipefail a failing sshd -T in
+# a pipeline would end the install, and `| grep -q` can SIGPIPE it
+SSHD_T="$(sshd -T 2>/dev/null || true)"
+SSH_PORTS="$(awk '$1 == "port" {print $2}' <<<"$SSHD_T" | sort -un | tr '\n' ' ')"
+[[ -z "${SSH_PORTS// }" ]] && SSH_PORTS="$( (awk '/^[[:space:]]*Port[[:space:]]+[0-9]+/{print $2}' /etc/ssh/sshd_config 2>/dev/null || true) | tr '\n' ' ')"
+[[ -z "${SSH_PORTS// }" ]] && SSH_PORTS="22"
+SSH_PORTS="${SSH_PORTS% }"
+NEED_80=0
+[[ $TROJAN_ENABLED -ne 1 || -n "$DOMAIN" ]] && NEED_80=1
+FW_ACTIVE=0
+command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q "^Status: active" && FW_ACTIVE=1
+fw_allow() { ufw allow "$1" >/dev/null 2>&1 || warn "ufw: could not allow $1"; }
+if [[ $FIREWALL -eq 1 || $FW_ACTIVE -eq 1 ]]; then
+  say "Firewall"
+  if ! command -v ufw >/dev/null 2>&1; then
+    apt-get install -y -qq --no-install-recommends ufw >/dev/null || die "could not install ufw"
   fi
-  ufw allow 80/tcp >/dev/null 2>&1 || true
-  if [[ $HOP_ENABLED -eq 1 ]]; then
-    ufw allow "${HOP_START}:${HOP_END}/udp" >/dev/null 2>&1 || true
+  for p in $SSH_PORTS; do fw_allow "${p}/tcp"; done
+  fw_allow "${PORT}/udp"
+  fw_allow "${PORT}/tcp"
+  [[ $REALITY_ENABLED -eq 1 ]] && fw_allow "${REALITY_PORT}/tcp"
+  [[ $NEED_80 -eq 1 ]] && fw_allow 80/tcp
+  [[ $HOP_ENABLED -eq 1 ]] && fw_allow "${HOP_START}:${HOP_END}/udp"
+  if [[ $FW_ACTIVE -eq 0 ]]; then
+    ufw default deny incoming >/dev/null
+    ufw default allow outgoing >/dev/null
+    # blocked scans would log strangers' addresses; the log-privacy section
+    # below keeps nothing it does not need
+    ufw logging off >/dev/null 2>&1 || true
+    ufw --force enable >/dev/null || die "could not enable ufw"
+    ok "firewall on: SSH ${SSH_PORTS}, TCP ${PORT}$([[ $REALITY_ENABLED -eq 1 ]] && echo ", TCP ${REALITY_PORT}")$([[ $NEED_80 -eq 1 ]] && echo ", TCP 80"), UDP ${PORT}$([[ $HOP_ENABLED -eq 1 ]] && echo ", UDP ${HOP_START}-${HOP_END}"); everything else dropped"
+  else
+    ufw reload >/dev/null 2>&1 || true
+    ok "ufw was already on: rules added"
   fi
-  ufw reload >/dev/null 2>&1 || true
-  ok "ufw updated"
 else
-  warn "ufw inactive. If you use a DigitalOcean Cloud Firewall, allow:"
-  warn "  UDP ${PORT}$([[ $HOP_ENABLED -eq 1 ]] && echo " and UDP ${HOP_START}-${HOP_END}"), TCP 80, TCP ${PORT}$([[ $REALITY_ENABLED -eq 1 ]] && echo ", TCP ${REALITY_PORT} (reality)")"
+  warn "firewall skipped (--no-firewall). Allow: UDP ${PORT}$([[ $HOP_ENABLED -eq 1 ]] && echo " and UDP ${HOP_START}-${HOP_END}"), TCP ${PORT}$([[ $REALITY_ENABLED -eq 1 ]] && echo ", TCP ${REALITY_PORT}")$([[ $NEED_80 -eq 1 ]] && echo ", TCP 80"), SSH ${SSH_PORTS}"
 fi
 
 # ------------------------------------------------------------- log privacy --
@@ -1284,6 +1327,8 @@ systemctl restart systemd-journald >/dev/null 2>&1 || warn "journald restart fai
 ok "journald volatile, 1h retention"
 
 # -------------------------------------------------------------- ssh harden --
+# Key-only: a password can be guessed, a key cannot. Never applied when root
+# has no authorized key - that would lock the owner out.
 if [[ $HARDEN_SSH -eq 1 ]]; then
   say "Hardening SSH"
   if [[ -s /root/.ssh/authorized_keys ]]; then
@@ -1293,12 +1338,146 @@ PasswordAuthentication no
 PermitRootLogin prohibit-password
 KbdInteractiveAuthentication no
 SSHD
-    systemctl reload ssh 2>/dev/null || systemctl reload sshd 2>/dev/null || true
-    ok "password auth disabled"
+    if sshd -t 2>/dev/null; then
+      systemctl reload ssh 2>/dev/null || systemctl reload sshd 2>/dev/null || true
+      ok "SSH is key-only"
+    else
+      rm -f /etc/ssh/sshd_config.d/99-v23.conf
+      warn "sshd rejected the key-only settings - left as it was"
+    fi
   else
-    warn "no root authorized_keys — skipping, refusing to risk lockout"
+    warn "no root authorized_keys - SSH passwords left on rather than risk a lockout"
   fi
 fi
+
+# ------------------------------------------------------ repeat-failure block --
+# An address that keeps failing to log in gets refused. OpenSSH 9.8 and later
+# do it themselves (PerSourcePenalties, on by default - Ubuntu 26.04 ships
+# 10.2), and there fail2ban would be protection in name only: its stock sshd
+# filter does not see OpenSSH 10's log lines, which come from "sshd-session".
+# So fail2ban is installed only where sshd lacks the built-in, reading the
+# journal (logs here never reach /var/log/auth.log) and never banning a
+# private address - SSH over the VPN itself arrives from one.
+if [[ $FAIL2BAN -eq 1 ]]; then
+  if grep -q '^persourcepenalties ' <<<"$SSHD_T"; then
+    ok "OpenSSH refuses repeat login failures itself (PerSourcePenalties)"
+  else
+    say "Installing fail2ban (this OpenSSH has no built-in blocking)"
+    if apt-get install -y -qq --no-install-recommends fail2ban python3-systemd >/dev/null; then
+      install -d -m 0755 /etc/fail2ban/jail.d
+      cat > /etc/fail2ban/jail.d/concordevpn.local <<F2B
+[DEFAULT]
+backend = systemd
+banaction = nftables-multiport
+banaction_allports = nftables-allports
+ignoreip = 127.0.0.1/8 ::1 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 fc00::/7
+bantime = 1h
+bantime.increment = true
+bantime.maxtime = 1w
+findtime = 10m
+maxretry = 5
+
+[sshd]
+enabled = true
+port = ${SSH_PORTS// /,}
+F2B
+      systemctl enable fail2ban >/dev/null 2>&1 || true
+      systemctl restart fail2ban >/dev/null 2>&1 || true
+      sleep 2
+      if fail2ban-client status sshd >/dev/null 2>&1; then
+        ok "fail2ban: 5 failures in 10 min = banned for an hour, longer if they come back"
+      else
+        warn "fail2ban did not start its sshd jail - check 'journalctl -u fail2ban'"
+      fi
+    else
+      warn "fail2ban could not be installed"
+    fi
+  fi
+fi
+
+# ---------------------------------------------------------- security updates --
+# Ubuntu installs security updates by itself, but a new kernel or C library
+# only takes effect after a reboot that nothing schedules: a server can run a
+# kernel that is patched on disk and vulnerable in memory for months (one of
+# ours went 51 days). So when an update needs it, reboot at 04:00 in the
+# region's own time zone, when the fewest people are connected. Every service
+# here starts at boot, and ConcordeVPN holds traffic and reconnects by itself.
+say "Security updates"
+apt-get install -y -qq --no-install-recommends unattended-upgrades >/dev/null 2>&1 || true
+cat > /etc/apt/apt.conf.d/20auto-upgrades <<'AUP'
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+AUP
+if [[ $AUTO_REBOOT -eq 1 ]]; then
+  # 04:00 local, as UTC (droplets run on UTC); unknown regions use the
+  # server's own clock
+  case "${DO_REGION:-unknown}" in
+    nyc*|tor*|ric*|atl*) REBOOT_AT="09:00" ;;
+    mem*|mkc*)           REBOOT_AT="10:00" ;;
+    sfo*)                REBOOT_AT="12:00" ;;
+    lon*)                REBOOT_AT="03:00" ;;
+    ams*|fra*)           REBOOT_AT="02:00" ;;
+    blr*)                REBOOT_AT="22:30" ;;
+    sgp*)                REBOOT_AT="20:00" ;;
+    syd*)                REBOOT_AT="17:00" ;;
+    *)                   REBOOT_AT="04:00" ;;
+  esac
+  cat > /etc/apt/apt.conf.d/52concordevpn-reboot <<AUR
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
+Unattended-Upgrade::Automatic-Reboot-Time "${REBOOT_AT}";
+AUR
+  ok "security updates daily; when one needs a reboot, it happens at ${REBOOT_AT} (server clock)"
+else
+  rm -f /etc/apt/apt.conf.d/52concordevpn-reboot
+  ok "security updates daily; reboots left to you (--no-auto-reboot)"
+fi
+
+# ----------------------------------------------------------- crash recovery --
+# Nobody watches a server set up with a few clicks. A kernel crash reboots it
+# in 10 seconds instead of leaving it frozen until someone finds DigitalOcean's
+# power button (the default is to hang forever). A VPN service that crashes is
+# restarted every time: systemd's default gives up after five failures in ten
+# seconds, which leaves the server up and serving nothing. A server with under
+# 2 GB of memory gets a 1 GB swap file, so a memory spike slows it down rather
+# than the kernel killing the VPN to make room. (Droplets have no watchdog
+# device, so a hardware watchdog is not an option.)
+say "Crash recovery"
+cat > /etc/sysctl.d/98-concordevpn-recovery.conf <<'RCV'
+kernel.panic = 10
+kernel.panic_on_oops = 1
+RCV
+sysctl -q -p /etc/sysctl.d/98-concordevpn-recovery.conf >/dev/null 2>&1 \
+  || warn "could not set kernel.panic"
+# drop-ins, not edits: the units are the upstream ones. All three are written
+# now - Xray is installed later, by `reality`, and picks its drop-in up then
+for u in hysteria-server sing-box xray; do
+  install -d -m 0755 "/etc/systemd/system/${u}.service.d"
+  cat > "/etc/systemd/system/${u}.service.d/10-concordevpn-restart.conf" <<'RST'
+[Unit]
+StartLimitIntervalSec=0
+
+[Service]
+Restart=always
+RestartSec=3
+RST
+done
+systemctl daemon-reload
+MEM_MB=$(awk '/^MemTotal:/ {print int($2 / 1024)}' /proc/meminfo)
+if (( MEM_MB < 2000 )) && [[ -z "$(swapon --show --noheadings 2>/dev/null || true)" ]]; then
+  if [[ ! -e /swapfile ]] && { fallocate -l 1G /swapfile 2>/dev/null \
+       || dd if=/dev/zero of=/swapfile bs=1M count=1024 status=none; }; then
+    if chmod 600 /swapfile && mkswap /swapfile >/dev/null && swapon /swapfile; then
+      grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+      echo 'vm.swappiness = 10' > /etc/sysctl.d/98-concordevpn-swap.conf
+      sysctl -q vm.swappiness=10 >/dev/null 2>&1 || true
+      ok "1 GB swap file (this server has ${MEM_MB} MB of memory)"
+    else
+      warn "swap file could not be enabled"
+    fi
+  fi
+fi
+ok "a kernel crash reboots in 10 s; the VPN services restart every time"
 
 # ------------------------------------------------------------------ v23 CLI --
 cat > "$CLI_PATH" <<'CLI'
