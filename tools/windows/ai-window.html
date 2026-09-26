@@ -110,8 +110,6 @@ body{
 }
 .meter{height:3px;border-radius:2px;background:var(--accent-dim);overflow:hidden}
 .meter i{display:block;height:100%;background:var(--silver);border-radius:2px}
-.pooled{margin-top:9px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-  color:var(--faint);opacity:.78}
 .ver{margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.15em;
   text-transform:uppercase;color:var(--faint);opacity:.6}
 
@@ -228,7 +226,7 @@ h1{
       <div class="row">Summarise Q3 support tickets</div>
       <div class="row on">Draft the release notes</div>
       <div class="row">Explain this stack trace</div>
-      <div class="row">Benchmark the 70B on two nodes</div>
+      <div class="row">Benchmark the 70B locally</div>
 
       <div class="sub">Earlier</div>
       <div class="row">Plan the Lisbon offsite</div>
@@ -239,16 +237,14 @@ h1{
       <div class="instr">
         <div class="chip-row">
           <span class="chiplet">M4 Pro</span>
-          <span class="chiplet"><i class="dot"></i>Online</span>
         </div>
+
+        <div class="meter-lab"><span>GPU</span><span>42%</span></div>
+        <div class="meter"><i style="width:42%"></i></div>
 
         <div class="meter-lab"><span>Memory pressure</span><span>30%</span></div>
         <div class="meter"><i style="width:30%"></i></div>
 
-        <div class="meter-lab"><span>Community GPU</span><span>70%</span></div>
-        <div class="meter"><i style="width:70%"></i></div>
-
-        <div class="pooled">3 machines · 58 GB pooled</div>
         <div class="ver">Version 6.1</div>
       </div>
     </aside>
