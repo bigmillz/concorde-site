@@ -54,9 +54,14 @@ the page.
 
 Each product card shows one window: `windows/ai-window.html`,
 `windows/vpn-window.html` and `windows/go-window.html`. The first two are
-idealised app windows — the real UIs, staged to show what each product is
-*for*, rather than screenshots of whatever happened to be on screen. They are
-HTML so they stay crisp at any size and can be restaged without re-shooting.
+the apps' own UIs, rebuilt as static HTML from each app's real page (its
+markup and its own CSS rules, with fake data) rather than screenshots of
+whatever happened to be on screen. They are HTML so they stay crisp at any
+size and can be restaged without re-shooting. The AI window is the opening
+screen of a new chat (greeting, starter chips, message box; visual effects
+off, because with them on the backdrop is Apple's aerial footage). The VPN
+window is the main window as ConcordeVPN 1.4 draws it, 460x856: connected
+through New York, Balanced, with the speed and route cards.
 ConcordeGo is a website, so its window is a plain browser frame (the address
 bar reads go.flyconcordefly.com) round a capture of the live app,
 `windows/go-capture.png`.
@@ -67,8 +72,8 @@ Three rules they exist to enforce:
    exit IP. Publishing that puts an exit node on a marketing page, which is
    what gets an address scanned and reputation-listed. The generated window
    omits the concept entirely — not a placeholder, absent.
-2. **No real user data.** The conversation titles and the chat in the AI
-   window are invented and work-shaped. A real capture lists whatever you
+2. **No real user data.** The conversation titles in the AI window's
+   sidebar are invented and work-shaped. A real capture lists whatever you
    were actually asking about.
 3. **ConcordeGo is captured signed out, in a fresh browser.** Signed in, the
    page carries the account's email, the owner's admin links and the count
@@ -83,7 +88,7 @@ sets the card's height, and the image, with the line under it, fills that
 height or the column's width, whichever runs out first — and on a short
 screen no more than the screen can show whole (at 1366x657 all three
 windows come out 451px tall; the sticky then keeps them beside the text).
-At 1440x900 that is about 542x575 (AI), 384x653 (VPN) and 446x473 (Go).
+At 1440x900 that is about 542x575 (AI), 351x653 (VPN) and 446x473 (Go).
 Under 1180px the window moves above the text at the card's width, its image
 capped at the screen height less 170px but never below 530px (a 450px
 window), and never so tall that the window outgrows the screen under the
@@ -114,7 +119,7 @@ page as a faint line). The script refuses a capture whose shadow runs off
 the edge, so if it complains, enlarge that entry's size in `SOURCES`. Both
 `.png` and `.webp` are written to `assets/`; set the `width`/`height`
 attributes in `index.html` to the printed dimensions if they change (today
-1458x1532 for AI and Go, 996x1532 for VPN) — they are what reserves each
+1458x1532 for AI and Go, 931x1532 for VPN) — they are what reserves each
 image's box before it loads.
 
 **`--virtual-time-budget` is not optional** (the script passes it). Without

@@ -4,38 +4,57 @@
 <meta charset="utf-8">
 <title>ConcordeAI Window</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Michroma&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!--
+  ConcordeAI as it opens: a new chat, the empty-state hero. Restaged from
+  the app's own page (HTML_CONTENT in millenai.py, 6.1 nightly 906cc2a):
+  the markup below is the page's #sidebar and #main as they render at rest,
+  and the CSS is the page's own rules for them, values unchanged. Line refs
+  are to millenai.py at that commit.
+
+  Staged, not captured:
+  - Visual effects OFF (Settings > About), i.e. body.novideo. With them on,
+    an Apple TV aerial clip plays behind the window; that footage is
+    Apple's, so it never goes on the site.
+  - The greeting and starter chips are drawn at random in the app
+    (GREETINGS / SUGG_SETS); these are real entries from those lists.
+  - Chat titles are invented.
+  - The webview is 998x1026 CSS px (the app's minimum is 940x620), so the
+    hero's 23vh top pad is written as 236px.
+-->
 <style>
 :root{
+  /* :root, 16142 */
   --bg:#101013; --panel:#0a0a0c; --panel2:#191a1e;
   --line:#26272c; --line-soft:#1e1f23;
   --text:#ececec; --dim:#b4b4b4; --faint:#8e8e8e;
   --accent:#ececec; --accent-hot:#fff; --accent-dim:rgba(255,255,255,.10);
-  --red:#e26d5a; --radius:10px;
+  --red:#e26d5a;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
   --sans:'Space Grotesk',system-ui,sans-serif;
+  --helv:'Helvetica Neue',Helvetica,Arial,sans-serif;
   --disp:'Michroma','Space Grotesk',system-ui,sans-serif;
-  --silver:linear-gradient(90deg,#f5f6f8,#c8ccd5,#9aa0ac,#e2e5ea,#8f95a1,#d5d8df,#f5f6f8);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:transparent}
 body{
   display:grid;place-items:center;min-height:100vh;padding:40px;
-  font-family:var(--sans);color:var(--text);
   -webkit-font-smoothing:antialiased;
 }
 
-/* ---------- window shell ---------- */
+/* ---------- the macOS window ---------- */
 .win{
   width:1000px;height:1060px;
   border-radius:12px;overflow:hidden;
   border:1px solid var(--line);
-  background:var(--bg);
+  background:var(--panel);
   box-shadow:0 40px 90px -30px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.04);
   display:flex;flex-direction:column;
 }
+/* SEAMLESS DARK TITLE BAR (26137): the titlebar is transparent, so the
+   window's own #0a0a0c IS the bar, no separator; the lockup is centred
+   (26276) — wing in #b7bcc6, Michroma 11.5 kerned 1.7, the AI stroked */
 .titlebar{
-  height:38px;flex:0 0 38px;background:#1b1c20;
-  border-bottom:1px solid var(--line-soft);
+  height:32px;flex:0 0 32px;background:var(--panel);
   display:flex;align-items:center;position:relative;padding:0 14px;
 }
 .lights{display:flex;gap:8px}
@@ -43,264 +62,310 @@ body{
 .l1{background:#ff5f57}.l2{background:#febc2e}.l3{background:#28c840}
 .tb-lockup{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  display:flex;align-items:center;gap:8px;
+  display:flex;align-items:center;gap:7px;
+  font-family:var(--disp);font-size:11.5px;letter-spacing:.148em;
+  text-transform:uppercase;color:#fff;line-height:1;white-space:nowrap;
 }
-.wing{display:block}
-.lockup{
-  font-family:var(--disp);font-weight:400;text-transform:uppercase;letter-spacing:.15em;
-  color:var(--text);line-height:1;white-space:nowrap;
-}
-.lockup .tld{font-weight:800;-webkit-text-stroke:.55px currentColor}
-.tb-lockup .lockup{font-size:11px}
+.tb-lockup svg{width:11.4px;height:9.6px;display:block}
+.tb-lockup b{font-weight:400}
+.tb-lockup b b{-webkit-text-stroke:.12em currentColor;font-size:.865em;vertical-align:.06em}
 
-.body{flex:1;display:flex;min-height:0}
+/* the page's <body> (16164) */
+.app{
+  flex:1;min-height:0;display:flex;
+  background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;
+}
 
-/* ---------- sidebar ---------- */
-.side{
-  width:250px;flex:0 0 250px;background:var(--panel);
-  border-right:1px solid var(--line-soft);
-  display:flex;flex-direction:column;padding:16px 14px 14px;
+/* ---------- sidebar (16205; body.novideo 16217) ---------- */
+#sidebar{
+  position:relative;z-index:1;
+  width:300px;min-width:300px;height:100%;
+  background:var(--panel);
+  border-right:1px solid rgba(255,255,255,.07);
+  box-shadow:inset -1px 0 0 rgba(0,0,0,.25);
+  display:flex;flex-direction:column;padding:16px 16px;gap:8px;
 }
-.side-head{display:flex;align-items:center;gap:8px;padding:0 4px 0 2px}
-.side-head .lockup{font-size:13px}
-.compose{margin-left:auto;display:block;color:var(--dim);opacity:.72}
+#brand-wrap{padding:0 2px 5px}
+#brand-row{display:flex;align-items:center;gap:5px;flex-wrap:nowrap}
+#brand-row #newchat,#brand-row #settings-btn{margin-left:2px}
+.vghost{
+  font-family:var(--disp);text-transform:uppercase;
+  font-size:12.5px;letter-spacing:.15em;
+  color:#fff;opacity:.72;
+  display:inline-block;line-height:1.2;white-space:nowrap;
+  margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+}
+.vghost b{font-weight:400}
+.vghost b b{font-weight:400;-webkit-text-stroke:.12em currentColor;
+  font-size:.865em;vertical-align:.06em}
+#vmark{width:12.4px;height:10.4px;margin-right:4px;vertical-align:-.8px}
+#newchat,#settings-btn{
+  width:26px;height:26px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:none;border:1px solid var(--line);border-radius:8px;
+  color:var(--accent-hot);padding:0;
+}
+#settings-btn{color:var(--dim)}
+#newchat svg,#settings-btn svg{width:15px;height:15px}
 
-/* segmented tabs */
-.seg{
-  display:flex;margin-top:18px;background:var(--panel2);
-  border:1px solid var(--line);border-radius:8px;padding:3px;gap:3px;
+/* Chat | Code | Funnels (16431) */
+#mode-tabs{display:flex;gap:0;margin:5px 0 6px;position:relative;
+  background:rgba(255,255,255,.05);border-radius:11px;padding:3px;
+  border:1px solid rgba(255,255,255,.07)}
+#tab-glide{position:absolute;top:3px;bottom:3px;left:3px;
+  width:calc(33.334% - 2px);border-radius:9px;
+  background:rgba(240,242,248,.94);
+  box-shadow:0 2px 10px -3px rgba(0,0,0,.5)}
+#mode-tabs .ltab{
+  position:relative;z-index:1;
+  flex:1;font-family:var(--mono);font-size:11px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  padding:6px 0;border-radius:9px;
 }
-.seg span{
-  flex:1;text-align:center;font-family:var(--mono);font-size:10px;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
-  padding:6px 0;border-radius:6px;
-}
-.seg span.on{background:var(--accent);color:var(--panel);font-weight:600}
+#mode-tabs .ltab svg{width:12px;height:12px;flex:none}
+#mode-tabs .ltab.on{color:#111;font-weight:700}
 
-.label{
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--faint);
-}
-.sec{margin-top:22px;padding-left:4px}
-.sub{margin:14px 0 7px;padding-left:4px;font-family:var(--mono);
-  font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--faint);opacity:.72}
-.row{
-  font-size:12.5px;color:var(--dim);padding:6px 8px;border-radius:7px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;
-}
-.row.on{background:var(--accent-dim);color:var(--text)}
-
-/* instrument panel */
-.instr{
-  margin-top:auto;border-top:1px solid var(--line-soft);
-  padding:14px 4px 0;
-}
-.chip-row{display:flex;align-items:center;justify-content:space-between}
-.chiplet{
+/* 16195-16198: the page's own scrollbar, so a full history shows its thin thumb */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+/* 16404: the list scrolls; a normal history (saveChats keeps 30) runs past the card */
+#model-list{overflow-y:auto;overflow-x:hidden;flex:1;min-height:0}
+/* search bubble (16572) */
+#chat-search{margin:2px 10px 8px}
+#chat-search input{width:100%;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);border-radius:99px;
+  padding:6px 13px;color:inherit;font:inherit;font-size:12px;
+  outline:none;-webkit-appearance:none}
+#chat-search input::placeholder{color:rgba(255,255,255,.32)}
+.group-label{
   font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--dim);
-  border:1px solid var(--line);border-radius:5px;padding:3px 7px;
+  color:var(--dim);opacity:.75;padding:16px 6px 6px;text-transform:uppercase;
 }
-.dot{width:5px;height:5px;border-radius:50%;background:var(--dim);display:inline-block;margin-right:6px;vertical-align:1px}
-.meter-lab{
-  display:flex;justify-content:space-between;align-items:baseline;
-  margin:13px 0 6px;font-family:var(--mono);font-size:10px;
-  letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
+/* the list (16547) */
+#chat-list{margin-bottom:2px}
+.cgroup{font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);opacity:.75;
+  padding:12px 10px 5px}
+.cgroup:first-child{padding-top:2px}
+.chat-item{
+  margin-bottom:1px;
+  display:flex;align-items:center;gap:6px;padding:6px 10px;
+  border-radius:10px;color:var(--dim);font-size:12.5px;
 }
-.meter{height:3px;border-radius:2px;background:var(--accent-dim);overflow:hidden}
-.meter i{display:block;height:100%;background:var(--silver);border-radius:2px}
-.ver{margin-top:14px;font-family:var(--mono);font-size:10px;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--faint);opacity:.6}
+.chat-item .ct{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-item .cpin{width:13px;height:13px;flex:none;color:var(--faint);
+  visibility:hidden;display:flex;align-items:center}
+.chat-item .cpin svg{width:13px;height:13px}
+.chat-item.pinned .cpin{visibility:visible;color:var(--text);opacity:.75}
+.chat-item .cx{color:var(--faint);visibility:hidden;font-size:13px;padding:0 3px}
 
-/* ---------- main ---------- */
-.main{
-  flex:1;min-width:0;background:var(--bg);
-  display:flex;flex-direction:column;padding:34px 44px 28px;
+/* telemetry, the instrument cluster (16828) */
+#telemetry{
+  margin-top:7px;background:rgba(6,7,10,.44);
+  border:1px solid rgba(255,255,255,.07);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+  border-radius:14px;padding:10px 12px 9px;
+  font-family:var(--mono);
 }
-/* ---------- conversation ---------- */
-.thread{flex:1;display:flex;flex-direction:column;gap:26px}
-.msg-u{
-  align-self:flex-end;max-width:78%;background:var(--panel2);border:1px solid var(--line);
-  border-radius:14px 14px 4px 14px;padding:12px 16px;font-size:14px;line-height:1.5;color:var(--text);
+#telemetry .t-head{
+  font-size:11px;letter-spacing:.08em;color:var(--dim);
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:7px;gap:10px;
 }
-.msg-a{max-width:92%;font-size:14px;line-height:1.6;color:var(--dim)}
-.msg-a .who{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.msg-a .who .cchip{padding:3px 8px}
-.msg-a p{color:var(--text)}
-.msg-a h4{margin:14px 0 6px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.15em;
-  text-transform:uppercase;color:var(--text)}
-.msg-a ul{list-style:none;display:grid;gap:6px}
-.msg-a li{position:relative;padding-left:16px}
-.msg-a li::before{content:"";position:absolute;left:2px;top:.68em;width:5px;height:5px;border-radius:50%;background:var(--faint)}
-.msg-a b{color:var(--text);font-weight:600}
-.acts{margin-top:12px;display:flex;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--faint);opacity:.8}
-h1{
-  font-family:var(--disp);font-weight:400;font-size:30px;line-height:1.3;
-  letter-spacing:.10em;text-transform:uppercase;
-  -webkit-text-stroke:.3px currentColor;
-  color:var(--text);text-align:center;max-width:100%;
+.meter-row{margin-bottom:7px}
+.meter-row:last-child{margin-bottom:0}
+.meter-label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10.5px;color:var(--dim);margin-bottom:3px;min-height:18px;
 }
-.sugg{display:flex;gap:10px;margin-top:26px}
-.sugg span{
-  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:999px;padding:8px 15px;white-space:nowrap;
+.meter{height:2px;border-radius:0;background:rgba(255,255,255,.07);overflow:hidden}
+.meter .mfill{height:100%;border-radius:0;background:var(--accent-hot);
+  box-shadow:0 0 7px rgba(236,238,244,.22)}
+
+/* ---------- main, on the empty hero (16886, 17587-17606) ---------- */
+#main{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;position:relative}
+#chat-scroll{flex:0 0 auto;position:relative;z-index:1}
+#chat-inner{max-width:780px;margin:0 auto;padding:36px 24px 0}
+#hero{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;text-align:center;gap:10px;
+  padding-top:236px;            /* 23vh of the 1026px webview */
+  font-family:var(--helv);
 }
-.composer{
-  margin-top:24px;width:100%;
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;padding:18px;
+#hero .greet{
+  text-wrap:balance;
+  font-family:ui-serif,Georgia,'Times New Roman',serif;
+  font-size:40px;font-weight:400;letter-spacing:-.01em;
+  color:#e7e5db;
 }
-.ph{font-size:14.5px;color:var(--faint);padding:2px 2px 26px}
-.cbar{display:flex;align-items:center}
-.cbar .left{display:flex;gap:8px}
-.cchip{
-  display:flex;align-items:center;
-  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text);border:1px solid var(--line);border-radius:7px;padding:5px 10px;
+#composer-wrap{position:static;z-index:2;padding:26px 24px 0}
+/* starter prompts (17698) */
+#suggest{
+  display:flex;flex-wrap:wrap;gap:7px;justify-content:center;
+  max-width:780px;margin:0 auto 12px;padding:0 2px;
 }
-.cchip em{
-  font-style:normal;color:var(--faint);opacity:.8;margin-right:9px;padding-right:9px;
-  border-right:1px solid var(--line);
+.sugg{
+  font-family:var(--sans),'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
+  font-size:12px;line-height:1.3;
+  color:var(--dim);background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.09);border-radius:999px;
+  padding:7px 13px;white-space:nowrap;text-align:center;  /* a <button> in the app */
+  flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
 }
-.cbar .right{margin-left:auto;display:flex;align-items:center;gap:9px}
-.ibtn{
-  width:28px;height:28px;border-radius:50%;border:1px solid var(--line);
-  display:grid;place-items:center;color:var(--dim);
+/* the composer (17630) */
+#composer{
+  max-width:780px;margin:0 auto;
+  background:rgba(15,17,23,.60);
+  /* focused, as at launch (input.focus(), 23270): the :focus-within
+     look of 17643 */
+  border:1px solid rgba(255,255,255,.32);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),
+             0 0 0 4px rgba(255,255,255,.05),
+             0 18px 50px -22px rgba(0,0,0,.85);
+  border-radius:24px;display:flex;flex-direction:column;
+  align-items:stretch;gap:2px;
+  padding:12px 14px 10px;
 }
-.ibtn.send{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+#input{
+  font:14.5px/1.5 var(--sans);color:var(--faint);
+  padding:6px 4px;height:33.75px;white-space:nowrap;
+}
+#crow{display:flex;align-items:center;justify-content:space-between;
+  gap:8px;margin-top:4px}
+#model-chip{
+  font-family:var(--mono);font-size:10px;color:var(--faint);
+  padding:4px 11px;display:flex;gap:6px;align-items:center;
+  border:1px solid var(--line);border-radius:999px}
+#model-chip b{color:var(--dim);font-weight:500}
+#accel-chip{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);
+  padding:4px 10px;display:flex;gap:6px;align-items:center;
+  border:1px solid var(--line);border-radius:999px;white-space:nowrap}
+#accel-chip i{width:5px;height:5px;border-radius:50%;flex:0 0 auto;
+  background:#c9ccd2;box-shadow:0 0 7px -1px #c9ccd2}   /* .mlx, Apple silver */
+#accel-chip b{color:var(--dim);font-weight:600;letter-spacing:.2em}
+#cbtns{display:flex;align-items:center;gap:2px;flex-shrink:0;
+  margin-left:auto;padding-left:4px}
+.cbtn{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.78);flex-shrink:0;
+}
+.cbtn svg{width:18px;height:18px;display:block}
+#voicebtn svg{width:17px;height:17px}
+#voicebtn.parked{opacity:.3}            /* voice chat is parked (17685) */
+#send{background:var(--accent);color:#1a1a1a}
+#send svg{width:17px;height:17px}
 </style>
 </head>
 <body>
-
-<svg width="0" height="0" style="position:absolute"><defs>
-  <linearGradient id="wgrad" x1="0" y1="1" x2="1" y2="0">
-    <stop offset="0" stop-color="#787e89"/>
-    <stop offset=".55" stop-color="#b7bcc6"/>
-    <stop offset="1" stop-color="#f4f5f8"/>
-  </linearGradient></defs></svg>
 
 <div class="win">
 
   <div class="titlebar">
     <div class="lights"><i class="l1"></i><i class="l2"></i><i class="l3"></i></div>
     <div class="tb-lockup">
-      <svg class="wing" width="16" height="16" viewBox="2 2.3 19.6 16.4"><g stroke="url(#wgrad)" stroke-width="2.4" stroke-linecap="round">
+      <svg viewBox="2 2.3 19.6 16.4" aria-hidden="true"><g stroke="#b7bcc6" stroke-width="2.4" stroke-linecap="round">
         <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/><line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
         <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/><line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
         <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
-      <b class="lockup">CONCORDE<span class="tld">AI</span></b>
+      <b>Concorde<b>AI</b></b>
     </div>
   </div>
 
-  <div class="body">
+  <div class="app">
 
-    <!-- SIDEBAR -->
-    <aside class="side">
-      <div class="side-head">
-        <svg class="wing" width="17" height="17" viewBox="2 2.3 19.6 16.4"><g stroke="url(#wgrad)" stroke-width="2.4" stroke-linecap="round">
-          <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/><line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
-          <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/><line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
-          <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
-        <b class="lockup">CONCORDE<span class="tld">AI</span></b>
-        <svg class="compose" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M13.4 2.6a1.4 1.4 0 0 1 0 2L6.2 11.8 3.4 12.6l.8-2.8 7.2-7.2a1.4 1.4 0 0 1 2 0Z"/>
-          <path d="M2.6 14.2h10.8"/>
-        </svg>
-      </div>
-
-      <div class="seg">
-        <span class="on">Chat</span><span>Code</span><span>Funnels</span>
-      </div>
-
-      <div class="sec label">Chats</div>
-
-      <div class="sub">Pinned</div>
-      <div class="row">Batch-resize 400 product photos</div>
-      <div class="row">Refactor the ingest worker</div>
-      <div class="row">Compare local vs cloud latency</div>
-
-      <div class="sub">This week</div>
-      <div class="row">Summarise Q3 support tickets</div>
-      <div class="row on">Draft the release notes</div>
-      <div class="row">Explain this stack trace</div>
-      <div class="row">Benchmark the 70B locally</div>
-
-      <div class="sub">Earlier</div>
-      <div class="row">Plan the Lisbon offsite</div>
-      <div class="row">Tidy the onboarding checklist</div>
-      <div class="row">Rewrite the pricing FAQ</div>
-      <div class="row">Compare three NAS options</div>
-
-      <div class="instr">
-        <div class="chip-row">
-          <span class="chiplet">M4 Pro</span>
+    <!-- SIDEBAR (markup 18897-19033) -->
+    <aside id="sidebar">
+      <div id="brand-wrap">
+        <div id="brand-row">
+          <span class="vghost"><svg id="vmark" viewBox="2 2.3 19.6 16.4" aria-hidden="true"><defs><linearGradient id="vmg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#787e89"/><stop offset=".55" stop-color="#b7bcc6"/><stop offset="1" stop-color="#f4f5f8"/></linearGradient></defs><g stroke="url(#vmg)" stroke-width="2.4" stroke-linecap="round"><line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/><line x1="7.5" y1="17.5" x2="20.4" y2="7"/><line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/><line x1="16.1" y1="17.5" x2="20.4" y2="14"/><line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg><b>Concorde<b>AI</b></b></span>
+          <span id="settings-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.01a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.01a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg></span>
+          <span id="newchat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M18.4 2.6a1.7 1.7 0 0 1 2.4 2.4L12.8 13l-3.2.8.8-3.2z"/></svg></span>
         </div>
+      </div>
 
-        <div class="meter-lab"><span>GPU</span><span>42%</span></div>
-        <div class="meter"><i style="width:42%"></i></div>
+      <div id="mode-tabs">
+        <i id="tab-glide"></i>
+        <span class="ltab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</span>
+        <span class="ltab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Code</span>
+        <span class="ltab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18l-7 8v7l-4 2v-9z"/></svg>Funnels</span>
+      </div>
 
-        <div class="meter-lab"><span>Memory pressure</span><span>30%</span></div>
-        <div class="meter"><i style="width:30%"></i></div>
+      <div id="model-list">
+        <div id="chat-search"><input type="search" placeholder="Search chats&hellip;" tabindex="-1"></div>
+        <div class="group-label">Chats</div>
+        <!-- renderChats() (22185): Pinned first, then day buckets -->
+        <div id="chat-list">
+          <div class="cgroup">Pinned</div>
+          <div class="chat-item pinned"><span class="ct">Batch-resize 400 product photos</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item pinned"><span class="ct">Refactor the ingest worker</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="cgroup">Today</div>
+          <div class="chat-item"><span class="ct">Summarise Q3 support tickets</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Draft the release notes</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="cgroup">Yesterday</div>
+          <div class="chat-item"><span class="ct">Explain this stack trace</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="cgroup">This week</div>
+          <div class="chat-item"><span class="ct">Plan the Lisbon offsite</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Tidy the onboarding checklist</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Rewrite the pricing FAQ</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="cgroup">This month</div>
+          <div class="chat-item"><span class="ct">Compare three NAS options</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Sourdough starter schedule</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Shortlist road bikes under $1,500</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Cover letter for the design role</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Clean up the CSV export</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="cgroup">Older</div>
+          <div class="chat-item"><span class="ct">Kyoto in four days</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Convert recipes to metric</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Outline the Q4 roadmap</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Regex for invoice numbers</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Fix the flaky login test</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+          <div class="chat-item"><span class="ct">Spring vegetable bed layout</span><span class="cpin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.8V4h6v6.8l2 3.2H7z"/></svg></span><span class="cx">&times;</span></div>
+        </div>
+      </div>
 
-        <div class="ver">Version 6.1</div>
+      <!-- chip name, GPU meter, memory pressure (19022-19031) -->
+      <div id="telemetry">
+        <div class="t-head"><span>M4 PRO</span></div>
+        <div class="meter-row">
+          <div class="meter"><div class="mfill" style="width:18%"></div></div>
+        </div>
+        <div class="meter-row">
+          <div class="meter-label"><span>MEMORY PRESSURE</span></div>
+          <div class="meter"><div class="mfill" style="width:31%"></div></div>
+        </div>
       </div>
     </aside>
 
-    <!-- MAIN -->
-    <main class="main">
-      <div class="thread">
-        <div class="msg-u">Turn this week&rsquo;s changes into release notes for users. Plain words, no developer detail.</div>
-        <div class="msg-a">
-          <div class="who"><span class="cchip"><em>engine</em>Fast</span><span class="cchip"><i class="dot"></i>MLX &middot; on this Mac</span></div>
-          <p>Here&rsquo;s a draft:</p>
-          <h4>What&rsquo;s new</h4>
-          <ul>
-            <li><b>Image generation.</b> Ask for a picture and you get one, made on your Mac.</li>
-            <li><b>Honest downloads.</b> Model downloads show real progress and name what is moving.</li>
-            <li><b>Visual effects</b> now switch only the moving backdrop.</li>
-            <li><b>Update checks</b> are yours to choose: at launch and daily, or never.</li>
-          </ul>
-          <div class="acts"><span>Copy</span><span>Regenerate</span></div>
+    <!-- MAIN: resetHero() (22127) on a new chat -->
+    <main id="main">
+      <div id="chat-scroll"><div id="chat-inner">
+        <div id="hero">
+          <p class="greet">What are we figuring out?</p>
         </div>
-        <div class="msg-u">Shorter. Three bullets, and lead with image generation.</div>
-        <div class="msg-a">
-          <div class="who"><span class="cchip"><em>engine</em>Fast</span><span class="cchip"><i class="dot"></i>MLX &middot; on this Mac</span></div>
-          <ul>
-            <li><b>Image generation:</b> ask for a picture, get one.</li>
-            <li><b>Downloads</b> show real progress.</li>
-            <li><b>Update checks</b> are your call.</li>
-          </ul>
-          <div class="acts"><span>Copy</span><span>Regenerate</span></div>
-        </div>
-      </div>
+      </div></div>
 
-      <div class="composer">
-        <div class="ph">Reply&hellip;</div>
-        <div class="cbar">
-          <div class="left">
-            <span class="cchip"><em>engine</em>Fast</span>
-            <span class="cchip"><i class="dot"></i>MLX</span>
-          </div>
-          <div class="right">
-            <span class="ibtn">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10.8 5.2 5.9 10.1a1.7 1.7 0 0 0 2.4 2.4l5.1-5.1a3 3 0 0 0-4.2-4.2L3.7 8.7a4.3 4.3 0 0 0 6.1 6.1"/>
-              </svg>
-            </span>
-            <span class="ibtn">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="6" y="1.6" width="4" height="7.6" rx="2"/>
-                <path d="M3.5 7.6a4.5 4.5 0 0 0 9 0"/><path d="M8 12.1v2.3"/>
-              </svg>
-            </span>
-            <span class="ibtn send">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M8 13V3.4"/><path d="M3.9 7.5 8 3.4l4.1 4.1"/>
-              </svg>
-            </span>
+      <div id="composer-wrap">
+        <div id="suggest">
+          <span class="sugg">🗺️ Plan me a weekend trip</span>
+          <span class="sugg">📊 Help me build a budget</span>
+          <span class="sugg">🎸 How do I learn guitar?</span>
+        </div>
+        <div id="composer">
+          <div id="input">How can I help you today?</div>
+          <div id="crow">
+            <div id="model-chip">engine <b>Fast</b></div>
+            <div id="accel-chip"><i></i><b>MLX</b></div>
+            <div id="cbtns">
+              <span class="cbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.05 12.2 20.2a5.5 5.5 0 0 1-7.78-7.78l9.2-9.19a3.67 3.67 0 0 1 5.18 5.18l-9.2 9.2a1.83 1.83 0 0 1-2.6-2.6l8.5-8.48"/></svg></span>
+              <span class="cbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/><path d="M12 18v3.2"/><path d="M8.6 21.4h6.8"/></svg></span>
+              <span class="cbtn parked" id="voicebtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4"/><path d="M7 6v12"/><path d="M11 3v18"/><path d="M15 7v10"/><path d="M19 10v4"/></svg></span>
+              <span class="cbtn" id="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5.5"/><path d="M5.8 11.7 12 5.4l6.2 6.3"/></svg></span>
+            </div>
           </div>
         </div>
       </div>
