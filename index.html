@@ -822,8 +822,9 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                           the buttons here go dead)
            A prerelease is shown as a second channel only while it is newer
            than stable.
-             ConcordeGo   not a release, so hand-written (its card, below); the
-                          Worker keeps its build and date current -->
+             ConcordeGo   not a release, so hand-written (its card, below) except
+                          its notes list (releases:go); the Worker keeps its
+                          build and date current -->
       <div class="prods">
 
         <!-- ============ CARD: CONCORDEAI ============ -->
@@ -1107,10 +1108,16 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         </article>
 
         <!-- ============ CARD: CONCORDEGO ============
-             Not a download: it runs at go.flyconcordefly.com. Hand-written —
-             it has no GitHub release, so sync-releases.py never touches it.
+             Not a download: it runs at go.flyconcordefly.com. Hand-written,
+             except its Release notes list: sync-releases.py writes that
+             (between the releases:go markers, which stay at twenty spaces of
+             indent) from the commits deployed in the 30 days up to the build
+             the live site runs, summarized in the Action like the apps'.
+             Keep that list the card's only bare <ul> and its box the only
+             Release notes box: the script refuses a second one.
              Its "Beta" is a .chan-tag, never a chan-name span: the script
-             refuses to write a page with a channel name outside its markers.
+             refuses to write a page with a channel name outside the AI and
+             VPN markers.
              The build and date are what go.flyconcordefly.com says it is
              running: worker.js rewrites [data-go-build] and time[data-go-date]
              from the live app's footer on every request (cached 5 minutes),
@@ -1190,7 +1197,9 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <details class="sum notes">
                   <summary>Release notes</summary>
                   <div class="sum-body">
-<ul><li>Flights graded A+ to F, with the all-in cost from your door</li><li>Price, speed or comfort, reordered by one dot &mdash; or by a wish in plain words</li><li>Points and miles, international markets, and prices for nearby days</li><li>Flight Fixer for a delayed or cancelled flight</li><li>The beta pass: about a hundred fixes and tighter copy throughout</li></ul>
+                    <!-- releases:go -->
+<ul><li><b>Flight details</b> — the journey bar, price history, star ratings for 72 airlines, and who sells the fare</li><li><b>Points and miles</b> — priced on the airlines' published award charts, with a planner for transferring points</li><li><b>Round-trip fares</b>, the airlines' published bag fees and extras, and lounge access, overnight flights and meals to ask for</li><li><b>Flight Fixer</b> — for a delayed or cancelled flight: your odds of flying today, and next-day options with a hotel</li><li class="more">Plus smaller fixes and polish</li></ul>
+                    <!-- /releases:go -->
                   </div>
                 </details>
               </div>

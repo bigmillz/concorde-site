@@ -12,6 +12,11 @@
 # commit to the repo (any release re-arms it). "Run workflow" in the
 # Actions tab runs it on demand.
 #
+# ConcordeGo's notes ride along: sync-releases.py reads the build the live
+# site runs and the commits behind it (the same gh token, go.flyconcordefly.com
+# over plain HTTPS), and the summarizer walks it like any channel. A Go
+# deploy pushes nothing here, so its notes refresh at this schedule.
+#
 # It also runs on a push that touches the page or the notes, which is how a
 # release script's sync gets its notes summarized by Claude within a minute
 # or two instead of hours. That cannot loop: a push made with GITHUB_TOKEN

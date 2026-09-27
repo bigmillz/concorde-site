@@ -7,7 +7,9 @@ The release data (versions, dates, download URLs, release notes) is
 generated into the marked blocks inside `index.html` by
 `tools/sync-releases.py`, which the apps' release scripts and the "Sync
 releases" GitHub Action run; the notes are summarized by Claude in that
-Action. See [tools/README.md](tools/README.md#release-notes), including the
+Action. ConcordeGo's card is hand-written except its release notes, which
+are made the same way from the commits behind the build
+go.flyconcordefly.com is running. See [tools/README.md](tools/README.md#release-notes), including the
 one-time `ANTHROPIC_API_KEY` secret.
 ConcordeVPN downloads come from the public
 [concordevpn-releases](https://github.com/bigmillz/concordevpn-releases)
