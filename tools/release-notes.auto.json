@@ -33,14 +33,14 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "f234628af0bfae51": {
-      "channel": "nightly 6.1 nightly a893d0a",
+    "a4dd7e6c2f4cf122": {
+      "channel": "nightly 6.1 nightly 8e16529",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Settings** — now always opens on the About page"
+        "**Update channels** — the Beta update channel is now called Prerelease"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
