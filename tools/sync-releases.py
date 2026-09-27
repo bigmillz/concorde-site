@@ -606,8 +606,10 @@ def stamp_go_version(page, info):
     """The Go card's version number and "Updated" date from `info`; the
     number is shown (its `hidden` dropped) once a version is known."""
     shown = pretty(info["updated"])
-    page = re.sub(r'<span class="chan-commit" data-go-version(?: hidden)?>[^<]*</span>',
-                  '<span class="chan-commit" data-go-version>%s</span>' % html.escape(info["version"]), page)
+    page = re.sub(r'<span class="chan-commit" data-go-vline(?: hidden)?>',
+                  '<span class="chan-commit" data-go-vline>', page)
+    page = re.sub(r'<span data-go-version>[^<]*</span>',
+                  '<span data-go-version>%s</span>' % html.escape(info["version"]), page)
     page = re.sub(r'<time datetime="[^"]*" data-go-date>[^<]*</time>',
                   '<time datetime="%s" data-go-date>%s</time>' % (info["updated"], shown), page)
     return page
@@ -897,7 +899,9 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
         # stale block look freshly built while its download 404s.
         lines.append('                <span class="chan-commit" data-nightly-commit="%s" data-nightly-ver="%s"%s>%s</span>'
                      % (key, html.escape(display_version(version)),
-                        ' data-commit-base="%s"' % base if base else "", commit or "&mdash;"))
+                        ' data-commit-base="%s"' % base if base else "",
+                        # "build <sha>": the word in the same small print (Pat, 2026-09-27)
+                        "build " + commit if commit else "&mdash;"))
         lines += ['                <span class="chan-date">Built <time datetime="%s" data-nightly-date="%s">%s</time></span>'
                   % (date, key, pretty(date)),
                   '              </div>']
