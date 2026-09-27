@@ -33,16 +33,14 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "fd559040c87b8236": {
-      "channel": "nightly 6.1 nightly 4af53fc",
+    "f234628af0bfae51": {
+      "channel": "nightly 6.1 nightly a893d0a",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Backdrop** — a new scene every hour, crossfading in from files stored on your computer",
-        "**Weather by zip code** — the forecast now names the zip it is showing",
-        "**Settings** — now links to the website"
+        "**Settings** — now always opens on the About page"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
