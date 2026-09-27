@@ -500,6 +500,7 @@ dialog.zoom:focus{outline:none}
   border-radius:6px;padding:1px 6px;white-space:nowrap;
 }
 .note .body p + p{margin-top:10px}
+.note .body .chans + p{margin-top:14px}
 /* the three ways to get a ConcordeVPN server — the card feature lists'
    numbering, which is the house idiom for "here are the options" */
 .ways{counter-reset:way;margin:14px 0 0;padding:0;list-style:none}
@@ -1220,6 +1221,17 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       </div>
 
       <div class="note reveal d1">
+        <h3>Which build</h3>
+        <div class="body">
+          <p>ConcordeAI and ConcordeVPN each come in up to three builds, one tab each on the download card:</p>
+          <ul class="chans">
+            <li><b>Stable</b><span>The finished release. Start here if you just want it to work.</span></li>
+            <li><b>Prerelease</b><span>Betas and release candidates: new features before Stable, tested but not final.</span></li>
+            <li><b>Nightly</b><span>Built from the work in progress, often more than once a day. Newest of everything, and the most likely to break.</span></li>
+          </ul>
+          <p>The choice is not permanent. Each app has an <strong>Update channel</strong> setting in Settings (ConcordeAI calls Prerelease &ldquo;Beta&rdquo;), and updates follow whichever channel you pick.</p>
+        </div>
+
         <h3>Gatekeeper</h3>
         <div class="body">
           <p>macOS builds are <strong>not notarized</strong>. The first launch will be blocked. Open <span class="path">System Settings &rsaquo; Privacy &amp; Security</span>, scroll to the message naming the app, and click <strong>Open Anyway</strong>. Once per version.</p>
