@@ -349,10 +349,12 @@ html.hdrmarks .card-head .mark-hdr{position:relative;top:-2.5px}
   display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
   padding-bottom:12px;border-bottom:1px solid var(--line-soft);
 }
-/* .chan-tag is ConcordeGo's hand-written "Beta": styled as a channel name
-   but deliberately not a chan-name span — sync-releases.py counts those and
-   refuses to write a page that has one outside the generated regions */
-.chan-name,.chan-tag{
+/* ConcordeGo's "beta version" is a .chan-tag, deliberately not a chan-name
+   span — sync-releases.py counts those and refuses a page that has one
+   outside the generated regions. It reads like the apps' "6.1 beta 1":
+   small, plain, lowercase, beside a version number in .chan-ver. */
+.chan-tag{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.02em}
+.chan-name{
   font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
   font-weight:600;color:var(--text);
 }
@@ -1117,7 +1119,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
              the live site runs, summarized in the Action like the apps'.
              Keep that list the card's only bare <ul> and its box the only
              Release notes box: the script refuses a second one.
-             Its "Beta" is a .chan-tag, never a chan-name span: the script
+             Its "beta version" is a .chan-tag, never a chan-name span: the script
              refuses to write a page with a channel name outside the AI and
              VPN markers.
              The version and date are what go.flyconcordefly.com/version says
@@ -1186,7 +1188,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             <div class="dl go-dl">
               <div class="chan">
                 <div class="chan-top">
-                  <span class="chan-tag">Beta<span data-go-vword hidden> version</span></span>
+                  <span class="chan-tag">beta<span data-go-vword hidden> version</span></span>
                   <span class="chan-ver" data-go-version hidden></span>
                   <span class="chan-date">Updated <time datetime="2026-09-26" data-go-date>26 Sep 2026</time></span>
                 </div>
