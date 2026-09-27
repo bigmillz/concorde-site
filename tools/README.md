@@ -230,7 +230,8 @@ Quiet weeks cost nothing. Allow for that in the Console spend limit.
 
 ## ConcordeGo's version line
 
-The Go card shows one line, "BETA VERSION 0.1.4075": no tabs, no old
+The Go card shows one line, "BETA 0.1.4075" (BETA in the size of the
+apps' version numbers, the number small like their "beta 1"): no tabs, no old
 versions. ConcordeGo is versioned 0.1.<build>, the build counting every
 commit ever made, and publishes it at
 `https://go.flyconcordefly.com/version` (no sign-in, no cost):
@@ -241,7 +242,7 @@ commit ever made, and publishes it at
 (the release scripts and the Action), and `worker.js` stamps them on every
 request (cached five minutes, `X-Go` header). Anything missing, malformed or
 unreachable leaves the last written values; until a version has ever been
-read, the line shows just "BETA" and the date. If the answer carries a
+read, the card shows just "BETA" and the date. If the answer carries a
 `"commit"`, the Go release notes use it to find the deployed build;
 otherwise they read the footer's `data-build`.
 

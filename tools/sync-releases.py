@@ -601,13 +601,11 @@ def go_version_info(url=GO_VERSION_URL):
 
 
 def stamp_go_version(page, info):
-    """The Go card's version line and "Updated" date from `info`; the line is
-    shown (its `hidden` dropped) once a version is known."""
+    """The Go card's version number and "Updated" date from `info`; the
+    number is shown (its `hidden` dropped) once a version is known."""
     shown = pretty(info["updated"])
-    page = re.sub(r'<span data-go-vword(?: hidden)?> version</span>',
-                  '<span data-go-vword> version</span>', page)
-    page = re.sub(r'<span class="chan-ver" data-go-version(?: hidden)?>[^<]*</span>',
-                  '<span class="chan-ver" data-go-version>%s</span>' % html.escape(info["version"]), page)
+    page = re.sub(r'<span class="chan-commit" data-go-version(?: hidden)?>[^<]*</span>',
+                  '<span class="chan-commit" data-go-version>%s</span>' % html.escape(info["version"]), page)
     page = re.sub(r'<time datetime="[^"]*" data-go-date>[^<]*</time>',
                   '<time datetime="%s" data-go-date>%s</time>' % (info["updated"], shown), page)
     return page
