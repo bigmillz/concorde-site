@@ -88,14 +88,14 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "fd734cb4e0f99157": {
-      "channel": "nightly 1.4 nightly f13c422",
+    "5e00813c1add7b09": {
+      "channel": "nightly 1.4 nightly eff5e6d",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Auto** — the Direct row is back at the top of Auto's tests and stays there after a relaunch"
+        "**Settings** — the About page now links to the website"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
