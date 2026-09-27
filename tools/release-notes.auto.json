@@ -33,14 +33,15 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "a4dd7e6c2f4cf122": {
-      "channel": "nightly 6.1 nightly 8e16529",
+    "3b2dfbb4a4166fe3": {
+      "channel": "nightly 6.1 nightly d2fb836",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Update channels** — the Beta update channel is now called Prerelease"
+        "**Removed** — the web version of ConcordeAI is gone for good",
+        "**Proxy** — nothing reaches the app through a proxy anymore"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
