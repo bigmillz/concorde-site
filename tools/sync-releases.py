@@ -154,7 +154,7 @@ AUTO = Path(__file__).with_name("release-notes.auto.json")
 # The instructions Claude summarizes with. Its hash is part of every cache
 # key, so editing the prompt re-summarizes every channel on the next run.
 PROMPT = Path(__file__).with_name("release-notes-prompt.md")
-MODEL = "claude-opus-5"
+MODEL = "claude-opus-5-5"
 SHOW_MAX = 5             # lines in a Release notes list, the closing "Plus…" line included
 
 

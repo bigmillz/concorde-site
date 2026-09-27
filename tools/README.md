@@ -95,7 +95,7 @@ bullets in `release-notes.json`; that brings them back.
 (it needs the `anthropic` package and the API key; the release scripts and
 `sync-releases.py` stay plain `python3`). It walks the same channels the
 page shows, and for any whose key is not in `release-notes.auto.json` asks
-Claude (Opus 5) for a summary using the rules in `release-notes-prompt.md`,
+Claude (Opus 5.5) for a summary using the rules in `release-notes-prompt.md`,
 then the Action regenerates the page and commits both files. Each distinct
 set of notes is summarized once. The Action also runs on any push that
 touches `index.html` or these files, so a release script's sync is
@@ -137,16 +137,17 @@ Then set a monthly **spend limit** on the Anthropic Console workspace that
 owns the key (Console → Settings → Limits; $20 is plenty). Nothing in the
 code caps spending across runs.
 
-**Cost.** Opus 5 is $5 / $25 per million input / output tokens. A request is
+**Cost.** The summarizer uses Claude Opus 5.5 at medium effort: $4 / $20 per
+million input / output tokens. A request is
 about 1,100–1,900 input tokens (the prompt is ~900; the VPN's 1.4 RC with 32
 notes is the largest so far) and typically a few hundred to ~2,000 output
-tokens including its thinking — roughly **1 to 6 cents per summary**, 2–3
+tokens including its thinking — roughly **1 to 5 cents per summary**, 2–3
 typically. A summary is bought only when a channel's notes change: a new
 beta, RC or stable, or a new nightly that the Action catches (it runs
 every few hours and on pushes, so intermediate nightlies are skipped).
 Expect a few dollars a month; a month of many nightlies, each caught by
 its own run, could reach $10–30. The worst case for one call is about
-$0.41 (all 16,000 output tokens used), so about $2.50 for a run that
+$0.33 (all 16,000 output tokens used), so about $2 for a run that
 re-summarizes all six channels, which is what editing the prompt file
 does. Each call's tokens and cost are in the Action's log.
 
