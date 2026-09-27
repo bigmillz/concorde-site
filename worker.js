@@ -206,8 +206,9 @@ async function stampNightlies(res, ctx) {
         sameVersion = el.getAttribute("data-nightly-ver") === ver;
         if (!sameVersion) return;
         const base = el.getAttribute("data-commit-base");
-        if (base) el.setInnerContent(`<a href="${base}${sha}">${sha}</a>`, { html: true });
-        else el.setInnerContent(sha);
+        // "build <sha>", as sync-releases.py writes it
+        if (base) el.setInnerContent(`build <a href="${base}${sha}">${sha}</a>`, { html: true });
+        else el.setInnerContent(`build ${sha}`);
       },
     });
     rw.on(`[data-nightly-date="${key}"]`, {
@@ -267,12 +268,8 @@ function stampGo(res, info) {
   res = new Response(res.body, res);
   res.headers.set("X-Go", `${info.version} ${info.date}`);   // `curl -I` breadcrumb, like X-Nightly
   return new HTMLRewriter()
-    .on("[data-go-version]", {
-      element(el) {
-        el.setInnerContent(info.version);
-        el.removeAttribute("hidden");
-      },
-    })
+    .on("[data-go-version]", { element(el) { el.setInnerContent(info.version); } })
+    .on("[data-go-vline]", { element(el) { el.removeAttribute("hidden"); } })
     .on("time[data-go-date]", {
       element(el) {
         el.setAttribute("datetime", info.date);
