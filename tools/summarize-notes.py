@@ -77,7 +77,7 @@ SCHEMA = {
     "required": ["bullets", "fold"],
     "additionalProperties": False,
 }
-PRICE_IN, PRICE_OUT = 5.0, 25.0          # Claude Opus 5, $ per million tokens
+PRICE_IN, PRICE_OUT = 4.0, 20.0          # Claude Opus 5.5, $ per million tokens
 TIMEOUT, RETRIES = 90, 1                 # per request; the SDK's defaults (600 s, 2) could stall a run for half an hour
 TIME_BUDGET = 180                        # seconds: no new call is started after this (the workflow kills at 480)
 FAILED_RETRY_DAYS = 7                    # a recorded failure is asked again after this long
@@ -197,10 +197,13 @@ def ask(client, sync, system, repo, kind, label, items):
             max_tokens=16000,
             betas=["server-side-fallback-2026-07-01"],
             fallbacks="default",                 # a refusal is re-run on Anthropic's recommended fallback
-            thinking={"type": "adaptive"},
+            thinking={"type": "adaptive"},      # always on for Opus 5.5; effort sets how much
             system=system,
             messages=[{"role": "user", "content": user_message(repo, kind, label, items)}],
-            output_config={"format": {"type": "json_schema", "schema": SCHEMA}},
+            # medium is Opus 5.5's own default, set explicitly so a change of
+            # default can never quietly change the notes
+            output_config={"effort": "medium",
+                           "format": {"type": "json_schema", "schema": SCHEMA}},
         )
     except anthropic.AuthenticationError as exc:
         raise StopAll("the API key was rejected (request %s)" % getattr(exc, "request_id", None)) from exc
