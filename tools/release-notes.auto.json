@@ -33,14 +33,14 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "e60aba111b90f2f2": {
-      "channel": "nightly 6.1 nightly 50cfc77",
+    "5b0c6411efe75503": {
+      "channel": "nightly 6.1 nightly bcccd19",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Maps** — maps draw again, now using OpenFreeMap's dark style in place of CARTO"
+        "**Backdrops** — more variety in short sessions, and day and night clips are kept apart"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
