@@ -726,6 +726,9 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   .btn{flex-wrap:wrap;row-gap:5px}
   .btn .arw{order:2;margin-left:auto}
   .btn .file{order:3;flex:1 0 100%}
+  /* five nav links: tighter, and the wing never gives up its room */
+  .site-head .brand{flex:0 0 auto}
+  .nav{gap:8px}.nav a{letter-spacing:.03em}
 }
 @media (max-width:900px){
   .note{grid-template-columns:1fr;gap:8px 0}
@@ -776,6 +779,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       <a href="#downloads">Products</a>
       <a href="#install"><span class="nl">Installation</span><span class="ns">Install</span></a>
       <a href="#faq">FAQ</a>
+      <a href="#contact" data-contact>Contact</a>
       <a href="#about">About</a>
     </nav>
   </div>
@@ -1269,44 +1273,27 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
     </div>
   </section>
 
-  <!-- ============ ABOUT ============ -->
-  <section class="section" id="about" aria-labelledby="about-h">
+  <!-- ============ CONTACT ============
+       The whole section, and its link in the nav, is removed by worker.js
+       unless the Worker can deliver mail and check for bots: the
+       send_email binding CONTACT plus the secrets CONTACT_TO,
+       TURNSTILE_SITEKEY and TURNSTILE_SECRET. Deleting any one of those
+       secrets takes the form off the page. Neither the address nor the
+       Turnstile site key appears here: the Worker writes the key onto
+       [data-turnstile] as it serves the page. -->
+  <section class="section" id="contact" aria-labelledby="contact-h" data-contact>
     <div class="wrap">
       <div class="sec-head reveal">
-        <h2 id="about-h">About</h2>
+        <h2 id="contact-h">Contact</h2>
       </div>
 
       <div class="note reveal d1">
-        <h3>Why they exist</h3>
+        <h3>Feedback</h3>
         <div class="body">
-          <p>I built these to fill gaps: things the apps I already used couldn&rsquo;t do, and tools I needed that didn&rsquo;t exist. Once they worked well enough for me every day, I cleaned them up so other people could use them too.</p>
-          <p>This is a hobby, not a business, and I&rsquo;m adding features all the time. If one of these turns out to be useful to you, keep it up to date. ConcordeAI and ConcordeVPN update themselves; ConcordeGo is a website, so it is always current.</p>
-          <p class="sig">&mdash; Pat</p>
-        </div>
-
-        <h3>Channels</h3>
-        <div class="body">
-          <p>ConcordeAI and ConcordeVPN each ship on up to three channels.</p>
-          <ul class="chans">
-            <li><b>Stable</b><span>The finished release. Use this one if you just want it to work.</span></li>
-            <li><b>Prerelease</b><span>Betas with new features and fixes I&rsquo;ve confirmed. Relatively stable.</span></li>
-            <li><b>Nightly</b><span>What I&rsquo;m working on right now: new features, bug fixes, speed. It&rsquo;s what I run myself, and it may have bugs the others don&rsquo;t.</span></li>
-          </ul>
-        </div>
-
-        <!-- The whole feedback row, form included, is removed by worker.js
-             unless the Worker can deliver mail and check for bots: the
-             send_email binding CONTACT plus the secrets CONTACT_TO,
-             TURNSTILE_SITEKEY and TURNSTILE_SECRET. Deleting any one of
-             those secrets takes the form off the page. Neither the address
-             nor the Turnstile site key appears here: the Worker writes the
-             key onto [data-turnstile] as it serves the page. -->
-        <h3 data-contact>Feedback</h3>
-        <div class="body" data-contact>
           <p>Found a bug, have an idea, or just want to say hi? I&rsquo;d love to hear from you! &#x1F44B;</p>
           <p>This is a spare-time hobby for me, so I may not be able to reply to every message. Not every idea will make it in either, but they all help.</p>
           <noscript><p class="contact-off">The form needs JavaScript, which is off in this browser.</p></noscript>
-          <form class="contact" id="contact" method="post" action="/api/contact" novalidate>
+          <form class="contact" id="contact-form" method="post" action="/api/contact" novalidate>
             <div class="pair">
               <label for="contact-name"><span>Name <span class="opt">optional</span></span>
                 <input id="contact-name" name="name" type="text" maxlength="100" autocomplete="name"></label>
@@ -1331,6 +1318,34 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <span class="status" id="contact-status" role="status" aria-live="polite"></span>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="section" id="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="about-h">About</h2>
+      </div>
+
+      <div class="note reveal d1">
+        <h3>Why they exist</h3>
+        <div class="body">
+          <p>I built these to fill gaps: things the apps I already used couldn&rsquo;t do, and tools I needed that didn&rsquo;t exist. Once they worked well enough for me every day, I cleaned them up so other people could use them too.</p>
+          <p>This is a hobby, not a business, and I&rsquo;m adding features all the time. If one of these turns out to be useful to you, keep it up to date. ConcordeAI and ConcordeVPN update themselves; ConcordeGo is a website, so it is always current.</p>
+          <p class="sig">&mdash; Pat</p>
+        </div>
+
+        <h3>Channels</h3>
+        <div class="body">
+          <p>ConcordeAI and ConcordeVPN each ship on up to three channels.</p>
+          <ul class="chans">
+            <li><b>Stable</b><span>The finished release. Use this one if you just want it to work.</span></li>
+            <li><b>Prerelease</b><span>Betas with new features and fixes I&rsquo;ve confirmed. Relatively stable.</span></li>
+            <li><b>Nightly</b><span>What I&rsquo;m working on right now: new features, bug fixes, speed. It&rsquo;s what I run myself, and it may have bugs the others don&rsquo;t.</span></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -1802,7 +1817,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
    unless Cloudflare wants a click. Its token is single-use: the widget is
    reset after every attempt, sent or not. */
 (function () {
-  var form = document.getElementById("contact");
+  var form = document.getElementById("contact-form");
   if (!form) return;
   var $ = function (id) { return document.getElementById(id); };
   var status = $("contact-status"), send = $("contact-send"), opened = Date.now();

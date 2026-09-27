@@ -456,7 +456,7 @@ async function handleContact(request, env, ctx, isWorkersDev) {
     message,
     "",
     "--",
-    "Sent from the contact form on https://flyconcordefly.com/#about",
+    "Sent from the contact form on https://flyconcordefly.com/#contact",
     "Reply to this email to answer them.",
   ].join("\n");
 
