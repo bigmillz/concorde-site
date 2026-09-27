@@ -88,34 +88,33 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "05049b4f41b057e3": {
-      "channel": "nightly 1.4 nightly d8f9f3e",
+    "e771a3d7429f3e1e": {
+      "channel": "nightly 1.4 nightly 2d20f48",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Line speed retest** — retest your line speed from the menu bar, and set a retest interval in Settings › Network",
-        "**Encrypted DNS** — macOS now sees the tunnel as a VPN, so apps that require encrypted DNS no longer stall",
-        "**Ultra modes** — behave the same whether you picked them or Auto did",
-        "**Settings** — no two settings contradict each other anymore; each control does one thing"
+        "**Tighter tunnel** — only SSH connections to your VPN server now go outside the tunnel",
+        "**Existing setups included** — servers already set up get the SSH-only rule too, not just new ones",
+        "**Line speed** — now says in bold that it is unavailable while Auto optimize is on"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     }
   },
   "concordego": {
-    "ee769f048a8bea08": {
-      "channel": "live build b3ce0b0, deployed 27 Sep 2026",
+    "931f7c3980e6430b": {
+      "channel": "live build b9b609b, deployed 27 Sep 2026",
       "source_tags": [
-        "b3ce0b0"
+        "b9b609b"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Flight Fixer** — look up a delayed or cancelled flight, see today's odds of flying and alternatives, with a hotel night",
-        "**Round-trip fares** — plus a book-or-wait verdict, a 60-day price chart, and prices for the three days either side",
-        "**Points and miles** — priced on the airlines' published award charts, with a transfer planner",
-        "**Airline ratings** — per-cabin ratings for 72 airlines, a comfort grade, and meal, lounge and lie-flat details"
+        "**Flight Fixer** — for a delayed or cancelled flight: live status, odds of flying today, and alternatives with a hotel night",
+        "**Price signal** — a book, wait or typical verdict with a 60-day price chart, and fares for three days either side",
+        "**Round-trip fares**, plus points and miles priced on airlines' published award charts, with a transfer planner",
+        "**Ratings and comfort** — airline ratings per cabin, a comfort grade on every flight, and lounge, meal and lie-flat details"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
