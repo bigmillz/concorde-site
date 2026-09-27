@@ -228,6 +228,23 @@ nearly every Action run sees a new build: 5–10 calls a day, roughly $8–20 a
 month on top of the apps.
 Quiet weeks cost nothing. Allow for that in the Console spend limit.
 
+## ConcordeGo's version line
+
+The Go card shows one line, "BETA VERSION 0.1.4075": no tabs, no old
+versions. ConcordeGo is versioned 0.1.<build>, the build counting every
+commit ever made, and publishes it at
+`https://go.flyconcordefly.com/version` (no sign-in, no cost):
+
+    {"product": "ConcordeGo", "version": "0.1.4075", "channel": "beta", "updated": "2026-09-27"}
+
+`sync-releases.py` writes the version and date into the card on every sync
+(the release scripts and the Action), and `worker.js` stamps them on every
+request (cached five minutes, `X-Go` header). Anything missing, malformed or
+unreachable leaves the last written values; until a version has ever been
+read, the line shows just "BETA" and the date. If the answer carries a
+`"commit"`, the Go release notes use it to find the deployed build;
+otherwise they read the footer's `data-build`.
+
 ## Version labels in the FAQ
 
 An FAQ answer about a feature that is not in every build names the version

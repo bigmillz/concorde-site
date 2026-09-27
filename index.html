@@ -357,6 +357,7 @@ html.hdrmarks .card-head .mark-hdr{position:relative;top:-2.5px}
   font-weight:600;color:var(--text);
 }
 .chan-ver{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--text);letter-spacing:.02em}
+.chan-top [hidden]{display:none}      /* ConcordeGo's version line, until a version is known */
 .chan-commit{font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.02em}
 .chan-commit a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--line)}
 .chan-commit a:hover{color:var(--dim)}
@@ -1119,10 +1120,12 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
              Its "Beta" is a .chan-tag, never a chan-name span: the script
              refuses to write a page with a channel name outside the AI and
              VPN markers.
-             The build and date are what go.flyconcordefly.com says it is
-             running: worker.js rewrites [data-go-build] and time[data-go-date]
-             from the live app's footer on every request (cached 5 minutes),
-             and the values here are only the fallback when that read fails.
+             The version and date are what go.flyconcordefly.com/version says
+             it is running ("0.1.<build>", the build counting every commit):
+             tools/sync-releases.py writes them here on every sync, and
+             worker.js rewrites [data-go-version] and time[data-go-date] on
+             every request (cached 5 minutes). Until a version is known the
+             version line stays hidden; a failed read never shows an error.
              Its HDR nameplate (assets/mark-go-*) is made by
              tools/make-mark-go.py from the AI and VPN ones.
              The window is tools/windows/go-window.html round a capture of
@@ -1183,9 +1186,9 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             <div class="dl go-dl">
               <div class="chan">
                 <div class="chan-top">
-                  <span class="chan-tag">Beta</span>
-                  <span class="chan-commit">build <span data-go-build>6ccedc4</span></span>
-                  <span class="chan-date">Updated <time datetime="2026-09-22" data-go-date>22 Sep 2026</time></span>
+                  <span class="chan-tag">Beta<span data-go-vword hidden> version</span></span>
+                  <span class="chan-ver" data-go-version hidden></span>
+                  <span class="chan-date">Updated <time datetime="2026-09-26" data-go-date>26 Sep 2026</time></span>
                 </div>
                 <div class="btns">
                   <a class="btn open" href="https://go.flyconcordefly.com/" target="_blank" rel="noopener">

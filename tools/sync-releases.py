@@ -562,9 +562,64 @@ GO_TIMEOUT = 10                          # seconds, per network operation
 GO_BUILD = re.compile(rb'\bdata-build="([0-9a-f]{7,40})"', re.I)    # the same stamp worker.js reads
 
 
+# ConcordeGo's version, "0.1.<build>" (the build counts every commit), from
+# the site's public /version endpoint:
+#   {"product": "ConcordeGo", "version": "0.1.4075", "channel": "beta", "updated": "2026-09-27"}
+# written into the Go card on every sync (worker.js also stamps it live).
+GO_VERSION_URL = GO_URL + "version"
+GO_VERSION_RX = re.compile(r"^\d+\.\d+\.\d+$")
+
+
+def go_version_info(url=GO_VERSION_URL):
+    """{version, updated[, commit]} from /version, or None: anything missing,
+    malformed or unreachable is None, never an error on the page."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "concorde-site sync-releases",
+                                                   "Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=GO_TIMEOUT) as r:
+            j = json.loads(r.read(64 * 1024).decode("utf-8"))
+    except urllib.error.HTTPError as exc:    # 404 until the endpoint is deployed
+        exc.close()
+        return None
+    except Exception:
+        return None
+    if not isinstance(j, dict):
+        return None
+    version, updated = str(j.get("version") or "").strip(), str(j.get("updated") or "").strip()
+    if not GO_VERSION_RX.match(version) or len(version) > 20:
+        return None
+    try:
+        if datetime.date.fromisoformat(updated).isoformat() != updated:
+            return None
+    except ValueError:
+        return None
+    out = {"version": version, "updated": updated}
+    commit = str(j.get("commit") or "").strip().lower()
+    if re.fullmatch(r"[0-9a-f]{7,40}", commit):
+        out["commit"] = commit
+    return out
+
+
+def stamp_go_version(page, info):
+    """The Go card's version line and "Updated" date from `info`; the line is
+    shown (its `hidden` dropped) once a version is known."""
+    shown = pretty(info["updated"])
+    page = re.sub(r'<span data-go-vword(?: hidden)?> version</span>',
+                  '<span data-go-vword> version</span>', page)
+    page = re.sub(r'<span class="chan-ver" data-go-version(?: hidden)?>[^<]*</span>',
+                  '<span class="chan-ver" data-go-version>%s</span>' % html.escape(info["version"]), page)
+    page = re.sub(r'<time datetime="[^"]*" data-go-date>[^<]*</time>',
+                  '<time datetime="%s" data-go-date>%s</time>' % (info["updated"], shown), page)
+    return page
+
+
 def live_go_build(url=GO_URL):
-    """The commit go.flyconcordefly.com says it is running, or None. Reads
-    only until the stamp has gone by, never more than GO_SCAN_MAX."""
+    """The commit go.flyconcordefly.com says it is running, or None: the
+    /version endpoint's "commit" when it gives one, else the footer stamp,
+    read only until it has gone by, never more than GO_SCAN_MAX."""
+    info = go_version_info()
+    if info and info.get("commit"):
+        return info["commit"][:7]
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "concorde-site sync-releases"})
         with urllib.request.urlopen(req, timeout=GO_TIMEOUT) as r:
@@ -1078,6 +1133,16 @@ def main():
                 go["label"], go["total"], go["since"],
                 "" if go["source"] == "live" else " (the live site could not be read: branch %s)" % GO_BRANCH,
                 "" if "go" in behind else "  (unchanged)"))
+    gv = go_version_info()
+    if gv is None:
+        print("  go   version: go.flyconcordefly.com/version did not answer — leaving the line as it is")
+    else:
+        new = stamp_go_version(page, gv)
+        if new != page:
+            behind.append("go version")
+            page = new
+        print("  go   version %s, updated %s%s" % (gv["version"], gv["updated"],
+                                                 "" if "go version" in behind else "  (unchanged)"))
     page, relabelled = stamp_since(page)
     n = sum(1 for m in SINCE.finditer(page) if page.rfind("<!--", 0, m.start()) <= page.rfind("-->", 0, m.start()))
     if n:
