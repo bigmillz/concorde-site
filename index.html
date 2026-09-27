@@ -288,13 +288,6 @@ main .section:last-child{padding-bottom:76px}
 }
 .shot:hover img{transform:scale(1.012)}
 .shot:focus-visible{outline-offset:-2px}
-.shot .zoom-hint{
-  position:absolute;left:12px;bottom:11px;
-  border:1px solid var(--line);border-radius:999px;padding:2px 9px;
-  background:rgba(16,16,19,.82);color:var(--dim);
-  opacity:0;transition:opacity .18s ease;pointer-events:none;
-}
-.shot:hover .zoom-hint,.shot:focus-visible .zoom-hint{opacity:1}
 
 /* what it takes: two quiet lines under the window */
 .how{
@@ -843,7 +836,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   <img src="assets/shot-ai.png" width="1458" height="1532" loading="lazy" decoding="async"
                        alt="The ConcordeAI window on a new chat: a greeting, three suggested prompts and the message box, with recent chats in the sidebar.">
                 </picture>
-                <span class="zoom-hint label">Enlarge</span>
+                <span class="visually-hidden">Enlarge</span>
               </a>
               <p class="how"><span class="label">Downloads</span>macOS and Windows.<br>Installed copies update themselves.</p>
             </div>
@@ -992,7 +985,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   <img src="assets/shot-vpn.png" width="931" height="1532" loading="lazy" decoding="async"
                        alt="The ConcordeVPN window: connected through New York, with its speed graph and the route set to Balanced.">
                 </picture>
-                <span class="zoom-hint label">Enlarge</span>
+                <span class="visually-hidden">Enlarge</span>
               </a>
               <p class="how"><span class="label">Downloads</span>macOS.<br>Bring your own server &mdash; three ways to set one up, <a href="#install">below</a>.</p>
             </div>
@@ -1135,7 +1128,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   <img src="assets/shot-go.png" width="1458" height="1532" loading="lazy" decoding="async"
                        alt="ConcordeGo in a browser, asking what matters to you: price, speed or comfort, and what you want from a flight.">
                 </picture>
-                <span class="zoom-hint label">Enlarge</span>
+                <span class="visually-hidden">Enlarge</span>
               </a>
               <p class="how"><span class="label">In your browser</span>No download, no install.<br>Free to use: 4 searches a day signed out; a free account gives&nbsp;20.</p>
             </div>
