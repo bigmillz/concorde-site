@@ -1,4 +1,5 @@
-# Keep the download blocks on the site in step with GitHub Releases.
+# Keep the download blocks on the site in step with GitHub Releases, and
+# their release notes summarized.
 #
 # The VPN's release.sh syncs the site itself, but ConcordeAI's nightly is
 # rebuilt by GitHub Actions on every push and nothing on that side can
@@ -10,12 +11,26 @@
 # runs under load, and it switches schedules off after 60 days without a
 # commit to the repo (any release re-arms it). "Run workflow" in the
 # Actions tab runs it on demand.
+#
+# It also runs on a push that touches the page or the notes, which is how a
+# release script's sync gets its notes summarized by Claude within a minute
+# or two instead of hours. That cannot loop: a push made with GITHUB_TOKEN
+# (this workflow's own "Sync releases" commits) does not start workflow
+# runs, the job skips pushes by the Actions bot anyway, and a run with
+# nothing new to write pushes nothing.
 name: Sync releases
 
 on:
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - tools/release-notes*
+      - tools/sync-releases.py
+      - tools/summarize-notes.py
 
 permissions:
   contents: write
@@ -27,29 +42,65 @@ concurrency:
 
 jobs:
   sync:
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+    # a hung API or GitHub call must not hold the concurrency group (and every
+    # queued sync behind it) for GitHub's default six hours
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+
+      # The runner's own python3 refuses `pip install` (PEP 668); this one
+      # takes it. Only the summarizer uses the SDK — sync-releases.py and the
+      # release scripts stay standard-library only.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Pinned exactly: this job holds a token that can push to the live
+      # site. Bump deliberately, after checking the summarizer still passes.
+      - name: Install the Anthropic SDK
+        run: python3 -m pip install --quiet "anthropic==1.8.0" || echo "::warning::anthropic did not install; the notes stay heuristic this run"
 
       # NEVER rebase generated content. Two syncs that each INSERT the same
       # block at the same anchor rebase into two copies, with no conflict to
       # notice — that is how the page once shipped a channel twice. Instead:
       # land on whatever origin/main is now, regenerate the whole marker
       # region from scratch, and push. On a rejection, do it again.
-      - name: Sync the download blocks and push
+      #
+      # Summaries survive that reset: the summarizer appends every result it
+      # pays for to $RUNNER_TEMP (outside the checkout) the moment it
+      # arrives and merges that file back in on the next attempt, so a
+      # retry never asks Claude for the same summary twice. Only the first
+      # attempt calls the API; a retry (--offline) just merges what was paid
+      # for, and anything new by then is left to the run the competing push
+      # starts. The summarizer starts no call after 3 minutes and is killed at
+      # 8 (each result is on disk the moment it arrives, so a kill loses none). Without the ANTHROPIC_API_KEY secret it does not run, and the
+      # page gets the keyword-ranked notes sync-releases.py makes on its
+      # own. A summarizer failure of any kind never stops the sync.
+      - name: Summarize the notes, sync the download blocks, push
         env:
           GH_TOKEN: ${{ github.token }}   # both source repos are public; the token only lifts the rate limit
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          stash="$RUNNER_TEMP/release-notes-summaries.json"
           for attempt in 1 2 3; do
             git fetch --quiet origin main
             git reset --quiet --hard origin/main
+            if [ -n "$ANTHROPIC_API_KEY" ]; then
+              mode=""; [ "$attempt" -gt 1 ] && mode="--offline"
+              timeout 480 python3 tools/summarize-notes.py --stash "$stash" $mode \
+                || echo "::warning::the summarizer failed or ran out of time; channels without a summary keep the heuristic notes"
+            else
+              echo "no ANTHROPIC_API_KEY secret: notes are keyword-ranked, not summarized"
+            fi
             python3 tools/sync-releases.py
-            if git diff --quiet -- index.html; then
+            if [ -z "$(git status --porcelain -- index.html tools/release-notes.auto.json)" ]; then
               echo "site is current"; exit 0
             fi
-            git add index.html
+            git add index.html tools/release-notes.auto.json
             git commit --quiet -m "Sync releases"
             if git push --quiet origin main; then
               echo "pushed"; exit 0

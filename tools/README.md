@@ -9,6 +9,7 @@ rather than an archaeology dig through old PNGs.
 | `favicon.ico`, `favicon-16.png`, `favicon-32.png`, `apple-touch-icon.png` | `../tools-make-favicon.py` |
 | `og.png` | `../tools-make-og.py` |
 | the download blocks in `index.html` | `sync-releases.py` from GitHub Releases |
+| their release notes | `summarize-notes.py` (Claude, in the Action) into `release-notes.auto.json`, read by `sync-releases.py` |
 | `assets/shot-ai.*`, `assets/shot-vpn.*`, `assets/shot-go.*` | `make-shots.py` from `windows/*.html` (below) |
 | `assets/mark-go-pq.mp4`, `assets/mark-go-hlg.webm` | `make-mark-go.py` from `assets/mark-ai-*` and `assets/mark-vpn-*` |
 
@@ -30,10 +31,8 @@ is the one rolling release tagged `nightly` (title `1.3 nightly <commit>`),
 shown with its commit and a "Built" date whenever one exists. Versions
 are read from the asset filenames (release names have drifted from the
 files before — the 6.0 candidates shipped as `ConcordeAI-6.1.0.*`), dates
-from the publish time in UTC. Each channel gets a "Release notes" dropdown:
-the bullets in `release-notes.json` for that tag when we have written them
-(keep them to what a visitor would notice — nobody needs the two-pixel
-starfield tweak), otherwise an automatic condensation of the GitHub body.
+from the publish time in UTC. Each channel gets a "Release notes" dropdown;
+how those are written is the next section.
 
 Both apps' `release.sh` run this as the last step of a cut, so a beta, RC
 or stable is on the page within seconds. `.github/workflows/sync-releases.yml`
@@ -49,6 +48,107 @@ with unpushed work in it.
 The VPN repo is private, so its buttons point at the public mirror
 `bigmillz/concordevpn-releases`; a release that is not mirrored never reaches
 the page.
+
+## Release notes
+
+Short and for visitors: at most five lines per channel, **new features
+first, then things you can see or feel (UI, speed), then fixes a user would
+have noticed**. Small fixes, polish, alignment, moved controls, refactors,
+tests, review rounds and release plumbing are not listed; when there were
+any, one closing line says "Plus smaller fixes and polish" and links to the
+full notes on GitHub. Nobody needs the two-pixel starfield tweak.
+
+**What a channel's notes are made from.** Every note the channel stands for,
+newest first: a prerelease covers every beta/RC since the last stable, a
+stable everything since the previous stable (a promoted beta's own
+paraphrase is skipped), a nightly its own build — "what I'm working on right
+now". For each release that is our bullets in `release-notes.json` if we
+wrote some for its tag, else every bullet of its GitHub body (install
+instructions dropped). **One trap:** a stable whose version already went
+out as a beta is treated as a restatement of its betas, so its own body is
+skipped. When a stable *adds* something the betas never had (VPN 1.3's
+build, v48, added the What's new box and the update dialog), give its tag
+bullets in `release-notes.json`; that brings them back.
+
+**What the page shows** — the first of these that exists:
+
+1. `release-notes.json` → `"lines"` → repo → version (e.g. `"1.4"`): a
+   hand-written summary of a whole line. The manual override; never used for
+   a nightly. Empty today.
+2. `release-notes.auto.json` → repo → *key*: a summary of exactly this
+   channel's notes. The key is a hash of the notes, the prompt file
+   `release-notes-prompt.md` and the model (`channel_key()` in
+   `sync-releases.py`), so a summary can never outlive the notes it was
+   written from. Written by Claude in the Action, or by hand.
+3. A keyword ranking in `sync-releases.py` (`rank_notes()`), which needs
+   nothing: near-repeats merged ("Settings gains Flush the DNS cache" in
+   three builds is one line), features / visible changes / speed scored up,
+   polish, tests and internals scored down (`SCORES` — each rule a regex
+   and a weight), at most five lines shown and the rest folded into "Plus N
+   smaller fixes and polish". A body note like "**Video.** Ask for…" is
+   shown in the house "**Video** — ask for…" form and cut back at a clause,
+   not mid-phrase. Our own bullets that already fit are shown as written.
+   This is what a release script's local sync produces, and what the page
+   shows until the Action has summarized a new channel.
+
+**Who writes the summaries.** `summarize-notes.py`, only in the GitHub Action
+(it needs the `anthropic` package and the API key; the release scripts and
+`sync-releases.py` stay plain `python3`). It walks the same channels the
+page shows, and for any whose key is not in `release-notes.auto.json` asks
+Claude (Opus 5) for a summary using the rules in `release-notes-prompt.md`,
+then the Action regenerates the page and commits both files. Each distinct
+set of notes is summarized once. The Action also runs on any push that
+touches `index.html` or these files, so a release script's sync is
+summarized a minute or two after it lands. A refusal or an unusable answer
+is recorded as `"failed"` (the page ignores it, and it is not paid for
+again for 7 days, then asked once more); a network, rate-limit or server
+error is not recorded and ends that run, so the next run retries. A
+refusal that happened only because the fallback model was busy is treated
+the same way, not recorded. Each request times out after 90 seconds (one
+retry), no new request starts after 3 minutes, and the Action kills the
+summarizer at 8 and the whole job at 20, so a slow API delays the sync by
+minutes, never hours; each result is written the moment it arrives, so a
+kill loses nothing paid for. Only the first push attempt calls the API; a
+retry after a rejected push reuses what was already bought. It calls
+nothing and writes nothing while `release-notes.auto.json` does not parse,
+or while `index.html` is in a state the sync would refuse to write.
+`--dry-run` says what it would ask without calling anything.
+
+**Editing a summary by hand.** Change the `"bullets"` of the entry in
+`release-notes.auto.json` (its `"channel"` says which one it is), or
+`"fold"` to add or drop the closing line, and push. It sticks until that
+channel's notes change, which gives it a new key. To have Claude try again,
+delete the entry. `**bold**` is the only markup; everything else is
+escaped. **Keep the file valid JSON** (watch for a trailing comma): while
+it does not parse, the page falls back to the keyword ranking and the
+Action summarizes nothing and says so in its log with an error — nothing
+is overwritten, so fixing the typo restores everything. To change the rules for every channel, edit
+`release-notes-prompt.md`: that changes every key, so the next Action run
+re-summarizes all of them. Entries no channel refers to any more are
+removed by the next run.
+
+**Set up once:** add the API key as a repository secret — GitHub →
+concorde-site → Settings → Secrets and variables → Actions → New repository
+secret, name `ANTHROPIC_API_KEY`. Until it exists the Action skips the
+summarizer and the page shows the keyword-ranked notes (and the hand-written
+summaries already in `release-notes.auto.json`, while their notes last).
+
+Then set a monthly **spend limit** on the Anthropic Console workspace that
+owns the key (Console → Settings → Limits; $20 is plenty). Nothing in the
+code caps spending across runs.
+
+**Cost.** Opus 5 is $5 / $25 per million input / output tokens. A request is
+about 1,100–1,900 input tokens (the prompt is ~900; the VPN's 1.4 RC with 32
+notes is the largest so far) and typically a few hundred to ~2,000 output
+tokens including its thinking — roughly **1 to 6 cents per summary**, 2–3
+typically. A summary is bought only when a channel's notes change: a new
+beta, RC or stable, or a new nightly that the Action catches (it runs
+every few hours and on pushes, so intermediate nightlies are skipped).
+Expect a few dollars a month; a month of many nightlies, each caught by
+its own run, could reach $10–30. The worst case for one call is about
+$0.41 (all 16,000 output tokens used), so about $2.50 for a run that
+re-summarizes all six channels, which is what editing the prompt file
+does. Each call's tokens and cost are in the Action's log.
 
 ## The product windows
 
