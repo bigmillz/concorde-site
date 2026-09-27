@@ -559,7 +559,9 @@ GO_CAP = 150                             # newest commits sent on; the rest beco
 GO_PAGES = 5                             # 100 commits a page
 GO_SCAN_MAX = 512 * 1024                 # the stamp sits in the first ~125 KB of a ~3 MB page
 GO_TIMEOUT = 10                          # seconds, per network operation
-GO_BUILD = re.compile(rb'\bdata-build="([0-9a-f]{7,40})"', re.I)    # the same stamp worker.js reads
+# the deployed commit in the footer: data-commit (from 2026-09-27, when
+# data-build began holding the version, "0.1.N"), or a hex data-build before it
+GO_BUILD = re.compile(rb'\bdata-(?:commit|build)="([0-9a-f]{7,40})"', re.I)
 
 
 # ConcordeGo's version, "0.1.<build>" (the build counts every commit), from
