@@ -1,5 +1,5 @@
 {
-  "_": "Channel summaries, generated. Keyed by repo, then a hash of the channel's source notes + tools/release-notes-prompt.md + the model (see channel_key in sync-releases.py). Written by tools/summarize-notes.py in the GitHub Action (model = the Claude model that wrote it) or by hand (model \"hand\"). Edit \"bullets\" freely: an entry is kept until its channel's notes change. \"fold\": true adds the closing \"Plus smaller fixes and polish\" line. An entry with \"failed\" is ignored by the page and asked again after 7 days; delete it to try sooner. Keep this file valid JSON: while it does not parse, nothing is summarized.",
+  "_": "Channel summaries, generated. Keyed by repo (\"concordego\" for ConcordeGo's notes), then a hash of the channel's source notes + tools/release-notes-prompt.md + the model (see channel_key in sync-releases.py). Written by tools/summarize-notes.py in the GitHub Action (model = the Claude model that wrote it) or by hand (model \"hand\"). Edit \"bullets\" freely: an entry is kept until its channel's notes change. \"fold\": true adds the closing \"Plus smaller fixes and polish\" line. An entry with \"failed\" is ignored by the page and asked again after 7 days; delete it to try sooner. Keep this file valid JSON: while it does not parse, nothing is summarized.",
   "bigmillz/concordeai": {
     "c29d0e8f2290a5b8": {
       "channel": "stable 6.0.4",
@@ -100,5 +100,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     }
-  }
+  },
+  "concordego": {}
 }

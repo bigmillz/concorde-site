@@ -40,7 +40,17 @@ the first of:
   3. rank_notes(): a keyword ranking that needs nothing — new features,
      visible changes and speed first, polish and internals folded into one
      closing "Plus N smaller fixes and polish" line linked to GitHub
+
+ConcordeGo is a website, not a release, so only its "Release notes" list
+is generated (between `<!-- releases:go -->` markers; the rest of its card
+is hand-written). Its source is the commits that touched concorde-travel/
+in the 30 days up to the build go.flyconcordefly.com says it is running
+(go_channel()); it is summarized and cached like any channel, under the
+cache key "concordego", and its fallback is go_rank(). Anything that fails
+on the way leaves that list exactly as it is — the live site too: the
+branch in GO_BRANCH only fills an empty list.
 """
+import datetime
 import hashlib
 import html
 import json
@@ -48,6 +58,9 @@ import os
 import re
 import subprocess
 import sys
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -474,9 +487,13 @@ def rank_notes(items, kind, cap=SHOW_MAX):
     return [c["text"] for c in shown], more
 
 
-def render_notes(repo, bullets, more=None):
+def render_notes(repo, bullets, more=None, link=True):
     lis = ["<li>%s</li>" % inline(b) for b in bullets]
-    if more:
+    if more and not link:
+        # ConcordeGo: its history is on an unmerged branch of another repo —
+        # nothing a visitor should be sent to
+        lis.append('<li class="more">%s</li>' % html.escape(more))
+    elif more:
         # the whole releases list, not one tag: a channel's notes span
         # several releases, and no single tag page shows all of them
         url = "https://github.com/%s/releases" % repo
@@ -502,15 +519,279 @@ def notes_for(repo, rels, version="", kind="stable"):
     items = source_items(repo, rels, curated)
     if not items:
         return ""
-    entry = (load_auto().get(repo) or {}).get(channel_key(kind, items))
-    if usable(entry):
-        bullets = [b for b in entry["bullets"] if b.strip()]
-        more = None
-        if entry.get("fold"):
-            more = "Plus smaller fixes and polish" if bullets else "Smaller fixes and polish"
-        return render_notes(repo, bullets, more)
+    got = cached_notes(repo, kind, items)
+    if got is not None:
+        return got
     bullets, more = rank_notes(items, kind)
     return render_notes(repo, bullets, more)
+
+
+def cached_notes(repo, kind, items, link=True):
+    """The rendered cache entry for exactly these notes, or None."""
+    entry = (load_auto().get(repo) or {}).get(channel_key(kind, items))
+    if not usable(entry):
+        return None
+    bullets = [b for b in entry["bullets"] if b.strip()]
+    more = None
+    if entry.get("fold"):
+        more = "Plus smaller fixes and polish" if bullets else "Smaller fixes and polish"
+    return render_notes(repo, bullets, more, link)
+
+
+# ---- ConcordeGo ------------------------------------------------------------
+# A website that deploys continuously, with no releases: its notes are the
+# commits that touched GO_PATH in the GO_DAYS before the build the live
+# site says it runs. The window is anchored to that commit's own date, so
+# the notes (and their cache key) change only when Go deploys, never just
+# because a day went by.
+GO_URL = "https://go.flyconcordefly.com/"
+GO_REPO = "bigmillz/concordeai"          # ConcordeGo's source lives in the AI repo…
+GO_PATH = "concorde-travel"              # …in this folder
+# Used only when the live site cannot be read, and then only to fill an
+# empty notes list (it may be ahead of what is deployed): the branch Go
+# deploys from. Change it here if Go moves (it is unmerged as of 2026-09-26).
+GO_BRANCH = "claude/concordego-flight-reranker-h1g9bs"
+GO_KEY = "concordego"                    # its repo key in release-notes.auto.json — not GO_REPO,
+                                         # so pruning the AI's summaries never touches Go's
+GO_KIND = "live"
+GO_DAYS = 30
+GO_CAP = 150                             # newest commits sent on; the rest become an "...and N more" note
+GO_PAGES = 5                             # 100 commits a page
+GO_SCAN_MAX = 512 * 1024                 # the stamp sits in the first ~125 KB of a ~3 MB page
+GO_TIMEOUT = 10                          # seconds, per network operation
+GO_BUILD = re.compile(rb'\bdata-build="([0-9a-f]{7,40})"', re.I)    # the same stamp worker.js reads
+
+
+def live_go_build(url=GO_URL):
+    """The commit go.flyconcordefly.com says it is running, or None. Reads
+    only until the stamp has gone by, never more than GO_SCAN_MAX."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "concorde-site sync-releases"})
+        with urllib.request.urlopen(req, timeout=GO_TIMEOUT) as r:
+            buf = b""
+            while len(buf) < GO_SCAN_MAX:
+                chunk = r.read(64 * 1024)
+                if not chunk:
+                    break
+                buf += chunk
+                m = GO_BUILD.search(buf)
+                if m:
+                    return m.group(1).decode()
+    except urllib.error.HTTPError as exc:    # a 4xx/5xx page is not the site
+        exc.close()
+        return None
+    except Exception:                    # offline, DNS, TLS, a timeout: the branch stands in
+        return None
+    return None
+
+
+GO_PREFIX = re.compile(r"^ConcordeGo\b:?\s*")
+
+
+def go_subject(message):
+    """A commit's subject line as a note: "ConcordeGo: " dropped (a scope
+    such as "Flight Fixer:" or "deploy:" kept — it says what was touched),
+    first letter up."""
+    s = " ".join((message or "").split("\n", 1)[0].split())
+    s = GO_PREFIX.sub("", s)
+    if s[:1].islower() and not re.match(r"^[a-z]+[A-Z]", s):     # not "iPhone"
+        s = s[0].upper() + s[1:]
+    return s
+
+
+def go_channel():
+    """What the Go notes are made from: {build, source, date, label, items,
+    total}. `source` is "live" or "branch" (the live site could not be
+    read; callers use a branch result only to fill an empty list). Raises Incomplete when GitHub cannot be read; the page is then
+    left exactly as it is."""
+    build = live_go_build()
+    source = "live" if build else "branch"
+    try:
+        head = gh("repos/%s/commits/%s" % (GO_REPO, urllib.parse.quote(build or GO_BRANCH, safe="/")))
+        sha = head["sha"]
+        date = head["commit"]["committer"]["date"]
+        when = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+        since = (when - datetime.timedelta(days=GO_DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        commits = []
+        for page in range(1, GO_PAGES + 1):
+            got = gh("repos/%s/commits?sha=%s&path=%s&since=%s&per_page=100&page=%d"
+                     % (GO_REPO, sha, GO_PATH, since, page))
+            if not isinstance(got, list):
+                raise ValueError("not a commit list")
+            commits += got
+            if len(got) < 100:
+                break
+    except (Exception, SystemExit) as exc:
+        # gh missing or failing, the network down, an unexpected shape
+        raise Incomplete("ConcordeGo's history could not be read (%s)" % (str(exc).strip() or type(exc).__name__))
+    items, seen = [], set()
+    for c in commits:
+        if len(c.get("parents") or []) > 1:              # a merge says nothing itself
+            continue
+        text = go_subject(c["commit"]["message"])
+        k = re.sub(r"\W+", " ", text).strip().lower()
+        if k and k not in seen:
+            seen.add(k)
+            items.append({"tag": c["sha"][:7], "text": text, "curated": False, "restates": False})
+    total = len(items)
+    if total > GO_CAP:
+        # the rest only makes the list incomplete; a lower bound when every page was full
+        items = items[:GO_CAP] + [{"tag": "older", "text": "...and %d more since %s" % (total - GO_CAP, since[:10]),
+                                   "curated": False, "restates": False}]
+    label = "build %s, deployed %s" % (sha[:7], pretty(date))
+    return {"build": sha[:7], "source": source, "date": date[:10], "since": since[:10],
+            "label": label, "items": items, "total": total}
+
+
+# The keyword fallback for Go. Commit subjects are terser than release
+# notes, and one subject often carries several changes ("lounge chips;
+# narrower Fixer odds; memory on the admin page"), so each is judged
+# clause by clause: a clause about running or building the site is dropped
+# whole, polish scores down, the things a visitor comes for score up.
+GO_INTERNAL_SCOPE = re.compile(
+    r"^(deploy\S*|admin|server|live(\.py)?|[\w-]+\.(sh|py)|google adapter|mockups?|mock \d+|capture|wants)\b", re.I)
+GO_SCORES = [
+    # running the site and building it: a clause with any of these is dropped
+    (r"\b(admin|allowlist|tests?|pin(s|ned)?|research\w*|tables?|records?|CLAUDE\.md|deploy\w*|droplets?|"
+     r"launch(er|agent)|updater|update script|units|firewall|root|tunnel|zones?|token|account id|zero trust|"
+     r"access|adapter|capture|fixtures?|corpus|mock(s|ups?)?|proposal|design round|directions|article|"
+     r"build stamp|rebuild|credits?|footers?|parser|imports?|stdin|heredoc|doctl|dns|venv|syntax|verifier|"
+     r"parameter|keys?|quota|cache[sd]?|counters|metered|serpapi|supplement|feed'?s?|provider|enrichment|"
+     r"scorer|narrator|draft|brief|post|404|recordings?|ceiling|rate floor|safe\.directory|script|"
+     r"interface|pexels|aerodatabox|skytrax|duffel|price_insights|mb|per patrick|patrick|pat|e-?mails?|"
+     r"allowances?|owners?|staging)\b", -5),
+    # the features a visitor comes for
+    (r"\b(points and miles|flight fixer|round-trip fares|ratings|rated|price history|nearby days|quiz|profile|"
+     r"autocomplete|award charts?|transfer planner|price signal|exchange rates|bag fees|"
+     r"delayed-or-cancelled|chance of flying)\b", 4),
+    # …and what they are made of
+    (r"\b(grade[sd]?|grading|points|miles|fares?|prices?|priced|bags?|cabins?|airlines?|layovers?|lounge|"
+     r"wifi|meals?|legroom|searches|results|signed|account)\b", 1),
+    # polish: how it looks, not what it does
+    (r"\b(blocks?|scale|buttons?|colou?rs?|icons?|gutters?|align\w*|centred|centered|shadow|tiles?|flash|"
+     r"captions?|panels?|scrollbar|copy|tone|dropdowns?|rows?|grid|lockup|wordmark|figures|seal|podium|"
+     r"spacing|heading|pill|tidied|chip counts|named like|fields|marked|trip type|validation|wizard is hidden)\b", -3),
+]
+GO_SCORES = [(re.compile(p, re.I), w) for p, w in GO_SCORES]
+GO_INTERNAL = GO_SCORES[0][0]
+# Never published from a commit subject, whatever else the clause says: an
+# address, a domain, an IP (the Claude path rejects these in tidy())
+GO_PRIVATE = re.compile(r"@|https?://|www\.|\b[a-z0-9-]+\.(com|net|org|io|app|dev|ai|co|me|sh|xyz)\b|"
+                        r"\b\d{1,3}(\.\d{1,3}){3}\b", re.I)
+GO_GROUPS = re.compile(r"\b(flight fixer|round-trip)\b", re.I)    # many commits, one feature each
+GO_GROUP_LEAD = {"flight fixer": "Flight Fixer", "round-trip": "Round-trip fares"}
+# Go's commit subjects are written in British spelling; the page is American
+GO_US = {"modelled": "modeled", "modelling": "modeling", "colour": "color", "colours": "colors",
+         "programme": "program", "programmes": "programs", "centre": "center", "centred": "centered",
+         "favourite": "favorite", "favourites": "favorites", "itemised": "itemized", "travelled": "traveled",
+         "traveller": "traveler", "travellers": "travelers", "cheque": "check", "licence": "license"}
+GO_US_WORD = re.compile(r"\b(%s)\b" % "|".join(GO_US), re.I)
+
+
+def go_us(text):
+    return GO_US_WORD.sub(lambda m: (GO_US[m.group(1).lower()] if m.group(1).islower()
+                                     else GO_US[m.group(1).lower()].capitalize()), text)
+
+
+def go_score(text):
+    return score(text) + sum(w for pat, w in GO_SCORES if pat.search(text))
+
+
+def go_clauses(text):
+    """(lead, [clauses]) of one subject: its scope, when it is one a visitor
+    would know ("Flight Fixer"), and the clauses of its first sentence. A
+    scope about running or building the site gives no clauses at all."""
+    lead = None
+    m = re.match(r"^([A-Za-z][\w .,/-]{0,28}?):\s+(.+)$", text)
+    if m:
+        scope, text = m.group(1), m.group(2)
+        if GO_INTERNAL_SCOPE.match(scope) or GO_INTERNAL.search(scope):
+            return None, []
+        if re.match(r"^flight fixer$", scope, re.I):
+            lead = "Flight Fixer"
+    elif re.match(r"^(mock(ups?| \d+)|deploy\S*|admin|server)\b", text, re.I):   # "Mock 10, the first screen…"
+        return None, []
+    text = re.split(r"(?<=[a-z0-9)\"'])\.\s+(?=[A-Z])", text)[0]       # the first sentence
+    clauses = [c.strip().rstrip(".") for c in re.split(r";\s+", text) if c.strip()]
+    return lead, clauses
+
+
+def go_rank(items, cap=SHOW_MAX):
+    """(bullets, closing line or None) for the Go notes without a Claude
+    summary. Deterministic. Clauses a visitor would not see are dropped
+    whole and the rest shown as whole clauses, never cut mid-phrase. One
+    line per change: every commit about one feature ("Flight Fixer") is
+    one candidate, shown by the earliest that says something a visitor
+    would see — the one that brought it — at the best score any of them
+    got; other near-repeats are merged too.
+    The top few are shown by score, newest first among equals."""
+    unlisted, cands = False, []
+    for n, it in enumerate(items):
+        text = it["text"].strip()
+        if MORE_MARKER.match(text):
+            unlisted = True
+            continue
+        lead, clauses = go_clauses(text)
+        kept = [(c, go_score(c)) for c in clauses]
+        kept = [(c, s) for c, s in kept if s >= MINOR and not GO_INTERNAL.search(c) and not GO_PRIVATE.search(c)]
+        if not kept:
+            continue                                  # folded
+        best = max(s for _c, s in kept)
+        # lead with the best clause, then whatever else fits whole
+        kept.sort(key=lambda cs: -cs[1])
+        shown = [kept[0][0]]
+        for c, _s in kept[1:]:
+            if len("; ".join(shown + [c])) <= CLEAN_MAX:
+                shown.append(c)
+        body = go_us(clean("; ".join(shown)))
+        group = GO_GROUPS.search(text)
+        group = group.group(1).lower() if group else None
+        boost = 4 if lead else 0
+        if not lead and group and group not in body.lower():
+            lead = GO_GROUP_LEAD[group]              # the feature's clause lost to a better one: name it
+        if lead:                                     # "**Flight Fixer** — the odds…"
+            if body.split(" ", 1)[0].lower() in LOWER_OK:
+                body = body[0].lower() + body[1:]
+            body = "**%s** — %s" % (lead, body)
+        elif body[:1].islower():
+            body = body[0].upper() + body[1:]
+        cands.append({"text": body, "src": "; ".join(shown), "n": n, "score": best + boost, "group": group})
+    # one per group: the earliest commit (newest first, so the last seen),
+    # carrying the group's best score
+    best_of = {}
+    for c in cands:
+        g = c["group"]
+        if g:
+            top = max(c["score"], best_of[g]["score"]) if g in best_of else c["score"]
+            best_of[g] = c
+            c["score"] = top
+    ranked = sorted((c for c in cands if not c["group"] or best_of[c["group"]] is c),
+                    key=lambda c: (-c["score"], c["n"]))
+    picked = []
+    for c in ranked:
+        if not any(same_change(c["src"], p["src"]) for p in picked):
+            picked.append(c)
+    total = len(items) - (1 if unlisted else 0)
+    if len(picked) == total <= cap and not unlisted:
+        return [c["text"] for c in picked], None
+    shown = picked[:cap - 1]
+    # Commits are not changes, so no count ("Plus 166 more changes" would
+    # mislead); a commit merged into a shown line is part of that line.
+    more = len(picked) > len(shown)
+    return [c["text"] for c in shown], ("Plus more changes" if more else "Plus smaller fixes and polish")
+
+
+def go_notes(go):
+    """The Go notes list: the cached summary of exactly these notes, else
+    the keyword fallback. Never a link to GitHub."""
+    items = go["items"]
+    if not items:
+        return ""
+    got = cached_notes(GO_KEY, GO_KIND, items, link=False)
+    if got is not None:
+        return got
+    bullets, more = go_rank(items)
+    return render_notes(GO_KEY, bullets, more, link=False)
 
 
 def pretty(iso):
@@ -633,12 +914,16 @@ def block(key, repo, buttons):
 
 
 CHAN_NAME = '<span class="chan-name">'
+# Markers are matched exactly, indent included: twelve spaces, except Go's
+# notes list, which sits deeper in its card.
+MARKER_INDENT = {"go": 20}
 
 
 def region(page, key):
     """The generated span for one product, as (start, end) offsets. Exactly
     one marker pair must exist: with two, there is no safe place to write."""
-    begin, end = "            <!-- releases:%s -->\n" % key, "            <!-- /releases:%s -->" % key
+    pad = " " * MARKER_INDENT.get(key, 12)
+    begin, end = "%s<!-- releases:%s -->\n" % (pad, key), "%s<!-- /releases:%s -->" % (pad, key)
     if page.count(begin) != 1 or page.count(end) != 1:
         sys.exit("index.html: %s has %d open / %d close markers, expected 1 each"
                  % (key, page.count(begin), page.count(end)))
@@ -664,10 +949,25 @@ def page_problem(page=None):
     page = INDEX.read_text(encoding="utf-8") if page is None else page
     try:
         inside = sum(page[slice(*region(page, k))].count(CHAN_NAME) for k, _r, _b in PRODUCTS)
+        gi, gj = region(page, "go")
     except SystemExit as exc:
         return str(exc)
     if page.count(CHAN_NAME) != inside:
         return "index.html: %d channel block(s) outside the releases markers" % (page.count(CHAN_NAME) - inside)
+    # Go's notes region is one list inside the Go card's Release notes: not
+    # in another card, not wrapped round anything else
+    card = page.find('id="concordego"')
+    card_end = page.find("</article>", card)
+    if card < 0 or not card < gi < card_end or card_end < gj:
+        return "index.html: the releases:go markers are not inside the ConcordeGo card"
+    if re.search(r"<(?!/?(ul|li|b|code|a)\b)[a-z/!]", page[gi:gj]) or page[gi:gj].count("<ul>") != 1:
+        return "index.html: the releases:go region must hold exactly one notes list"
+    # …and it is the card's only one: no marker at another indent, no second
+    # list or Release notes box beside the generated one
+    if len(re.findall(r"<!--\s*releases:go\s*-->", page)) != 1 or len(re.findall(r"<!--\s*/releases:go\s*-->", page)) != 1:
+        return "index.html: releases:go markers outside the generated pair"
+    if page[card:card_end].count("<ul>") != 1 or page[card:card_end].count('<details class="sum notes">') != 1:
+        return "index.html: the ConcordeGo card has a notes list outside the releases:go markers"
     return None
 
 
@@ -693,6 +993,34 @@ def main():
         elif was:
             behind.append(key)
         print("  %-4s %s%s" % (key, summary, "" if key in behind else "  (unchanged)"))
+    # ConcordeGo's notes list. Anything unreadable leaves it exactly as it is,
+    # and an empty result never replaces it.
+    try:
+        go = go_channel()
+    except Incomplete as exc:
+        print("  go   %s — leaving its notes untouched" % exc)
+        go = None
+    else:
+        if go["source"] != "live" and "<li" in page[slice(*region(page, "go"))]:
+            # The branch tip may be ahead of what is deployed: it only fills an
+            # empty list, never replaces notes about the build the site runs.
+            print("  go   the live site could not be read (branch %s is at %s) — leaving its notes untouched"
+                  % (GO_BRANCH, go["build"]))
+            go = None
+    if go:
+        new = go_notes(go)
+        if not new:
+            print("  go   build %s: no commits in the window — leaving its notes untouched" % go["build"])
+        else:
+            i, j = region(page, "go")
+            new += "\n"
+            if page[i:j] != new:
+                behind.append("go")
+                page = page[:i] + new + page[j:]
+            print("  go   %s, %d commit(s) since %s%s%s" % (
+                go["label"], go["total"], go["since"],
+                "" if go["source"] == "live" else " (the live site could not be read: branch %s)" % GO_BRANCH,
+                "" if "go" in behind else "  (unchanged)"))
     # Generation replaces the whole region, so the result cannot repeat a
     # channel; if it somehow does, that is a bug and the page must not ship.
     for key, _repo, _buttons in PRODUCTS:

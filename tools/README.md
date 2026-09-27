@@ -9,7 +9,7 @@ rather than an archaeology dig through old PNGs.
 | `favicon.ico`, `favicon-16.png`, `favicon-32.png`, `apple-touch-icon.png` | `../tools-make-favicon.py` |
 | `og.png` | `../tools-make-og.py` |
 | the download blocks in `index.html` | `sync-releases.py` from GitHub Releases |
-| their release notes | `summarize-notes.py` (Claude, in the Action) into `release-notes.auto.json`, read by `sync-releases.py` |
+| their release notes, and ConcordeGo's | `summarize-notes.py` (Claude, in the Action) into `release-notes.auto.json`, read by `sync-releases.py` |
 | `assets/shot-ai.*`, `assets/shot-vpn.*`, `assets/shot-go.*` | `make-shots.py` from `windows/*.html` (below) |
 | `assets/mark-go-pq.mp4`, `assets/mark-go-hlg.webm` | `make-mark-go.py` from `assets/mark-ai-*` and `assets/mark-vpn-*` |
 
@@ -19,7 +19,9 @@ rather than an archaeology dig through old PNGs.
     python3 tools/sync-releases.py --check    # exit 1 if the page is behind
 
 Everything between `<!-- releases:ai -->` / `<!-- releases:vpn -->` and
-their closing markers in `index.html` is generated; hand edits there are
+their closing markers in `index.html` is generated (and ConcordeGo's notes
+list between `<!-- releases:go -->` markers — see
+[ConcordeGo's notes](#concordegos-notes)); hand edits there are
 overwritten on the next run. **Never rebase a generated change onto
 another one** — two syncs that each insert the same block replay as two
 insertions with no conflict, and the page ships a channel twice. Land on
@@ -149,7 +151,82 @@ Expect a few dollars a month; a month of many nightlies, each caught by
 its own run, could reach $10–30. The worst case for one call is about
 $0.33 (all 16,000 output tokens used), so about $2 for a run that
 re-summarizes all six channels, which is what editing the prompt file
-does. Each call's tokens and cost are in the Action's log.
+does. Each call's tokens and cost are in the Action's log. ConcordeGo's
+notes are bigger and change more often: see below.
+
+### ConcordeGo's notes
+
+ConcordeGo is a website with no releases, so its card is hand-written —
+except the list in its "Release notes" dropdown, which `sync-releases.py`
+writes between `<!-- releases:go -->` and `<!-- /releases:go -->` (those two
+markers sit at twenty spaces of indent, inside the card's `sum-body`; the
+script matches them exactly and refuses a page where they are missing,
+doubled, outside the Go card or wrapped round anything but one list, or
+where the card has a second bare `<ul>` or Release notes box beside them).
+
+**What they are made from.** The build go.flyconcordefly.com says it is
+running (the `data-build` stamp in its footer, the one `worker.js` reads;
+only the first 512 KB of the page are read, 10-second timeout). **If the
+site cannot be read, the list is left as it is** and the summarizer neither
+pays nor prunes for Go that run: the branch tip may be ahead of what is
+deployed, and the deployed build's summary is needed again as soon as the
+site answers. The tip of the branch in `GO_BRANCH` in `sync-releases.py`
+stands in only to fill an empty list (`<ul></ul>`) — change that one constant
+if Go's source moves. If a GitHub runner is ever blocked from reading the
+site for good, the Go notes stop moving (the Action log says "the live site
+could not be read" each run) until a local sync on a Mac that can read it. ConcordeGo has no
+repo of its own: it is `concorde-travel/` in `bigmillz/concordeai`, on an
+unmerged branch. The notes are the subject lines of the commits that
+touched `concorde-travel/` in the **30 days before that build's own commit
+date** (not before today, so the notes and their key change only when Go
+deploys), newest first, "ConcordeGo: " dropped, merges and exact repeats
+skipped, at most 150 (the rest become an "...and N more" note that only
+says the list is incomplete). The same `gh api` calls as the apps', so the
+Action's token lifts the rate limit. **If GitHub or `gh` fails, the list is
+left exactly as it is** — the sync never fails over it and never blanks it.
+
+**What is shown**: the summary in `release-notes.auto.json` under
+`"concordego"` (its own key, not the AI repo's, so pruning one never touches
+the other) for exactly these notes; else a keyword fallback (`go_rank()`),
+which judges each subject clause by clause — admin pages, allowlists, tests,
+pins, research, tables, records, deployment, mockups, credits, data
+plumbing, and anything naming a person, an email address, a domain or an
+IP are dropped whole, polish and form layout score down, features score up,
+British spellings are made American — shows
+one line per feature however many commits built it, whole clauses only,
+and closes with "Plus more changes" (no count: commits are not changes).
+The closing line never links anywhere: the history is on an unmerged branch
+of another repo.
+
+**Who summarizes it**: the same Action run, the same prompt file and model.
+The Go-specific instructions — it is a website that deploys continuously;
+summarize the 30 days like a prerelease span; leave out admin pages,
+allowlists, internal checks, tests, research notes, deployment, mockups and
+data plumbing unless a visitor would see it, and that a source or check
+named in a subject ("the airlines' own seat maps", "parity with Google
+Flights") is where figures came from, not a feature — are in `PRODUCT` and `SPAN`
+in `summarize-notes.py`, i.e. in the request, not the prompt file, so
+adding Go did not re-key the six app channels. (Editing that `SPAN` text
+does not change any key either; delete the `"concordego"` entry to have it
+re-asked.)
+
+**When it refreshes.** A Go deploy does not push to this repo, so the Go
+notes refresh when the Action next runs: on its schedule (asked for every
+15 minutes, delivered every 2–5 hours) or on any push here. Until then the
+page shows the previous build's notes. A release script's local sync also
+rewrites the list — with the keyword fallback when the build is newer than
+the last summary — and the push it makes starts the Action, which puts the
+summary back within minutes.
+
+**Cost.** One call per Go build the Action sees (intermediate builds
+between two runs are skipped). The request is ~151 commit subjects, about
+16,000 characters — roughly 5,000–6,000 input tokens with the prompt, so
+~2 cents in at Opus 5.5's $4 / $20, plus 1,000–4,000 output tokens with
+thinking, 2–8 cents: about **4–10 cents per Go summary**, $0.34 at worst.
+While Go is under heavy development (172 commits in its first nine days)
+nearly every Action run sees a new build: 5–10 calls a day, roughly $8–20 a
+month on top of the apps.
+Quiet weeks cost nothing. Allow for that in the Console spend limit.
 
 ## The product windows
 

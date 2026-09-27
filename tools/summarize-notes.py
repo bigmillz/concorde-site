@@ -31,6 +31,11 @@ again. The first network, rate-limit, server or key error ends the run —
 the rest would fail the same way — and no call is started after
 TIME_BUDGET seconds, so a slow API cannot hold up the sync behind it.
 
+ConcordeGo is walked too: one "live" channel, the commits deployed in the
+30 days up to the build go.flyconcordefly.com runs (sync.go_channel()),
+cached under "concordego" — its own key, so pruning one never touches the
+other. It is summarized once per Go deploy the Action sees.
+
 It writes nothing and calls nothing when tools/release-notes.auto.json does
 not parse (a hand edit with a typo: fix it, nothing is lost) or when
 index.html is in a state the sync would refuse to write (nothing paid for
@@ -47,9 +52,10 @@ import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-AUTO_DOC = ("Channel summaries, generated. Keyed by repo, then a hash of the channel's source notes + "
-            "tools/release-notes-prompt.md + the model (see channel_key in sync-releases.py). Written by "
-            "tools/summarize-notes.py in the GitHub Action (model = the Claude model that wrote it) or by "
+AUTO_DOC = ("Channel summaries, generated. Keyed by repo (\"concordego\" for ConcordeGo's notes), then a "
+            "hash of the channel's source notes + tools/release-notes-prompt.md + the model (see "
+            "channel_key in sync-releases.py). Written by tools/summarize-notes.py in the GitHub Action "
+            "(model = the Claude model that wrote it) or by "
             "hand (model \"hand\"). Edit \"bullets\" freely: an entry is kept until its channel's notes "
             "change. \"fold\": true adds the closing \"Plus smaller fixes and polish\" line. An entry with "
             "\"failed\" is ignored by the page and asked again after 7 days; delete it to try sooner. "
@@ -59,11 +65,28 @@ PRODUCT = {
     "bigmillz/concordeai": "ConcordeAI, a desktop AI assistant for Mac and Windows that runs models on the "
                            "user's own computer, with cloud models as an option",
     "bigmillz/concordevpn-releases": "ConcordeVPN, a Mac VPN app that runs through the user's own server",
+    # no domain in here: a bullet that repeats one is rejected (tidy), and the
+    # rejection is recorded for a week
+    "concordego": "ConcordeGo, a flight-search website, in beta, that grades every flight "
+                  "A+ to F by its all-in cost from your door, with points and miles, and Flight Fixer for a "
+                  "delayed or cancelled flight; free, in any browser, nothing to download",
 }
 SPAN = {
     "stable": "These notes cover every build since the previous stable release.",
     "prerelease": "These notes cover every beta and release candidate since the last stable release.",
     "nightly": "These notes cover this nightly build: what is being worked on right now.",
+    # ConcordeGo. Here, not in the prompt file: editing that re-keys every channel.
+    "live": "ConcordeGo is a website, not a download: it deploys continuously, and there are no releases. "
+            "These notes are the commit subjects of every change deployed in the 30 days up to the build "
+            "the site runs now, newest first. Summarize them the way you would a prerelease span: what a "
+            "visitor to the site would notice, as the site is now. Leave out anything about admin pages, "
+            "allowlists, internal checks, tests, research notes, data tables and sources, servers and "
+            "deployment, design mockups and prototypes (\"mock 10\", \"mockups\"), credits and data "
+            "plumbing, unless it changes what a visitor sees. Commit subjects are terse and some pack "
+            "several changes into one line; read them for the change, not the wording. Many subjects name "
+            "where a number came from or how it was checked (research, seat maps, Skytrax, DOT records, a "
+            "price check or parity with Google Flights): that means the figures on the page come from "
+            "there, never that the site shows that source or promises to match it.",
 }
 
 # The answer's shape. "fold": there were smaller changes not listed, and the
@@ -247,6 +270,38 @@ def ask(client, sync, system, repo, kind, label, items):
     return bullets, fold, getattr(response, "model", None) or sync.MODEL
 
 
+def walk_go(sync, cache, stash, today, todo, referenced, complete):
+    """ConcordeGo's one channel, the same way main() walks a product's: known,
+    from the stash, or to do. Unreadable = skipped, its summaries kept.
+    Only the build the live site names is summarized or kept: the branch
+    tip that stands in when go.flyconcordefly.com cannot be read may be
+    ahead of what is deployed, so it is never paid for, and nothing is
+    pruned on its account (the deployed build's summary is still needed
+    the moment the site answers again)."""
+    try:
+        go = sync.go_channel()
+    except sync.Incomplete as exc:
+        print("  go   %s — skipped, its summaries kept" % exc)
+        return
+    if go["source"] != "live":
+        print("  go   the live site could not be read (branch tip %s stands in) — skipped, its summaries kept"
+              % go["build"])
+        return
+    repo, kind, label, items = sync.GO_KEY, sync.GO_KIND, go["label"], go["items"]
+    complete.add(repo)
+    if not items:
+        return
+    ck = sync.channel_key(kind, items)
+    referenced.setdefault(repo, set()).add(ck)
+    if ck in (cache.get(repo) or {}) and not expired_failure(cache[repo][ck], today):
+        print("  go   %-10s %s — cached (%s)" % (kind, label, cache[repo][ck].get("model")))
+    elif ck in (stash.get(repo) or {}) and not expired_failure(stash[repo][ck], today):
+        cache.setdefault(repo, {})[ck] = stash[repo][ck]
+        print("  go   %-10s %s — from this run's stash" % (kind, label))
+    else:
+        todo.append(("go", repo, kind, label, items, ck, [go["build"]]))
+
+
 def main(argv=None, client=None, sync=None, today=None, clock=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--stash", help="file outside the checkout that keeps paid-for results across resets")
@@ -306,6 +361,8 @@ def main(argv=None, client=None, sync=None, today=None, clock=None):
                 print("  %-4s %-10s %s — from this run's stash" % (key, kind, label))
             else:
                 todo.append((key, repo, kind, label, items, ck, sorted({i["tag"] for i in items})))
+
+    walk_go(sync, cache, stash, today, todo, referenced, complete)     # last: the apps come first
 
     if args.dry_run:
         for key, repo, kind, label, items, ck, _tags in todo:
