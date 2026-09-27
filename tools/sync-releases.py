@@ -971,6 +971,63 @@ def page_problem(page=None):
     return None
 
 
+# ---- "Available from" labels ------------------------------------------------
+# An FAQ answer about a feature that is not in every build ends with
+#   <strong class="since" data-since="vpn 1.4"></strong>   "Available from 1.4."
+# or carries one mid-sentence as
+#   <strong class="since inline" data-since="vpn 1.4"></strong>   "(from 1.4)"
+# and this fills in the words from the releases as they stand, so a feature
+# is never described as out before it is, and the label moves on by itself
+# when its version reaches Prerelease or Stable (Pat, 2026-09-27: "so it
+# doesn't slip between the cracks"). Only the words between the tags are
+# written; the version a feature needs is the one thing set by hand.
+SINCE = re.compile(r'(<strong class="since( inline)?" data-since="(ai|vpn) (\d+(?:\.\d+)*)">)(.*?)(</strong>)', re.S)
+
+
+def _vtuple(v):
+    nums = [int(x) for x in re.findall(r"\d+", v or "")][:3]
+    return tuple(nums + [0] * (3 - len(nums)))
+
+
+def since_label(need, stable, beta, nightly, inline=False):
+    """The words for one label, from the versions each channel carries now."""
+    want, shown = _vtuple(need), display_version(need)
+    if stable and _vtuple(stable) >= want:
+        words = ("Available from %s", "from %s")
+    elif beta and _vtuple(beta) >= want:
+        words = ("Available from %s, in Prerelease for now", "from %s, in Prerelease for now")
+    elif nightly and _vtuple(nightly) >= want:
+        words = ("Coming in %s; in the Nightly build for now", "coming in %s; in Nightly for now")
+    else:
+        words = ("Coming in %s", "coming in %s")
+    return "(%s)" % (words[1] % shown) if inline else "%s." % (words[0] % shown)
+
+
+def stamp_since(page):
+    """(page, changed): every since label rewritten from the live releases.
+    A product whose releases cannot be read keeps its labels as they are."""
+    versions = {}
+    for key, repo, _buttons in PRODUCTS:
+        if not re.search(r'data-since="%s ' % key, page):
+            continue
+        try:
+            stable, beta, nightly, _bl, _sl = channels(repo)
+        except (Incomplete, SystemExit) as exc:
+            print("  %-4s labels: releases unreadable (%s) — leaving them as they are" % (key, exc))
+            continue
+        versions[key] = tuple(release_version(r) if r else "" for r in (stable, beta, nightly))
+
+    def fill(m):
+        # an example inside an HTML comment (the FAQ's own how-to) is not a label
+        if m.group(3) not in versions or page.rfind("<!--", 0, m.start()) > page.rfind("-->", 0, m.start()):
+            return m.group(0)
+        return (m.group(1) + since_label(m.group(4), *versions[m.group(3)], inline=bool(m.group(2)))
+                + m.group(6))
+
+    new = SINCE.sub(fill, page)
+    return new, new != page
+
+
 def main():
     check = "--check" in sys.argv
     page = INDEX.read_text(encoding="utf-8")
@@ -1021,6 +1078,12 @@ def main():
                 go["label"], go["total"], go["since"],
                 "" if go["source"] == "live" else " (the live site could not be read: branch %s)" % GO_BRANCH,
                 "" if "go" in behind else "  (unchanged)"))
+    page, relabelled = stamp_since(page)
+    n = sum(1 for m in SINCE.finditer(page) if page.rfind("<!--", 0, m.start()) <= page.rfind("-->", 0, m.start()))
+    if n:
+        print("  faq  %d version label(s)%s" % (n, "" if relabelled else "  (unchanged)"))
+    if relabelled:
+        behind.append("faq labels")
     # Generation replaces the whole region, so the result cannot repeat a
     # channel; if it somehow does, that is a bug and the page must not ship.
     for key, _repo, _buttons in PRODUCTS:
