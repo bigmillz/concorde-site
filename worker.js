@@ -258,7 +258,7 @@ async function nightlyInfo(repo, ctx) {
 
 /** Rewrite ConcordeGo's version and "Updated" date ([data-go-version],
  *  time[data-go-date]) from what the live app says it is running, and show
- *  the version line if the page had it hidden (no version known yet). On
+ *  the number if the page had it hidden (no version known yet). On
  *  any failure the page keeps the values baked into index.html. */
 function stampGo(res, info) {
   if (!info) return res;
@@ -273,7 +273,6 @@ function stampGo(res, info) {
         el.removeAttribute("hidden");
       },
     })
-    .on("[data-go-vword]", { element(el) { el.removeAttribute("hidden"); } })
     .on("time[data-go-date]", {
       element(el) {
         el.setAttribute("datetime", info.date);
