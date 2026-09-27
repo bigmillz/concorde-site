@@ -33,15 +33,14 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "3b2dfbb4a4166fe3": {
-      "channel": "nightly 6.1 nightly d2fb836",
+    "e60aba111b90f2f2": {
+      "channel": "nightly 6.1 nightly 50cfc77",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Removed** — the web version of ConcordeAI is gone for good",
-        "**Proxy** — nothing reaches the app through a proxy anymore"
+        "**Maps** — maps draw again, now using OpenFreeMap's dark style in place of CARTO"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
