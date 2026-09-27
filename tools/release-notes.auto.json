@@ -1,7 +1,7 @@
 {
   "_": "Channel summaries, generated. Keyed by repo, then a hash of the channel's source notes + tools/release-notes-prompt.md + the model (see channel_key in sync-releases.py). Written by tools/summarize-notes.py in the GitHub Action (model = the Claude model that wrote it) or by hand (model \"hand\"). Edit \"bullets\" freely: an entry is kept until its channel's notes change. \"fold\": true adds the closing \"Plus smaller fixes and polish\" line. An entry with \"failed\" is ignored by the page and asked again after 7 days; delete it to try sooner. Keep this file valid JSON: while it does not parse, nothing is summarized.",
   "bigmillz/concordeai": {
-    "75c7c26762bf33b1": {
+    "c29d0e8f2290a5b8": {
       "channel": "stable 6.0.4",
       "source_tags": [
         "v273",
@@ -9,46 +9,46 @@
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Image generation** — ask for a picture and you get one; it runs on your Mac, or a cloud key or the free community cloud fills in",
-        "**Model downloads** — the bar counts what you actually started and names what is moving, with the preset matching your disk marked",
-        "**Enable visual effects** in Settings › About replaces performance mode, and now switches only the moving backdrop",
-        "**Check for updates automatically** — on, it checks at launch and once a day; off, nothing checks until you press the button"
+        "**Image generation** — ask for a picture and you get one; it runs on your Mac, or a cloud model fills in",
+        "**Model downloads** — progress reflects what is actually downloading and names each item; the preset that fits your disk is marked",
+        "**Enable visual effects** — replaces performance mode and now switches only the moving backdrop, not spinners and animations",
+        "**Check for updates automatically** — your choice: at launch and once a day, or only when you press the button"
       ],
       "fold": true,
-      "model": "claude-opus-5"
+      "model": "claude-opus-5-5"
     },
-    "e44dc011139d1eaa": {
+    "742809ba081c7c73": {
       "channel": "prerelease 6.1 beta 1",
       "source_tags": [
         "v275"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Windows** — the app starts, chats, searches the web, reads answers aloud and takes voice input on Intel, AMD and ARM PCs, with Ollama installed for you",
-        "**Video** — ask for a short clip and it renders on your Mac, with a color-coded size ladder showing what each quality costs",
-        "**Export to twenty formats** — ask for a PDF, Word document, spreadsheet, slides, calendar file or CSV and a download box appears",
-        "**Models** — newer versions offered after each app update, outdated ones cleared, and the right cloud model picked per job",
+        "**Windows** — chat, web search, read-aloud and voice input on Intel, AMD and ARM PCs; the app installs Ollama for you",
+        "**Video** — ask for a short clip and it renders on your Mac; a size ladder shows what each quality setting costs",
+        "**Export to twenty formats** — ask for a PDF, Word document, spreadsheet, slides, calendar file, CSV and more",
+        "**Models stay current** — newer versions offered after each update, catalog to September 2026, cloud model picked per job",
         "**Removed** — Contribute and the free community image cloud"
       ],
       "fold": false,
-      "model": "claude-opus-5"
+      "model": "claude-opus-5-5"
     },
-    "d37669d66599d838": {
+    "279eae9a06ad5a4d": {
       "channel": "nightly 6.1 nightly 9dbd60b",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Backdrops** — dark clips play from sunset to sunrise where you are, rather than leaning on New York",
-        "The backdrop shelf now keeps unseen clips of both kinds"
+        "**Backdrops follow your local time** — dark clips play from sunset to sunrise where you are, and there is no longer a lean toward New York",
+        "Unseen day and night backdrop clips are both kept on hand"
       ],
       "fold": false,
-      "model": "claude-opus-5"
+      "model": "claude-opus-5-5"
     }
   },
   "bigmillz/concordevpn-releases": {
-    "6d0975c918ef9256": {
+    "e0fdaa81a189bf81": {
       "channel": "stable 1.3",
       "source_tags": [
         "v37",
@@ -63,15 +63,15 @@
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Server setup** — first run can set up your server on DigitalOcean end to end, or take your own server's keys",
-        "**DNS** — NextDNS is optional at first run; without it DNS runs encrypted via Cloudflare, and Settings can flush the cache",
-        "**Automatic speed test** — Performance mode measures once the exit is verified, on network changes and every 30 minutes",
-        "**Updates** — checked at each launch and offered in a dialog with Skip, with release notes in About and a channel in Settings"
+        "**First-run setup** — builds your server on DigitalOcean end to end, or takes your own server's keys",
+        "**Automatic speed test** in Performance mode — re-runs when the network changes and every 30 minutes while connected",
+        "**Updates** — choose stable, beta or nightly in Settings; updates come as an offer you can skip, with What's new in About",
+        "**DNS** — NextDNS is optional, otherwise DNS runs encrypted via Cloudflare; Settings can flush the DNS cache"
       ],
       "fold": true,
-      "model": "claude-opus-5"
+      "model": "claude-opus-5-5"
     },
-    "d6c6a888bc8577b6": {
+    "2388296dee18b4c5": {
       "channel": "prerelease 1.4 RC 1",
       "source_tags": [
         "v49",
@@ -80,25 +80,25 @@
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Kill switch** — nothing gets around the tunnel while it's up, with a self-test that tells blocked from broken",
-        "**Full test** — measures the direct line and each transport, and says whether the VPN or your line is the limit",
-        "**Servers** — OS updates from the app, a warning on a server that isn't answering, and adds or removes take effect at once",
-        "**Speed limits** — set the line yourself or let Auto pick; Performance and Ultra race transports and take the fastest"
+        "**Kill switch** — while the tunnel is up, nothing gets around it; its self-test tells blocked from broken",
+        "**Server updates** — update your servers' OS from the app, with a warning triangle on a server that isn't answering",
+        "**Full test** — measures the direct line first, says whether the VPN or the line is the limit, and what to do",
+        "**Faster modes** — Performance and Ultra race every transport and use the fastest; set speed limits or leave them on Auto"
       ],
       "fold": true,
-      "model": "claude-opus-5"
+      "model": "claude-opus-5-5"
     },
-    "f3ba705c4265feac": {
+    "fd734cb4e0f99157": {
       "channel": "nightly 1.4 nightly f13c422",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Auto** — the Direct row shows at the top of the tests again, and stays there after a relaunch"
+        "**Auto** — the Direct row is back at the top of Auto's tests and stays there after a relaunch"
       ],
       "fold": false,
-      "model": "claude-opus-5"
+      "model": "claude-opus-5-5"
     }
   }
 }
