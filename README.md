@@ -3,8 +3,12 @@
 The Concorde product site — ConcordeAI, ConcordeVPN and ConcordeGo.
 One hand-written `index.html`, no build step. *Fly Concorde, Fly.*
 
-The release data (versions, dates, download URLs) is baked into the
-marked block inside `index.html`; update it when a release ships.
+The release data (versions, dates, download URLs, release notes) is
+generated into the marked blocks inside `index.html` by
+`tools/sync-releases.py`, which the apps' release scripts and the "Sync
+releases" GitHub Action run; the notes are summarized by Claude in that
+Action. See [tools/README.md](tools/README.md#release-notes), including the
+one-time `ANTHROPIC_API_KEY` secret.
 ConcordeVPN downloads come from the public
 [concordevpn-releases](https://github.com/bigmillz/concordevpn-releases)
 mirror — new VPN builds must be mirrored there.

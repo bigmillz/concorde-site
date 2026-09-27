@@ -914,7 +914,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li><b>Image generation</b> — ask for a picture and you get one; FLUX.1 schnell runs on your Mac, or a cloud model fills in</li><li>Model downloads show real progress, and name what is actually downloading</li><li><b>Enable visual effects</b> now switches only the moving backdrop, not spinners and animations</li><li><b>Check for updates automatically</b> is yours to choose: at launch and once a day, or never</li></ul>
+<ul><li><b>Image generation</b> — ask for a picture and you get one; FLUX.1 schnell runs on your Mac, or a cloud model fills in</li><li>Model downloads show real progress, and name what is actually downloading</li><li><b>Enable visual effects</b> now switches only the moving backdrop, not spinners and animations</li><li><b>Check for updates automatically</b> is yours to choose: at launch and once a day, or never</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
                 </div>
               </details>
             </div>
@@ -937,11 +937,16 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   <span class="file">ConcordeAI-6.1.0-Windows.zip</span>
                   <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v275/ConcordeAI-6.1.0-x64.msi">
+                  <span class="os">Win msi</span>
+                  <span class="file">ConcordeAI-6.1.0-x64.msi</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
               </div>
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li><b>Windows.</b> The Windows version starts, chats, searches the web, reads answers aloud and takes voice input, on Intel, AMD and ARM PCs</li><li><b>Video.</b> Ask for a short clip and ConcordeAI renders it on your Mac, like pictures</li><li><b>Export to twenty formats.</b> Ask for "that as a PDF", a Word document, a spreadsheet, slides, a calendar file, CSV and more, and a…</li><li><b>Models that stay current.</b> After every app update, newer versions of the models you have are offered, and outdated ones are cleared out</li></ul>
+<ul><li><b>Windows</b> — chat, web search, read-aloud and voice input on Intel, AMD and ARM PCs; the app installs Ollama for you</li><li><b>Video</b> — ask for a short clip and your Mac renders it; a size ladder shows what each quality setting costs</li><li><b>Export to twenty formats</b> — ask for an answer as a PDF, Word document, spreadsheet, slides, calendar file or CSV</li><li><b>Models that stay current</b> — newer versions offered after each update, and the right cloud model once a cloud key is added</li><li>Live weather answers and giant models for 512 GB+ systems; <b>Removed</b> — Contribute and the free community image cloud</li></ul>
                 </div>
               </details>
             </div>
@@ -950,8 +955,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <div class="chan-top">
                 <span class="chan-name">Nightly</span>
                 <span class="chan-ver">6.1</span>
-                <span class="chan-commit" data-nightly-commit="ai" data-nightly-ver="6.1" data-commit-base="https://github.com/bigmillz/concordeai/commit/"><a href="https://github.com/bigmillz/concordeai/commit/88efd07">88efd07</a></span>
-                <span class="chan-date">Built <time datetime="2026-09-26" data-nightly-date="ai">26 Sep 2026</time></span>
+                <span class="chan-commit" data-nightly-commit="ai" data-nightly-ver="6.1" data-commit-base="https://github.com/bigmillz/concordeai/commit/"><a href="https://github.com/bigmillz/concordeai/commit/9dbd60b">9dbd60b</a></span>
+                <span class="chan-date">Built <time datetime="2026-09-27" data-nightly-date="ai">27 Sep 2026</time></span>
               </div>
               <div class="btns">
                 <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/nightly/ConcordeAI-6.1.0.dmg">
@@ -968,7 +973,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li>Review fixes: drops take only files of accepted types; ARM64 installs get their own installer; stronger checks</li><li>Windows launcher: a real Python check, and setup reruns when its dependencies change</li><li>Windows sweep: 39 confirmed fixes; the backdrop loads on Windows</li></ul>
+<ul><li><b>Backdrops follow your clock</b> — dark clips from sunset to sunrise where you are, and no more lean toward New York</li></ul>
                 </div>
               </details>
             </div>
@@ -1055,7 +1060,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li>The app runs as its own identity: notifications carry the ConcordeVPN icon, and the menu bar icon survives a login-time launch</li><li>Settings is a proper dialog, with the version at the top and an update channel — stable, beta or nightly</li><li>First run can set up your server on DigitalOcean end to end, or take your own server's keys</li><li>NextDNS is optional at first run; without it DNS runs encrypted through Cloudflare</li><li>An automatic speed test in Performance mode, which waits until the exit is verified before measuring</li><li>Settings gains <b>Flush the DNS cache</b></li><li>⌘Q and Quit actually quit, and the starfield drifts behind the window</li></ul>
+<ul><li><b>First-run setup</b> — builds your server on DigitalOcean end to end, or takes your own server's keys; NextDNS is optional</li><li><b>Automatic speed test</b> in Performance mode — waits for a verified exit, and re-runs when the network changes</li><li><b>Settings</b> is a proper dialog, with an update channel (stable, beta or nightly) and <b>Flush the DNS cache</b></li><li><b>Updates</b> — offered in their own dialog with Skip, and About shows what's new in each build</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordevpn-releases/releases">full notes on GitHub</a></li></ul>
                 </div>
               </details>
             </div>
@@ -1077,7 +1082,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li>Server updates and health: second review round</li><li>Server updates and health: fixes from the pre-release review</li><li>Servers: in-app OS updates, and a warning triangle on a server that isn't answering</li><li>server/update-servers.sh: full OS update of ConcordeVPN servers, run from the Mac</li><li>The full test measures the direct line first, and says whether the VPN or the line is the limit</li><li>The kill switch drops instead of refusing, and its self-test tells blocked from broken</li><li>An update card in the app's own look, and an engine update that can't hang</li><li>A kill switch: while the tunnel is up, nothing gets around it</li><li class="more"><a href="https://github.com/bigmillz/concordevpn-releases/releases">and 4 more changes, on GitHub</a></li></ul>
+<ul><li><b>Kill switch</b> — while the tunnel is up, nothing gets around it, and its self-test tells blocked from broken</li><li>Performance and Ultra race every transport and use the fastest one</li><li><b>Full test</b> — measures your line first and says whether the VPN or the line is the limit</li><li><b>Settings</b> in five sections — your own bypass list, speed limits set by you or on auto, and OS updates for your servers</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordevpn-releases/releases">full notes on GitHub</a></li></ul>
                 </div>
               </details>
             </div>
@@ -1099,7 +1104,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li>The Direct row is back at the top of Auto's tests, kept past a relaunch</li></ul>
+<ul><li>The Direct row is back at the top of Auto's tests, and stays there after a relaunch</li></ul>
                 </div>
               </details>
             </div>
