@@ -228,6 +228,28 @@ nearly every Action run sees a new build: 5–10 calls a day, roughly $8–20 a
 month on top of the apps.
 Quiet weeks cost nothing. Allow for that in the Console spend limit.
 
+## Version labels in the FAQ
+
+An FAQ answer about a feature that is not in every build names the version
+it needs, and `sync-releases.py` writes the words, so the page never sends
+someone looking for a feature their build does not have, and nobody has to
+remember to update it when a version is promoted:
+
+    <strong class="since" data-since="vpn 1.4"></strong>          ends an answer
+    <strong class="since inline" data-since="vpn 1.4"></strong>   mid-sentence
+
+| The newest build that has it | End of answer | Inline |
+|---|---|---|
+| Stable | Available from 1.4. | (from 1.4) |
+| Prerelease | Available from 1.4, in Prerelease for now. | (from 1.4, in Prerelease for now) |
+| Nightly | Coming in 1.4; in the Nightly build for now. | (coming in 1.4; in Nightly for now) |
+| none yet | Coming in 1.4. | (coming in 1.4) |
+
+The product is `ai` or `vpn`; the version is compared number by number
+(1.10 is newer than 1.4). If a product's releases cannot be read, its
+labels are left exactly as they are. `--check` reports "faq labels" when a
+label is out of date.
+
 ## The product windows
 
 Each product card shows one window: `windows/ai-window.html`,
