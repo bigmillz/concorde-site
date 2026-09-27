@@ -105,17 +105,17 @@
     }
   },
   "concordego": {
-    "db30d4e0b4e61f0f": {
-      "channel": "live build f962e96, deployed 27 Sep 2026",
+    "363bbd5720552037": {
+      "channel": "live build ecccd8d, deployed 27 Sep 2026",
       "source_tags": [
-        "f962e96"
+        "ecccd8d"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Flight Fixer** — for a delayed or cancelled flight: look it up by number for its status, chance of flying today, and alternatives",
-        "**Round-trip fares**, plus a book, wait or typical price verdict with a 60-day chart and prices for nearby days",
-        "**Comfort grade** on every flight, with per-cabin airline ratings, a price history chart and a journey bar in the details",
-        "**Points and miles** — priced on the airlines' published award charts, with a transfer planner"
+        "**Flight Fixer** — for a delayed or cancelled flight: live status, your odds of flying today by hour, and alternatives",
+        "**Price signal** — a book, wait or typical verdict with a 60-day price chart, plus fares three days either side",
+        "**Round-trip fares**, and points and miles priced on airlines' published award charts, with a transfer planner",
+        "**Comfort** — airline ratings per cabin, a comfort grade on every flight, and lie-flat, meal, legroom and lounge details"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
