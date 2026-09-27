@@ -33,15 +33,16 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "279eae9a06ad5a4d": {
-      "channel": "nightly 6.1 nightly 9dbd60b",
+    "fd559040c87b8236": {
+      "channel": "nightly 6.1 nightly 4af53fc",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-27",
       "bullets": [
-        "**Backdrops follow your local time** — dark clips play from sunset to sunrise where you are, and there is no longer a lean toward New York",
-        "Unseen day and night backdrop clips are both kept on hand"
+        "**Backdrop** — a new scene every hour, crossfading in from files stored on your computer",
+        "**Weather by zip code** — the forecast now names the zip it is showing",
+        "**Settings** — now links to the website"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
@@ -101,5 +102,21 @@
       "model": "claude-opus-5-5"
     }
   },
-  "concordego": {}
+  "concordego": {
+    "3ec2201dd968a454": {
+      "channel": "live build 2e01409, deployed 26 Sep 2026",
+      "source_tags": [
+        "2e01409"
+      ],
+      "generated": "2026-09-27",
+      "bullets": [
+        "**Flight Fixer** — for a delayed or cancelled flight: live status by flight number, today's odds, and priced alternatives",
+        "**Round-trip fares**, plus a book, wait or typical price verdict with a 60-day chart; tap a nearby day to search it",
+        "**Airline ratings per cabin** and a comfort grade on every flight; flight details add a journey bar and price history",
+        "**Points and miles** priced on the airlines' published award charts, with a transfer planner"
+      ],
+      "fold": true,
+      "model": "claude-opus-5-5"
+    }
+  }
 }
