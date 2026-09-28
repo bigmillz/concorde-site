@@ -103,17 +103,17 @@
     }
   },
   "concordego": {
-    "b7ed2a20c1a3755d": {
-      "channel": "live version 0.1.4218, deployed 27 Sep 2026",
+    "65f72ba9137e505a": {
+      "channel": "live version 0.1.4232, deployed 27 Sep 2026",
       "source_tags": [
-        "7134ae2"
+        "8dcbfbd"
       ],
       "generated": "2026-09-28",
       "bullets": [
-        "**Round-trip fares** — see who sells each fare and its fare type, with links to other countries' sites",
-        "**Points and miles** — priced on the airlines' published award charts, with a transfer planner",
-        "**Ratings** — a comfort grade on every flight, and per-cabin airline ratings for 72 airlines, short-haul included",
-        "**Flight details** — journey bar, price history chart, bag and add-on fees, lounge, meal and lie-flat info"
+        "**Round-trip fares** — return trips are now searched and priced",
+        "**Points and miles** — valued on the airlines' published award charts, with a transfer planner and real exchange rates",
+        "**Comfort grade** on every flight, lower when it falls below the cabin you asked for; 72 airlines rated per cabin",
+        "**Flight details** — journey bar, price history chart, who sells the fare, bag and add-on fees, lounge and meal info"
       ],
       "fold": true,
       "model": "claude-opus-5-5"

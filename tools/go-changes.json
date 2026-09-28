@@ -2,6 +2,24 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "8dcbfbd",
+   "version": "0.1.4232",
+   "date": "2026-09-27",
+   "summary": "Each step's big title in HDR white too"
+  },
+  {
+   "commit": "353a326",
+   "version": "0.1.4230",
+   "date": "2026-09-27",
+   "summary": "The white headings in HDR white on HDR screens, painted through their letters"
+  },
+  {
+   "commit": "b7e98ee",
+   "version": "0.1.4225",
+   "date": "2026-09-27",
+   "summary": "The top-bar name in HDR white on HDR screens, drawn from the exact wordmark"
+  },
+  {
    "commit": "7134ae2",
    "version": "0.1.4218",
    "date": "2026-09-27",
