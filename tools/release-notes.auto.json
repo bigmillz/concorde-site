@@ -71,23 +71,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "2388296dee18b4c5": {
-      "channel": "prerelease 1.4 RC 1",
-      "source_tags": [
-        "v49",
-        "v50",
-        "v51"
-      ],
-      "generated": "2026-09-27",
-      "bullets": [
-        "**Kill switch** — while the tunnel is up, nothing gets around it; its self-test tells blocked from broken",
-        "**Server updates** — update your servers' OS from the app, with a warning triangle on a server that isn't answering",
-        "**Full test** — measures the direct line first, says whether the VPN or the line is the limit, and what to do",
-        "**Faster modes** — Performance and Ultra race every transport and use the fastest; set speed limits or leave them on Auto"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "fef742425f36398d": {
       "channel": "nightly 1.4 nightly 7a6731c",
       "source_tags": [
@@ -99,6 +82,24 @@
         "**Auto mode** — the speed line shows the last measurement, download and upload"
       ],
       "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "82b249b0a670b61f": {
+      "channel": "prerelease 1.4 RC 2",
+      "source_tags": [
+        "v49",
+        "v50",
+        "v51",
+        "v52"
+      ],
+      "generated": "2026-09-28",
+      "bullets": [
+        "**Kill switch** — while the tunnel is up, nothing gets around it; its self-test tells blocked from broken",
+        "**Server upkeep** — full OS updates for your servers from the app, and a warning on a server that isn't answering",
+        "**Speed** — Performance and Ultra use the fastest transport; the full test says if the VPN or your line is the limit",
+        "**Fixes** — apps that require encrypted DNS no longer stall, and switching off no longer strands open connections"
+      ],
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
