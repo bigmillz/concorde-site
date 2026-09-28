@@ -17,22 +17,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "742809ba081c7c73": {
-      "channel": "prerelease 6.1 beta 1",
-      "source_tags": [
-        "v275"
-      ],
-      "generated": "2026-09-27",
-      "bullets": [
-        "**Windows** — chat, web search, read-aloud and voice input on Intel, AMD and ARM PCs; the app installs Ollama for you",
-        "**Video** — ask for a short clip and it renders on your Mac; a size ladder shows what each quality setting costs",
-        "**Export to twenty formats** — ask for a PDF, Word document, spreadsheet, slides, calendar file, CSV and more",
-        "**Models stay current** — newer versions offered after each update, catalog to September 2026, cloud model picked per job",
-        "**Removed** — Contribute and the free community image cloud"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "d64aad96d675712a": {
       "channel": "nightly 6.1 nightly b507b5c",
       "source_tags": [
@@ -44,6 +28,22 @@
         "Fixes to chat saving for rewinds, late answers, quitting with Cmd+Q and refused requests"
       ],
       "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "b0d206189640c079": {
+      "channel": "prerelease 6.1 RC 1",
+      "source_tags": [
+        "v275",
+        "v276"
+      ],
+      "generated": "2026-09-28",
+      "bullets": [
+        "**Windows** — chats, web search, read-aloud and voice input on Intel, AMD and ARM PCs; Ollama is installed for you",
+        "**Video and exports** — short clips rendered on your Mac, and answers saved in twenty formats, from PDF to slides",
+        "**Chats saved as you go** — questions and answers are kept even after Stop or quit; the 60-chat limit is gone",
+        "**Removed** — Contribute and the free community image cloud"
+      ],
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
