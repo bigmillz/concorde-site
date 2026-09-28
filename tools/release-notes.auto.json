@@ -88,16 +88,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "e771a3d7429f3e1e": {
-      "channel": "nightly 1.4 nightly 2d20f48",
+    "fef742425f36398d": {
+      "channel": "nightly 1.4 nightly 7a6731c",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-09-27",
+      "generated": "2026-09-28",
       "bullets": [
-        "**Tighter tunnel** — only SSH connections to your VPN server now go outside the tunnel",
-        "**Existing setups included** — servers already set up get the SSH-only rule too, not just new ones",
-        "**Line speed** — now says in bold that it is unavailable while Auto optimize is on"
+        "**Fast modes** — lock onto the connection the speed table lists as fastest",
+        "**Auto mode** — the speed line shows the last measurement, download and upload"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
