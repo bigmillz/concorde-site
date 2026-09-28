@@ -2,6 +2,30 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "b7fa503",
+   "version": "0.1.4272",
+   "date": "2026-09-28",
+   "summary": "Premium fair fares use Google Flights' typical range for the route and day when the search has one"
+  },
+  {
+   "commit": "0597d86",
+   "version": "0.1.4264",
+   "date": "2026-09-28",
+   "summary": "The fair fare is in the cabin flown: business, first and premium economy are priced against their own fair fares"
+  },
+  {
+   "commit": "1a5b72c",
+   "version": "0.1.4253",
+   "date": "2026-09-28",
+   "summary": "HDR gold, silver and bronze outlines on the podium; the podium's journey bars fill their width"
+  },
+  {
+   "commit": "ab1996a",
+   "version": "0.1.4242",
+   "date": "2026-09-28",
+   "summary": "Fastest is the shortest trip door to door; Get me there now is the soonest at your door; podium headings keep their HDR"
+  },
+  {
    "commit": "8dcbfbd",
    "version": "0.1.4232",
    "date": "2026-09-27",

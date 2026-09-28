@@ -17,19 +17,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "d64aad96d675712a": {
-      "channel": "nightly 6.1 nightly b507b5c",
-      "source_tags": [
-        "nightly"
-      ],
-      "generated": "2026-09-27",
-      "bullets": [
-        "**Chat saving** — chats are now saved by the server, so they stop getting lost",
-        "Fixes to chat saving for rewinds, late answers, quitting with Cmd+Q and refused requests"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "b0d206189640c079": {
       "channel": "prerelease 6.1 RC 1",
       "source_tags": [
@@ -44,6 +31,18 @@
         "**Removed** — Contribute and the free community image cloud"
       ],
       "fold": true,
+      "model": "claude-opus-5-5"
+    },
+    "1f97f924fc9acc95": {
+      "channel": "nightly 6.1 nightly 1695977",
+      "source_tags": [
+        "nightly"
+      ],
+      "generated": "2026-09-28",
+      "bullets": [
+        "Same code as 6.1 RC1"
+      ],
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
@@ -104,17 +103,17 @@
     }
   },
   "concordego": {
-    "65f72ba9137e505a": {
-      "channel": "live version 0.1.4232, deployed 27 Sep 2026",
+    "fce59f20c5f041bc": {
+      "channel": "live version 0.1.4272, deployed 28 Sep 2026",
       "source_tags": [
-        "8dcbfbd"
+        "b7fa503"
       ],
       "generated": "2026-09-28",
       "bullets": [
-        "**Round-trip fares** — return trips are now searched and priced",
-        "**Points and miles** — valued on the airlines' published award charts, with a transfer planner and real exchange rates",
-        "**Comfort grade** on every flight, lower when it falls below the cabin you asked for; 72 airlines rated per cabin",
-        "**Flight details** — journey bar, price history chart, who sells the fare, bag and add-on fees, lounge and meal info"
+        "**Comfort grade** — every flight gets one, lower when it falls below the cabin you asked for; the fair fare is judged in the cabin flown",
+        "**Points and miles** — priced on the airlines' published award charts, with a transfer planner and real exchange rates",
+        "**Flight details** — journey bar, price history chart, airline ratings per cabin, and who sells each fare",
+        "**Round-trip fares**, plus bag fees, seat extras, lounge, meal, lie-flat and legroom details for more airlines"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
