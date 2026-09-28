@@ -1,0 +1,761 @@
+{
+ "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first (seeded 2026-09-27 with its earlier history from bigmillz/concordeai). Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
+ "changes": [
+  {
+   "commit": "7134ae2",
+   "version": "0.1.4218",
+   "date": "2026-09-27",
+   "summary": "Release notes survive the private repository: a public /changes with each build's version, date and summary"
+  },
+  {
+   "commit": "3af27c2",
+   "version": "0.1.4215",
+   "date": "2026-09-27",
+   "summary": "ConcordeGo in its own private repository"
+  },
+  {
+   "commit": "327a776",
+   "version": "0.1.4206",
+   "date": "2026-09-27",
+   "summary": "footer reads \"version 0.1.N\" with no BETA; the main site keeps its own"
+  },
+  {
+   "commit": "66354ce",
+   "version": "0.1.4203",
+   "date": "2026-09-27",
+   "summary": "footer reads \"BETA version 0.1.N\", as flyconcordefly.com does"
+  },
+  {
+   "commit": "63e1c9c",
+   "version": "0.1.4200",
+   "date": "2026-09-27",
+   "summary": "footer shows the Concorde delta-wing logo, linked to the main site, and \"version 0.1.N\""
+  },
+  {
+   "commit": "0c3119e",
+   "version": "0.1.4195",
+   "date": "2026-09-27",
+   "summary": "lie-flat from a checked seat table for all 90 fleet rows; meals for six more airlines; shallow-clone count"
+  },
+  {
+   "commit": "f1a661d",
+   "version": "0.1.4094",
+   "date": "2026-09-27",
+   "summary": "version 0.1.<build>, one per individual change, counted from git history; /version for the website"
+  },
+  {
+   "commit": "2f1664f",
+   "version": null,
+   "date": "2026-09-25",
+   "summary": "read Google's \"1st checked bag free\", and pin its real bag wording in the tests"
+  },
+  {
+   "commit": "48b1865",
+   "version": null,
+   "date": "2026-09-25",
+   "summary": "the seller check answered 404; add its route to the POST allowlist"
+  },
+  {
+   "commit": "25116ed",
+   "version": null,
+   "date": "2026-09-25",
+   "summary": "airline extras priced from research, the airlines' own seat maps and Google's bag fees"
+  },
+  {
+   "commit": "6fe77a1",
+   "version": null,
+   "date": "2026-09-25",
+   "summary": "no chip counts before a search; front cabins inherit a published meal; legroom on the long flight"
+  },
+  {
+   "commit": "93ac69b",
+   "version": null,
+   "date": "2026-09-25",
+   "summary": "lounge, overnight and meal chips; narrower Fixer odds; a flight's own Duffel extras; memory on the admin page"
+  },
+  {
+   "commit": "d000598",
+   "version": null,
+   "date": "2026-09-25",
+   "summary": "airlines' published add-on prices, checked ride fares, fare bands that lean high"
+  },
+  {
+   "commit": "2443af4",
+   "version": null,
+   "date": "2026-09-25",
+   "summary": "estimates marked, real hotel averages, US DOT records, checked aircraft and airport tables"
+  },
+  {
+   "commit": "1207183",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "points and miles on the airlines' published award charts, with a real transfer planner"
+  },
+  {
+   "commit": "d97ea06",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "the details sheet shows the journey bar, a price history chart, and five-star airline ratings"
+  },
+  {
+   "commit": "2fdbcaf",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "cited reviewer consensus in the cabin ratings"
+  },
+  {
+   "commit": "d296802",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "airline ratings per cabin, from Skytrax cabin stars and the 2026 awards"
+  },
+  {
+   "commit": "b6d66df",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "real exchange rates; the invented transfer bonus and upgrade odds removed"
+  },
+  {
+   "commit": "0f3c41d",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "comfort grade over every flight, lower when flights fall below the cabin asked for"
+  },
+  {
+   "commit": "e982bad",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "an empty feed reply hands the search to Google"
+  },
+  {
+   "commit": "ab436dd",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "cabins as a floor, flagged; the neighbouring cabin searched; zones for unknown airports"
+  },
+  {
+   "commit": "9d2bb73",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "an arrival block, one scale for every bar, account buttons on the right"
+  },
+  {
+   "commit": "98d51b0",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "rebuild the page (build stamp only)"
+  },
+  {
+   "commit": "3a0c792",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "72 airlines rated from published scores, with short-haul ratings"
+  },
+  {
+   "commit": "7b89ab5",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "icons in the journey bar; ratings can differ by haul and carry their sources"
+  },
+  {
+   "commit": "b7ee55d",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "airport time by border, a blue airport block, layover colours by threshold"
+  },
+  {
+   "commit": "500a4ab",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "one centred footer; Pexels and AeroDataBox credits on one line"
+  },
+  {
+   "commit": "7c16bd5",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "credit AeroDataBox in the page footers"
+  },
+  {
+   "commit": "2362477",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "\"Check other countries\", not \"Search international markets\""
+  },
+  {
+   "commit": "03331d6",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "name each seller's fare type; one line per codeshare seller"
+  },
+  {
+   "commit": "26b610b",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "who sells this fare; other countries' sites as links, not prices"
+  },
+  {
+   "commit": "46fd16d",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "count round-trip returns once each; CLAUDE.md on round-trip fares and the international markets demo"
+  },
+  {
+   "commit": "828ee2b",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "round-trip fares through Google only; a 15 MB ceiling on any flight search reply"
+  },
+  {
+   "commit": "bcd7845",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "round-trip fares"
+  },
+  {
+   "commit": "9541fac",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "bag fees for the airlines Google brings in, and short-haul fees by route"
+  },
+  {
+   "commit": "84abf94",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "the Google Flights price check, kept as tests/parity_google.py"
+  },
+  {
+   "commit": "99793b7",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "booking sites for the airlines Google brings in; Google rows named like the feed's"
+  },
+  {
+   "commit": "debbd39",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "ConcordeGo Google adapter: a flight number is the digits after the carrier code"
+  },
+  {
+   "commit": "5ad7697",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "ConcordeGo live: a call inside the rate floor waits it out instead of failing"
+  },
+  {
+   "commit": "d35270b",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "price parity with Google Flights; every airline from the supplement, cheapest tickets always shown"
+  },
+  {
+   "commit": "78771c7",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "ConcordeGo deploy: the hourly updater runs git and pip as the app user; root only restarts"
+  },
+  {
+   "commit": "35c89df",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "ConcordeGo admin: system updates available only when the root units are installed; an unclaimed request expires after ten minutes"
+  },
+  {
+   "commit": "7d6aea9",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "system updates from the admin page, and a safer update script"
+  },
+  {
+   "commit": "8a1baf3",
+   "version": null,
+   "date": "2026-09-24",
+   "summary": "ConcordeGo deploy: update-system.sh, a full apt update for the servers"
+  },
+  {
+   "commit": "801130d",
+   "version": null,
+   "date": "2026-09-23",
+   "summary": "the status setting in words, not dollars"
+  },
+  {
+   "commit": "24b7c79",
+   "version": null,
+   "date": "2026-09-23",
+   "summary": "step 3 as dropdown rows; the Concorde website's icon"
+  },
+  {
+   "commit": "91e0355",
+   "version": null,
+   "date": "2026-09-22",
+   "summary": "ConcordeGo wants: Wifi becomes Free wifi"
+  },
+  {
+   "commit": "a0c8ff7",
+   "version": null,
+   "date": "2026-09-22",
+   "summary": "ConcordeGo wants: seat power out; same airport, bag included, free carry-on and top-rated airline in; a fixed grid"
+  },
+  {
+   "commit": "3470b05",
+   "version": null,
+   "date": "2026-09-22",
+   "summary": "ConcordeGo copy, second pass: direct tone across the site"
+  },
+  {
+   "commit": "b587e63",
+   "version": null,
+   "date": "2026-09-22",
+   "summary": "step 4 no longer tells signed-out visitors their results are recordings; they get live searches"
+  },
+  {
+   "commit": "682a27a",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "index on claude/concordego-flight-reranker-h1g9bs: 4f4bfab ConcordeGo: the domain is flyconcordefly.com, with the e"
+  },
+  {
+   "commit": "4f4bfab",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "the domain is flyconcordefly.com, with the e"
+  },
+  {
+   "commit": "6434f71",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: when the zone is not visible, print what Cloudflare said, the zones the caller sees and its memberships"
+  },
+  {
+   "commit": "104b4c6",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: outbound, return, book; one link for the whole trip"
+  },
+  {
+   "commit": "42f50b6",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: podium colours, the seal clear of the banner and centred on its ink, cash-or-points as a pick, live chip counts; access.sh takes the Global API Key"
+  },
+  {
+   "commit": "52f09fe",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: an empty zone list plus a zone refusal means the token's zone scope, and the message says so"
+  },
+  {
+   "commit": "4b7c965",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "step 3 as rows of chips; access.sh stops trusting an empty zone list"
+  },
+  {
+   "commit": "dd64a83",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: three wants the feed can back, programmes and status gated by the search, Marriott at 3:1"
+  },
+  {
+   "commit": "af231e6",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: read the Account ID through the tunnel config's credentials-file"
+  },
+  {
+   "commit": "eefd2ec",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "the lockup is the site's own rule, no hover glow; access.sh reads the Account ID from the tunnel"
+  },
+  {
+   "commit": "5d53dcc",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: the wordmark is the plain lockup, GO extra extra bold"
+  },
+  {
+   "commit": "d05c3db",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: the zone check's if on its own line, dry-run against a stubbed curl"
+  },
+  {
+   "commit": "766d293",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: say when the zone belongs to another account"
+  },
+  {
+   "commit": "0f1a4df",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: the account check's snippet needs its if on its own line"
+  },
+  {
+   "commit": "a8fc8d3",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: check the account through Access, not /accounts/{id}"
+  },
+  {
+   "commit": "3df7863",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "access.sh: verify the token and the account first, and say why Access refused"
+  },
+  {
+   "commit": "ffcb74b",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "live.py: the Duffel profile's note says it is verified, and status calls it a note"
+  },
+  {
+   "commit": "c036182",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "go-live.sh: wait out the old LaunchAgent before bootstrapping the new one"
+  },
+  {
+   "commit": "7966370",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "steps as a row of checks, presets centred, the account unlocks features, go-live on its own venv"
+  },
+  {
+   "commit": "4516455",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: the sky is the website's own, warp and all"
+  },
+  {
+   "commit": "7e01e0e",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "go-live.sh: the LaunchAgent sources ~/.concordego/env (0600) for keys; header said the tunnel spends nothing, which the account gate changed"
+  },
+  {
+   "commit": "33adffb",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: the wish pill never leaves, a title card that warms the cache, upgrade odds by status"
+  },
+  {
+   "commit": "b459a8f",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10 runs real searches; an account gates what costs money"
+  },
+  {
+   "commit": "17ede22",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "the wish model says when a message is off topic, and the page answers in its own words"
+  },
+  {
+   "commit": "a7b343a",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: tighter step spacing in the points walkthrough"
+  },
+  {
+   "commit": "0a5b26e",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: booking with points, step by step"
+  },
+  {
+   "commit": "e01c1ce",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: the bill is money only; the grade's parts on the seal; cost per hour saved"
+  },
+  {
+   "commit": "c4ac8a3",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "Cloudflare Access as the door, per-person allowances, the wish box on Claude Opus 5, a droplet deploy"
+  },
+  {
+   "commit": "f2313f3",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: flight facts said plainly, headings as text with a rule"
+  },
+  {
+   "commit": "60f858c",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: the flight's own facts above the bill, from everything the feed says"
+  },
+  {
+   "commit": "cbe7691",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "go-live.sh puts the interface at go.flyconcordfly.com from a laptop"
+  },
+  {
+   "commit": "06c221d",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mockups: rebuild mocks 1 to 9 against the data file that now carries airports"
+  },
+  {
+   "commit": "364fe60",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: hover cards on every flight-bar segment, and a shut terminal is red"
+  },
+  {
+   "commit": "a8d4e17",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mockups: logos.py bakes the feed's airline logos into slim.json"
+  },
+  {
+   "commit": "51534af",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: row journey bars sit flush with the text, ends rounded"
+  },
+  {
+   "commit": "a6e0053",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: ghost-tag seals in the list, price check without the fee arithmetic"
+  },
+  {
+   "commit": "431e094",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: Michroma figures, a loading screen, a point-of-sale price check"
+  },
+  {
+   "commit": "f2a39e2",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: journey bars on every row, points judged in dollars, a currency control"
+  },
+  {
+   "commit": "353edeb",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: UD Shin Go first for the large figures, where installed"
+  },
+  {
+   "commit": "d6a738b",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: large figures set in the wordmark's face"
+  },
+  {
+   "commit": "d2c90d0",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: cash beside points, the winner starred, the why behind an (i)"
+  },
+  {
+   "commit": "03c725a",
+   "version": null,
+   "date": "2026-09-21",
+   "summary": "mock 10: relative pros and cons, journey bar, outlined seal"
+  },
+  {
+   "commit": "b07b1ac",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "mock 10: shortlist doors become first, second, third place"
+  },
+  {
+   "commit": "99f6efc",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "mock 10, the wish goes on under the results"
+  },
+  {
+   "commit": "84ba834",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "mock 10, the family mark, HDR nameplate, cash or points"
+  },
+  {
+   "commit": "aec4b37",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "mock 10, motion and the shortlist window"
+  },
+  {
+   "commit": "a425274",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "mock 10, the first screen as fields"
+  },
+  {
+   "commit": "b180e18",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "mock 10, a step-by-step entry to Concourse (proposal)"
+  },
+  {
+   "commit": "b6e6369",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "the bill - grouped, signed for people, editable"
+  },
+  {
+   "commit": "16abb95",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "Concourse, an article"
+  },
+  {
+   "commit": "d59a8f9",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "Concourse, the converged interface direction"
+  },
+  {
+   "commit": "7c0bbb6",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "second design round - Shortlist, Board, Lines, Dial"
+  },
+  {
+   "commit": "c24bd6c",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "par is modelled for any route; fleet and fare tables populated"
+  },
+  {
+   "commit": "c73c5e3",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "say when the results are a recording, not a search"
+  },
+  {
+   "commit": "cc77428",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "the results section becomes the timeline, on one clock"
+  },
+  {
+   "commit": "cec9b34",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "the search form stops being decorative"
+  },
+  {
+   "commit": "b9b035b",
+   "version": null,
+   "date": "2026-09-20",
+   "summary": "go global - the curated tables become an override, not a gate"
+  },
+  {
+   "commit": "e1db7f0",
+   "version": null,
+   "date": "2026-09-19",
+   "summary": "four interface directions, on real scored data"
+  },
+  {
+   "commit": "173ad2e",
+   "version": null,
+   "date": "2026-09-19",
+   "summary": "curate the European connection airports"
+  },
+  {
+   "commit": "95f2ce5",
+   "version": null,
+   "date": "2026-09-19",
+   "summary": "guard the absolute grade, and withdraw a bad par recommendation"
+  },
+  {
+   "commit": "464cb95",
+   "version": null,
+   "date": "2026-09-19",
+   "summary": "a real Duffel capture, and what it corrected"
+  },
+  {
+   "commit": "046f0cf",
+   "version": null,
+   "date": "2026-09-19",
+   "summary": "capture.py, for the machine that can actually reach a provider"
+  },
+  {
+   "commit": "5c143ed",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the Duffel adapter, and the only key you can still get"
+  },
+  {
+   "commit": "472b6bc",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "correct the record - Amadeus Self-Service is gone"
+  },
+  {
+   "commit": "b3e07cc",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the Amadeus adapter, profile and curated joins"
+  },
+  {
+   "commit": "60c4a4f",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "make the live tests' stand-in key unmistakably fake"
+  },
+  {
+   "commit": "e3d660c",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "key, quota and cache for the live API"
+  },
+  {
+   "commit": "1c359bf",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the live inventory adapter, and the enrichment store"
+  },
+  {
+   "commit": "c9738ee",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the ledger narrator"
+  },
+  {
+   "commit": "eb93717",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "rideshare yes/no, and the Guide me wizard"
+  },
+  {
+   "commit": "e6912de",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "features as tiles, make a wish, and a bar you can read"
+  },
+  {
+   "commit": "e26c8ca",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the page asks the scorer, and says less while doing it"
+  },
+  {
+   "commit": "125a17c",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the scorer"
+  },
+  {
+   "commit": "41f084a",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the fixture corpus, and the brief's numbers corrected"
+  },
+  {
+   "commit": "04a2511",
+   "version": null,
+   "date": "2026-09-18",
+   "summary": "the draft interface, in the AI app's skin"
+  }
+ ]
+}
