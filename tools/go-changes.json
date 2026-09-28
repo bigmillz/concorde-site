@@ -2,6 +2,24 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "cff9550",
+   "version": "0.1.4365",
+   "date": "2026-09-28",
+   "summary": "Cards show just the airline and flight number, with time in the air; the dates lead the top bar"
+  },
+  {
+   "commit": "50c04f2",
+   "version": "0.1.4359",
+   "date": "2026-09-28",
+   "summary": "A flight's other fares are one short line on its card, listed in full in its details"
+  },
+  {
+   "commit": "804d0a8",
+   "version": "0.1.4357",
+   "date": "2026-09-28",
+   "summary": "Aerolineas Argentinas and GOL are rated from their published scores"
+  },
+  {
    "commit": "b1bbb27",
    "version": "0.1.4354",
    "date": "2026-09-28",

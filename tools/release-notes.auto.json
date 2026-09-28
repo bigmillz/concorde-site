@@ -103,17 +103,17 @@
     }
   },
   "concordego": {
-    "0b4e80809b53e014": {
-      "channel": "live version 0.1.4354, deployed 28 Sep 2026",
+    "795a03241f8895f9": {
+      "channel": "live version 0.1.4365, deployed 28 Sep 2026",
       "source_tags": [
-        "b1bbb27"
+        "cff9550"
       ],
       "generated": "2026-09-28",
       "bullets": [
-        "**Sorting** — a sort menu on the results and beside the list; each flight leads with its ticket price, all-in total below",
-        "**Points and miles** — valued on the airlines' published award charts, with a transfer planner; phone-only awards say so",
-        "**Round-trip fares**, plus who sells each fare, with other countries' sites offered as links",
-        "**Flight details** — journey bar, price history chart, per-cabin airline ratings and a comfort grade on every flight"
+        "**Round-trip fares** — each fare shows who sells it, with other countries' booking sites as links",
+        "**Sorting** — a sort menu beside the results, including fastest door to door and soonest at your door",
+        "**Points and miles** — priced on airlines' published award charts, with a transfer planner; phone-only awards flagged",
+        "**Flight details** — per-cabin airline ratings, a comfort grade, a price history chart, and the journey laid out"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
