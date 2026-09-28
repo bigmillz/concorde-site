@@ -2,6 +2,48 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "b1bbb27",
+   "version": "0.1.4354",
+   "date": "2026-09-28",
+   "summary": "More ways to sort, beside the list too; wish-box questions get bullet answers and a question back"
+  },
+  {
+   "commit": "4dd6e79",
+   "version": "0.1.4335",
+   "date": "2026-09-28",
+   "summary": "The podium's prices, points and Book buttons are HDR white on HDR screens"
+  },
+  {
+   "commit": "965e799",
+   "version": "0.1.4334",
+   "date": "2026-09-28",
+   "summary": "Results get a sort menu; points are measured against a flight's cheapest fare, and phone-only awards say so"
+  },
+  {
+   "commit": "dcf5d68",
+   "version": "0.1.4289",
+   "date": "2026-09-28",
+   "summary": "Results lead with the ticket price; the all-in total sits under it"
+  },
+  {
+   "commit": "7268f7d",
+   "version": "0.1.4286",
+   "date": "2026-09-28",
+   "summary": "A Google copy of the feed's own flights, near its price, takes the feed fare's bags, so the cheaper price leads"
+  },
+  {
+   "commit": "425f8b3",
+   "version": "0.1.4280",
+   "date": "2026-09-28",
+   "summary": "A long search-summary chip ends in an ellipsis inside its box"
+  },
+  {
+   "commit": "c8435b0",
+   "version": "0.1.4278",
+   "date": "2026-09-28",
+   "summary": "Economy's fair fare is Google's typical middle plus a checked bag; the arrival block says where passport control was done"
+  },
+  {
    "commit": "b7fa503",
    "version": "0.1.4272",
    "date": "2026-09-28",
