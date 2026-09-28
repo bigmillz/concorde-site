@@ -1,5 +1,5 @@
 {
- "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first (seeded 2026-09-27 with its earlier history from bigmillz/concordeai). Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
+ "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
    "commit": "7134ae2",
