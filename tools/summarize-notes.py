@@ -32,7 +32,7 @@ the rest would fail the same way — and no call is started after
 TIME_BUDGET seconds, so a slow API cannot hold up the sync behind it.
 
 ConcordeGo is walked too: one "live" channel, the commits deployed in the
-30 days up to the build go.flyconcordefly.com runs (sync.go_channel()),
+30 days up to ConcordeGo's newest build, from its public change list (sync.go_channel()),
 cached under "concordego" — its own key, so pruning one never touches the
 other. It is summarized once per Go deploy the Action sees.
 
@@ -282,10 +282,6 @@ def walk_go(sync, cache, stash, today, todo, referenced, complete):
         go = sync.go_channel()
     except sync.Incomplete as exc:
         print("  go   %s — skipped, its summaries kept" % exc)
-        return
-    if go["source"] != "live":
-        print("  go   the live site could not be read (branch tip %s stands in) — skipped, its summaries kept"
-              % go["build"])
         return
     repo, kind, label, items = sync.GO_KEY, sync.GO_KIND, go["label"], go["items"]
     complete.add(repo)

@@ -43,12 +43,13 @@ the first of:
 
 ConcordeGo is a website, not a release, so only its "Release notes" list
 is generated (between `<!-- releases:go -->` markers; the rest of its card
-is hand-written). Its source is the commits that touched concorde-travel/
-in the 30 days up to the build go.flyconcordefly.com says it is running
-(go_channel()); it is summarized and cached like any channel, under the
-cache key "concordego", and its fallback is go_rank(). Anything that fails
-on the way leaves that list exactly as it is — the live site too: the
-branch in GO_BRANCH only fills an empty list.
+is hand-written). Its source is ConcordeGo's own public change list,
+go.flyconcordefly.com/changes (its repository is private), kept in
+tools/go-changes.json because the feed holds only its last ~50 builds: the
+notes cover the 30 days up to the newest build (go_channel()). It is
+summarized and cached like any channel, under the cache key "concordego",
+and its fallback is go_rank(). Anything that fails on the way leaves that
+list exactly as it is.
 """
 import datetime
 import hashlib
@@ -540,28 +541,27 @@ def cached_notes(repo, kind, items, link=True):
 
 # ---- ConcordeGo ------------------------------------------------------------
 # A website that deploys continuously, with no releases: its notes are the
-# commits that touched GO_PATH in the GO_DAYS before the build the live
-# site says it runs. The window is anchored to that commit's own date, so
-# the notes (and their cache key) change only when Go deploys, never just
-# because a day went by.
+# changes in the GO_DAYS up to its newest build. The window is anchored to
+# that build's own date, so the notes (and their cache key) change only when
+# Go deploys, never just because a day went by.
 GO_URL = "https://go.flyconcordefly.com/"
-GO_REPO = "bigmillz/concordeai"          # ConcordeGo's source lives in the AI repo…
-GO_PATH = "concorde-travel"              # …in this folder
-# Used only when the live site cannot be read, and then only to fill an
-# empty notes list (it may be ahead of what is deployed): the branch Go
-# deploys from. Change it here if Go moves (it is unmerged as of 2026-09-26).
-GO_BRANCH = "claude/concordego-flight-reranker-h1g9bs"
-GO_KEY = "concordego"                    # its repo key in release-notes.auto.json — not GO_REPO,
-                                         # so pruning the AI's summaries never touches Go's
+# ConcordeGo's public change list (2026-09-27: its repository went private,
+# so the site reads no git history). Newest first, ~50 builds deep:
+#   GET /changes?since=<commit>&limit=<n>
+#   {"changes": [{"version": "0.1.4218", "commit": "7134ae2", "date": "2026-09-27", "summary": "..."}],
+#    "since_found": true}
+GO_CHANGES_URL = GO_URL + "changes"
+# Everything the feed has shown, so the 30-day window outlives its ~50
+# builds. Written only in the GitHub Action (committed with the page), so a
+# release script's local sync never leaves the site checkout dirty; seeded
+# 2026-09-27 from the history ConcordeGo had in bigmillz/concordeai.
+GO_STORE = Path(__file__).with_name("go-changes.json")
+GO_KEY = "concordego"                    # its own key in release-notes.auto.json, so pruning
+                                         # the AI's summaries never touches Go's
 GO_KIND = "live"
 GO_DAYS = 30
-GO_CAP = 150                             # newest commits sent on; the rest become an "...and N more" note
-GO_PAGES = 5                             # 100 commits a page
-GO_SCAN_MAX = 512 * 1024                 # the stamp sits in the first ~125 KB of a ~3 MB page
+GO_CAP = 150                             # newest builds sent on; the rest become an "...and N more" note
 GO_TIMEOUT = 10                          # seconds, per network operation
-# the deployed commit in the footer: data-commit (from 2026-09-27, when
-# data-build began holding the version, "0.1.N"), or a hex data-build before it
-GO_BUILD = re.compile(rb'\bdata-(?:commit|build)="([0-9a-f]{7,40})"', re.I)
 
 
 # ConcordeGo's version, "0.1.<build>" (the build counts every commit), from
@@ -615,33 +615,6 @@ def stamp_go_version(page, info):
     return page
 
 
-def live_go_build(url=GO_URL):
-    """The commit go.flyconcordefly.com says it is running, or None: the
-    /version endpoint's "commit" when it gives one, else the footer stamp,
-    read only until it has gone by, never more than GO_SCAN_MAX."""
-    info = go_version_info()
-    if info and info.get("commit"):
-        return info["commit"][:7]
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "concorde-site sync-releases"})
-        with urllib.request.urlopen(req, timeout=GO_TIMEOUT) as r:
-            buf = b""
-            while len(buf) < GO_SCAN_MAX:
-                chunk = r.read(64 * 1024)
-                if not chunk:
-                    break
-                buf += chunk
-                m = GO_BUILD.search(buf)
-                if m:
-                    return m.group(1).decode()
-    except urllib.error.HTTPError as exc:    # a 4xx/5xx page is not the site
-        exc.close()
-        return None
-    except Exception:                    # offline, DNS, TLS, a timeout: the branch stands in
-        return None
-    return None
-
-
 GO_PREFIX = re.compile(r"^ConcordeGo\b:?\s*")
 
 
@@ -656,48 +629,92 @@ def go_subject(message):
     return s
 
 
-def go_channel():
-    """What the Go notes are made from: {build, source, date, label, items,
-    total}. `source` is "live" or "branch" (the live site could not be
-    read; callers use a branch result only to fill an empty list). Raises Incomplete when GitHub cannot be read; the page is then
-    left exactly as it is."""
-    build = live_go_build()
-    source = "live" if build else "branch"
+def load_go_store():
     try:
-        head = gh("repos/%s/commits/%s" % (GO_REPO, urllib.parse.quote(build or GO_BRANCH, safe="/")))
-        sha = head["sha"]
-        date = head["commit"]["committer"]["date"]
-        when = datetime.datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-        since = (when - datetime.timedelta(days=GO_DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
-        commits = []
-        for page in range(1, GO_PAGES + 1):
-            got = gh("repos/%s/commits?sha=%s&path=%s&since=%s&per_page=100&page=%d"
-                     % (GO_REPO, sha, GO_PATH, since, page))
-            if not isinstance(got, list):
-                raise ValueError("not a commit list")
-            commits += got
-            if len(got) < 100:
-                break
-    except (Exception, SystemExit) as exc:
-        # gh missing or failing, the network down, an unexpected shape
-        raise Incomplete("ConcordeGo's history could not be read (%s)" % (str(exc).strip() or type(exc).__name__))
-    items, seen = [], set()
-    for c in commits:
-        if len(c.get("parents") or []) > 1:              # a merge says nothing itself
+        got = json.loads(GO_STORE.read_text(encoding="utf-8")).get("changes")
+        return [c for c in got if isinstance(c, dict) and c.get("commit")] if isinstance(got, list) else []
+    except (OSError, ValueError, AttributeError):
+        return []
+
+
+def fetch_go_changes(since=None):
+    """(changes, since_found) from the feed; raises Incomplete on anything
+    unexpected, so the page is left as it is."""
+    q = {"limit": "200"}
+    if since:
+        q["since"] = since
+    url = GO_CHANGES_URL + "?" + urllib.parse.urlencode(q)
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "concorde-site sync-releases",
+                                                   "Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=GO_TIMEOUT) as r:
+            j = json.loads(r.read(2 * 1024 * 1024).decode("utf-8"))
+    except Exception as exc:
+        raise Incomplete("ConcordeGo's change list could not be read (%s)" % (str(exc).strip() or type(exc).__name__))
+    if not isinstance(j, dict) or j.get("error") or not isinstance(j.get("changes"), list):
+        raise Incomplete("ConcordeGo's change list answered %s" % str(j.get("error") if isinstance(j, dict) else "oddly")[:80])
+    good = []
+    for c in j["changes"]:
+        if not isinstance(c, dict):
             continue
-        text = go_subject(c["commit"]["message"])
+        commit = str(c.get("commit") or "").strip().lower()
+        date = str(c.get("date") or "").strip()
+        summary = str(c.get("summary") or "").strip()
+        if not re.fullmatch(r"[0-9a-f]{7,40}", commit) or not summary or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
+            continue
+        v = c.get("version")
+        good.append({"commit": commit[:7], "version": v if isinstance(v, str) and GO_VERSION_RX.match(v) else None,
+                     "date": date, "summary": summary[:300]})
+    return good, bool(j.get("since_found"))
+
+
+def go_channel():
+    """What the Go notes are made from: {build, source, date, since, label,
+    items, total, changes}. `changes` is the merged list to store (the
+    caller writes it, in the Action only). Raises Incomplete when the feed
+    cannot be read; the page is then left exactly as it is."""
+    store = load_go_store()
+    fresh, _found = fetch_go_changes(store[0]["commit"] if store else None)
+    known = {c["commit"] for c in store}
+    merged = [c for c in fresh if c["commit"] not in known] + store    # newest first; since_found false = match on commit
+    if not merged:
+        raise Incomplete("ConcordeGo's change list is empty")
+    head = merged[0]
+    newest = datetime.date.fromisoformat(head["date"])
+    since = (newest - datetime.timedelta(days=GO_DAYS)).isoformat()
+    window = [c for c in merged if c["date"] >= since]
+    items, seen = [], set()
+    for c in window:
+        text = go_subject(c["summary"])
         k = re.sub(r"\W+", " ", text).strip().lower()
         if k and k not in seen:
             seen.add(k)
-            items.append({"tag": c["sha"][:7], "text": text, "curated": False, "restates": False})
+            items.append({"tag": c["commit"], "text": text, "curated": False, "restates": False})
     total = len(items)
     if total > GO_CAP:
-        # the rest only makes the list incomplete; a lower bound when every page was full
-        items = items[:GO_CAP] + [{"tag": "older", "text": "...and %d more since %s" % (total - GO_CAP, since[:10]),
+        items = items[:GO_CAP] + [{"tag": "older", "text": "...and %d more since %s" % (total - GO_CAP, since),
                                    "curated": False, "restates": False}]
-    label = "build %s, deployed %s" % (sha[:7], pretty(date))
-    return {"build": sha[:7], "source": source, "date": date[:10], "since": since[:10],
-            "label": label, "items": items, "total": total}
+    label = ("version %s, deployed %s" % (head["version"], pretty(head["date"])) if head.get("version")
+             else "build %s, deployed %s" % (head["commit"], pretty(head["date"])))
+    return {"build": head["commit"], "source": "live", "date": head["date"], "since": since,
+            "label": label, "items": items, "total": total, "changes": window}
+
+
+def save_go_store(changes):
+    """Keep the window's changes; only in the GitHub Action (see GO_STORE)."""
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        return False
+    data = {"_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. "
+                 "Written by tools/sync-releases.py in the Sync releases Action; the Release notes "
+                 "summarize the last 30 days of it.", "changes": changes}
+    text = json.dumps(data, ensure_ascii=False, indent=1) + "\n"
+    try:
+        if GO_STORE.read_text(encoding="utf-8") == text:
+            return False
+    except OSError:
+        pass
+    GO_STORE.write_text(text, encoding="utf-8")
+    return True
 
 
 # The keyword fallback for Go. Commit subjects are terser than release
@@ -1116,13 +1133,8 @@ def main():
     except Incomplete as exc:
         print("  go   %s — leaving its notes untouched" % exc)
         go = None
-    else:
-        if go["source"] != "live" and "<li" in page[slice(*region(page, "go"))]:
-            # The branch tip may be ahead of what is deployed: it only fills an
-            # empty list, never replaces notes about the build the site runs.
-            print("  go   the live site could not be read (branch %s is at %s) — leaving its notes untouched"
-                  % (GO_BRANCH, go["build"]))
-            go = None
+    if go and not check and save_go_store(go["changes"]):
+        print("  go   stored %d change(s) in %s" % (len(go["changes"]), GO_STORE.name))
     if go:
         new = go_notes(go)
         if not new:
@@ -1133,10 +1145,8 @@ def main():
             if page[i:j] != new:
                 behind.append("go")
                 page = page[:i] + new + page[j:]
-            print("  go   %s, %d commit(s) since %s%s%s" % (
-                go["label"], go["total"], go["since"],
-                "" if go["source"] == "live" else " (the live site could not be read: branch %s)" % GO_BRANCH,
-                "" if "go" in behind else "  (unchanged)"))
+            print("  go   %s, %d change(s) since %s%s" % (
+                go["label"], go["total"], go["since"], "" if "go" in behind else "  (unchanged)"))
     gv = go_version_info()
     if gv is None:
         print("  go   version: go.flyconcordefly.com/version did not answer — leaving the line as it is")

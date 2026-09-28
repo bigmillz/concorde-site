@@ -102,10 +102,10 @@ jobs:
               echo "no ANTHROPIC_API_KEY secret: notes are keyword-ranked, not summarized"
             fi
             python3 tools/sync-releases.py
-            if [ -z "$(git status --porcelain -- index.html tools/release-notes.auto.json)" ]; then
+            if [ -z "$(git status --porcelain -- index.html tools/release-notes.auto.json tools/go-changes.json)" ]; then
               echo "site is current"; exit 0
             fi
-            git add index.html tools/release-notes.auto.json
+            git add index.html tools/release-notes.auto.json tools/go-changes.json
             git commit --quiet -m "Sync releases"
             if git push --quiet origin main; then
               echo "pushed"; exit 0
