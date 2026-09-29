@@ -95,5 +95,444 @@
       "fold": true,
       "model": "claude-opus-5-5"
     }
+  },
+  "news": {
+    "407a76bdc0a7e1ed": {
+      "channel": "release ai 6.1 RC 1",
+      "source_tags": [
+        "v276"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Chats saved as you go, no limit",
+        "Backdrops that change scene hourly",
+        "Maps display again"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "6c69c1d5991d6419": {
+      "channel": "release ai 6.1 beta 1",
+      "source_tags": [
+        "v275"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Windows support",
+        "Video clips rendered on your Mac",
+        "Export to twenty file formats"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "791d99d9dc830529": {
+      "channel": "release ai 6.0.4",
+      "source_tags": [
+        "v274"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Image generation on your Mac",
+        "Clearer model download progress",
+        "Automatic update checks now optional"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "da58272f2a4cf8c9": {
+      "channel": "release ai 6.0.4 beta 1",
+      "source_tags": [
+        "v273"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Image generation on your Mac",
+        "Real progress for model downloads",
+        "Choice of automatic update checks"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "b58827d72ea6645a": {
+      "channel": "release ai 6.0.3",
+      "source_tags": [
+        "v272"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Clean-up dialog shows what it will remove"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "542f295450079c61": {
+      "channel": "release ai 6.0.2",
+      "source_tags": [
+        "v271"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Clean up now frees space from old models",
+        "Shorter post-update dialog",
+        "Today and tonight follow your home clock"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "d06a8992a2371f56": {
+      "channel": "release ai 6.0.1",
+      "source_tags": [
+        "v270"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Local answers use each place's own time zone",
+        "Venue answers flag closures and unverified hours",
+        "Recommendations always appear after the last question"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "051edd9c5ba54a04": {
+      "channel": "release ai 6.0",
+      "source_tags": [
+        "v269"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Search your past chats",
+        "Local answers on local time",
+        "Auto-clean for superseded models"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "80f072202333e405": {
+      "channel": "release ai 6.0 RC 4",
+      "source_tags": [
+        "v268"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Auto-cleanup for old model versions",
+        "More accurate local search answers",
+        "Weather with a second live source"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "30c9537ec03974b6": {
+      "channel": "release vpn 1.4",
+      "source_tags": [
+        "v53"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "A kill switch",
+        "Auto optimize picks the mode per network",
+        "Performance and Ultra lock onto the fastest protocol"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "c6327cf7bc107f63": {
+      "channel": "release vpn 1.4 RC 2",
+      "source_tags": [
+        "v52"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Retest line speeds from the menu bar",
+        "Fixes apps stalling on encrypted DNS",
+        "Fast modes lock onto the fastest line"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "20b71a7611371237": {
+      "channel": "release vpn 1.4 RC 1",
+      "source_tags": [
+        "v51"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "In-app OS updates for your servers",
+        "Warning for servers that stop responding",
+        "Auto mode shows measuring progress"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "831bf9053131bb1e": {
+      "channel": "release vpn 1.4 beta 2",
+      "source_tags": [
+        "v50"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "A kill switch",
+        "Performance and Ultra pick the fastest transport",
+        "A full test that pinpoints the bottleneck"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "fb055f8e9f4718c7": {
+      "channel": "release vpn 1.4 beta 1",
+      "source_tags": [
+        "v49"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Speed limits, automatic or set by you",
+        "A bypass list you can edit",
+        "Exit location no longer assumed New York"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "9dc369514b4e0204": {
+      "channel": "release vpn 1.3",
+      "source_tags": [
+        "v48"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Update offers with a Skip option",
+        "Release notes in the About window",
+        "Fixed Apply after removing an exit"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "4b641bd5084c8860": {
+      "channel": "release vpn 1.3 beta 2",
+      "source_tags": [
+        "v47"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Update channels: stable, beta or nightly",
+        "Redesigned Settings dialog"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "e71aae83d0ff8e3d": {
+      "channel": "release vpn 1.3 beta",
+      "source_tags": [
+        "v43",
+        "v44",
+        "v45"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Server setup on DigitalOcean from first run",
+        "Encrypted DNS without NextDNS",
+        "A DNS cache flush in Settings"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "1bb7c3efbc926f1a": {
+      "channel": "release vpn 1.3 beta",
+      "source_tags": [
+        "v37",
+        "v39",
+        "v40",
+        "v41"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Automatic speed test in Performance mode",
+        "Speed test re-runs on network changes",
+        "Quit now actually quits the app"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "6c5f6c0d31d85451": {
+      "channel": "release vpn 1.2.2",
+      "source_tags": [
+        "v35"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Optimize and Bypass in the menu",
+        "A redesigned, more compact window"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "f0ed784e7eeb1cd0": {
+      "channel": "release vpn 1.2",
+      "source_tags": [
+        "v33"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "Steadier connections on poor Wi-Fi",
+        "Nearest exit picked by latency",
+        "Traffic presents Chrome's TLS fingerprint"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "5c3a13726963a200": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4365, deployed 28 Sep 2026",
+      "source_tags": [
+        "03331d6",
+        "03c725a",
+        "046f0cf",
+        "04a2511",
+        "0597d86",
+        "06c221d",
+        "0a5b26e",
+        "0c3119e",
+        "0f1a4df",
+        "0f3c41d",
+        "104b4c6",
+        "1207183",
+        "125a17c",
+        "16abb95",
+        "173ad2e",
+        "17ede22",
+        "1a5b72c",
+        "1c359bf",
+        "2362477",
+        "2443af4",
+        "24b7c79",
+        "25116ed",
+        "26b610b",
+        "2f1664f",
+        "2fdbcaf",
+        "327a776",
+        "33adffb",
+        "3470b05",
+        "353a326",
+        "353edeb",
+        "35c89df",
+        "364fe60",
+        "3a0c792",
+        "3af27c2",
+        "3df7863",
+        "41f084a",
+        "425f8b3",
+        "42f50b6",
+        "431e094",
+        "4516455",
+        "464cb95",
+        "46fd16d",
+        "472b6bc",
+        "48b1865",
+        "4b7c965",
+        "4dd6e79",
+        "4f4bfab",
+        "500a4ab",
+        "50c04f2",
+        "51534af",
+        "52f09fe",
+        "5ad7697",
+        "5c143ed",
+        "5d53dcc",
+        "60c4a4f",
+        "60f858c",
+        "63e1c9c",
+        "6434f71",
+        "66354ce",
+        "682a27a",
+        "6fe77a1",
+        "7134ae2",
+        "7268f7d",
+        "766d293",
+        "78771c7",
+        "7966370",
+        "7b89ab5",
+        "7c0bbb6",
+        "7c16bd5",
+        "7d6aea9",
+        "7e01e0e",
+        "801130d",
+        "804d0a8",
+        "828ee2b",
+        "84abf94",
+        "84ba834",
+        "8a1baf3",
+        "8dcbfbd",
+        "91e0355",
+        "93ac69b",
+        "9541fac",
+        "95f2ce5",
+        "965e799",
+        "98d51b0",
+        "99793b7",
+        "99f6efc",
+        "9d2bb73",
+        "a0c8ff7",
+        "a425274",
+        "a6e0053",
+        "a7b343a",
+        "a8d4e17",
+        "a8fc8d3",
+        "ab1996a",
+        "ab436dd",
+        "aec4b37",
+        "af231e6",
+        "b07b1ac",
+        "b180e18",
+        "b1bbb27",
+        "b3e07cc",
+        "b459a8f",
+        "b587e63",
+        "b6d66df",
+        "b6e6369",
+        "b7e98ee",
+        "b7ee55d",
+        "b7fa503",
+        "b9b035b",
+        "bcd7845",
+        "c036182",
+        "c24bd6c",
+        "c4ac8a3",
+        "c73c5e3",
+        "c8435b0",
+        "c9738ee",
+        "cbe7691",
+        "cc77428",
+        "cec9b34",
+        "cff9550",
+        "d000598",
+        "d05c3db",
+        "d296802",
+        "d2c90d0",
+        "d35270b",
+        "d59a8f9",
+        "d6a738b",
+        "d97ea06",
+        "dcf5d68",
+        "dd64a83",
+        "debbd39",
+        "e01c1ce",
+        "e1db7f0",
+        "e26c8ca",
+        "e3d660c",
+        "e6912de",
+        "e982bad",
+        "eb93717",
+        "eefd2ec",
+        "f1a661d",
+        "f2313f3",
+        "f2a39e2",
+        "ffcb74b"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "2026-09-24: Round-trip fares",
+        "2026-09-28: A sort menu for results",
+        "2026-09-24: Price history and airline ratings in flight details"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    }
   }
 }
