@@ -68,18 +68,19 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "90de97ecea775bcc": {
-      "channel": "nightly 1.5 nightly 20c5739",
+    "d8698b1b5dc0bfa1": {
+      "channel": "nightly 1.5 nightly 219a9a9",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**Metered connections in bonding** — a Metered tick beside each Bond tick; any connection can be metered, with its own counter and limit",
-        "**Clearer engine update errors** — a failed update reads as one plain sentence, with the engine's reason",
-        "**Profile fix** — a server with a reserved name now gets a numbered id in the profile"
+        "**Edit servers in place** — change a server's address or rename it without re-adding it",
+        "**Hostname addresses** — a server can be a hostname, so a home server kept current by DDNS works",
+        "**NextDNS** — set it up in Settings",
+        "**Auto exit** — let the app pick the exit for you"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
