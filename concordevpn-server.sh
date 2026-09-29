@@ -1516,7 +1516,8 @@ V23_REALITY_SID=${V23_REALITY_SID}
 V23_REALITY_SNI=${V23_REALITY_SNI}
 V23_REALITY_PORT=${V23_REALITY_PORT}
 S
-    echo "(V23_NEXTDNS_ID is yours to fill in: the profile ID from my.nextdns.io)" >&2
+    echo "(V23_NEXTDNS_ID stays empty here: NextDNS is set once in the app, for every" >&2
+    echo " server - Settings > Network > NextDNS, or the first-run screen.)" >&2
     ;;
   status)
     systemctl status hysteria-server.service --no-pager -l | head -14
