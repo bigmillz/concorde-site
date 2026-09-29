@@ -246,6 +246,30 @@ read, the card shows just "BETA" and the date. If the answer carries a
 `"commit"`, the Go release notes use it to find the deployed build;
 otherwise they read the footer's `data-build`.
 
+## What's new
+
+The section above Products lists every ConcordeAI and ConcordeVPN prerelease
+and stable from the last 30 days (never a nightly), newest day first: the
+app name linking to its card, "<version> now available", and one to three
+short features. Builds that share a title on one day are one line. The
+features are Claude's (rules in `news-prompt.md`, cached under "news" in
+`release-notes.auto.json`); until a release has one, the keyword ranking's
+bold leads stand in. ConcordeGo is listed only when Claude judges an update
+in its change list significant, with the date it went live; there is no
+fallback for it. `sync-releases.py` writes the region `releases:news`.
+
+## The FAQ check
+
+When a ConcordeAI or ConcordeVPN stable or prerelease comes out, the Sync
+releases Action gives its notes and the whole FAQ to Claude
+(`faq-audit.py`, rules in `faq-audit-prompt.md`). If an answer looks out of
+date, it opens a GitHub issue on this repo titled "FAQ check: <app>
+<version> may affect N answer(s)", with the question, what changed and a
+suggested fix; GitHub emails the repo owner. Each release is checked once:
+`faq-audit.json` lists the ones done (delete a line to check it again).
+It never edits the FAQ itself. `--seed` marks every current release as
+checked without calling anything.
+
 ## Version labels in the FAQ
 
 An FAQ answer about a feature that is not in every build names the version

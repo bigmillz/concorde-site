@@ -87,6 +87,11 @@ SPAN = {
             "where a number came from or how it was checked (research, seat maps, Skytrax, DOT records, a "
             "price check or parity with Google Flights): that means the figures on the page come from "
             "there, never that the site shows that source or promises to match it.",
+    # What's new (tools/news-prompt.md): one release, or ConcordeGo's month
+    "release": "These are the notes of one release (several builds that shared its title on one day are "
+               "taken together). Name its one to three biggest changes for a one-line headline.",
+    "go-news": "These are ConcordeGo's changes over the last 30 days, newest first, each starting with the date "
+               "it went live. ConcordeGo is a website that deploys continuously. Pick only significant updates.",
 }
 
 # The answer's shape. "fold": there were smaller changes not listed, and the
@@ -210,7 +215,7 @@ def tidy(data, cap):
     return out[:cap - (1 if fold else 0)], fold
 
 
-def ask(client, sync, system, repo, kind, label, items):
+def ask(client, sync, system, repo, kind, label, items, cap=None):
     """One summary: (bullets, fold, model that answered). Raises Transient
     or Unusable; the chain runs most specific first."""
     import anthropic
@@ -266,7 +271,9 @@ def ask(client, sync, system, repo, kind, label, items):
         data = json.loads(text)
     except ValueError as exc:
         raise Unusable("answer is not JSON (request %s)" % rid) from exc
-    bullets, fold = tidy(data, sync.SHOW_MAX)
+    bullets, fold = tidy(data, sync.SHOW_MAX if cap is None else 99)
+    if cap:
+        bullets = bullets[:cap]
     return bullets, fold, getattr(response, "model", None) or sync.MODEL
 
 
@@ -295,7 +302,54 @@ def walk_go(sync, cache, stash, today, todo, referenced, complete):
         cache.setdefault(repo, {})[ck] = stash[repo][ck]
         print("  go   %-10s %s — from this run's stash" % (kind, label))
     else:
-        todo.append(("go", repo, kind, label, items, ck, [go["build"]]))
+        todo.append(("go", repo, kind, label, items, ck, [go["build"]], {}))
+
+
+def walk_news(sync, cache, stash, today, todo, referenced, complete):
+    """What's new: one entry per release title a day in the last 30 days, and
+    ConcordeGo's significant updates, cached under "news". Pruned only when
+    every product was read whole."""
+    try:
+        system = sync.NEWS_PROMPT.read_text(encoding="utf-8")
+    except OSError:
+        print("  news no %s — not summarized" % sync.NEWS_PROMPT.name)
+        return
+    keep, whole = referenced.setdefault(sync.NEWS_KEY, set()), True
+    wanted = []
+    for key, repo, _buttons in sync.PRODUCTS:
+        try:
+            groups = sync.news_groups(repo)
+        except (sync.Incomplete, SystemExit) as exc:
+            print("  news %s: releases unreadable (%s) — its entries kept" % (key, exc))
+            whole = False
+            continue
+        for date, title, rels in groups:
+            items = sync.source_items(repo, rels)
+            if items:
+                wanted.append((key, repo, "release", "%s %s" % (key, title), items, sync.news_key("release", items)))
+    try:
+        go = sync.go_channel()
+    except sync.Incomplete as exc:
+        print("  news go: %s — its entry kept" % exc)
+        whole = False
+    else:
+        items = sync.go_news_items(go)
+        if items:
+            wanted.append(("go", sync.GO_KEY, "go-news", "ConcordeGo, 30 days to %s" % go["label"],
+                           items, sync.news_key("go", items)))
+    for key, repo, kind, label, items, ck in wanted:
+        keep.add(ck)
+        have = cache.get(sync.NEWS_KEY) or {}
+        if ck in have and not expired_failure(have[ck], today):
+            print("  news %-10s %s — cached (%s)" % (kind, label, have[ck].get("model")))
+        elif ck in (stash.get(sync.NEWS_KEY) or {}) and not expired_failure(stash[sync.NEWS_KEY][ck], today):
+            cache.setdefault(sync.NEWS_KEY, {})[ck] = stash[sync.NEWS_KEY][ck]
+            print("  news %-10s %s — from this run's stash" % (kind, label))
+        else:
+            todo.append((key, repo, kind, label, items, ck, sorted({i["tag"] for i in items}),
+                         {"system": system, "cache": sync.NEWS_KEY, "cap": sync.NEWS_FEATURES}))
+    if whole:
+        complete.add(sync.NEWS_KEY)
 
 
 def main(argv=None, client=None, sync=None, today=None, clock=None):
@@ -356,12 +410,13 @@ def main(argv=None, client=None, sync=None, today=None, clock=None):
                 cache.setdefault(repo, {})[ck] = stash[repo][ck]
                 print("  %-4s %-10s %s — from this run's stash" % (key, kind, label))
             else:
-                todo.append((key, repo, kind, label, items, ck, sorted({i["tag"] for i in items})))
+                todo.append((key, repo, kind, label, items, ck, sorted({i["tag"] for i in items}), {}))
 
-    walk_go(sync, cache, stash, today, todo, referenced, complete)     # last: the apps come first
+    walk_go(sync, cache, stash, today, todo, referenced, complete)     # after the apps
+    walk_news(sync, cache, stash, today, todo, referenced, complete)   # last: the headlines
 
     if args.dry_run:
-        for key, repo, kind, label, items, ck, _tags in todo:
+        for key, repo, kind, label, items, ck, _tags, _x in todo:
             print("  %-4s %-10s %s — would summarize %d notes (key %s)" % (key, kind, label, len(items), ck))
         return 0
 
@@ -385,14 +440,15 @@ def main(argv=None, client=None, sync=None, today=None, clock=None):
                     print("  could not set up the API client (%s) — heuristic notes stand" % type(exc).__name__)
                     todo = []
 
-    for n, (key, repo, kind, label, items, ck, tags) in enumerate(todo):
+    for n, (key, repo, kind, label, items, ck, tags, x) in enumerate(todo):
+        where = x.get("cache", repo)
         if clock() - started > TIME_BUDGET:
             print("  out of time: %d channel(s) left for the next run" % (len(todo) - n))
             break
         print("  %-4s %-10s %s — summarizing %d notes" % (key, kind, label, len(items)))
         entry = {"channel": "%s %s" % (kind, label), "source_tags": tags, "generated": today}
         try:
-            bullets, fold, model = ask(client, sync, system, repo, kind, label, items)
+            bullets, fold, model = ask(client, sync, x.get("system", system), repo, kind, label, items, x.get("cap"))
             entry.update(bullets=bullets, fold=fold, model=model)
             for b in bullets:
                 print("      - %s" % b)
@@ -409,10 +465,10 @@ def main(argv=None, client=None, sync=None, today=None, clock=None):
         except Exception as exc:             # an SDK too old for these parameters, say — never block the sync
             print("    not summarized (%s: %s), will retry next run" % (type(exc).__name__, exc))
             continue
-        cache.setdefault(repo, {})[ck] = entry
+        cache.setdefault(where, {})[ck] = entry
         write_json(sync.AUTO, cache)         # paid for: on disk now, even if the run is killed
         if args.stash:                       # …and kept through the workflow's reset
-            stash.setdefault(repo, {})[ck] = entry
+            stash.setdefault(where, {})[ck] = entry
             write_json(args.stash, stash)
 
     # Drop what no channel shows any more — but only for a repo we saw whole.
