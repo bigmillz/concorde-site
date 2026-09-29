@@ -67,16 +67,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "21bf08ad3fb6c420": {
-      "channel": "nightly 1.5 nightly f4c1083",
+    "68a7a978d6b845bd": {
+      "channel": "nightly 1.5 nightly 7c13da6",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**Setup** — waits up to 20 seconds for the VPN engine to respond, instead of a single check after 2 seconds"
+        "**iPhone setup** — Settings > Servers shows a QR code for each protocol, for adding your server to Shadowrocket",
+        "**ISP detection** — your ISP is picked up while the tunnel is up, no Test needed"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
