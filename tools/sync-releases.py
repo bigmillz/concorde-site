@@ -1106,14 +1106,17 @@ def stamp_since(page):
 
 
 # ---- What's new ----------------------------------------------------------
-# The section above Products: every prerelease and stable of the apps in the
-# last NEWS_DAYS, and ConcordeGo's significant updates, newest day first,
-# each app name linking down to its card (Pat, 2026-09-28). A release gets
+# The section above Products (Pat, 2026-09-28): the latest update on each
+# channel, in product order: each app's newest stable, its newest
+# prerelease when that is ahead of the stable, and ConcordeGo's latest
+# significant update. A "More" toggle holds the rest from the last
+# NEWS_MORE_DAYS. Never a nightly. Each app name links down to its card. A release gets
 # one to three short features: Claude's (tools/news-prompt.md, cached under
 # "news" in release-notes.auto.json), else the first bold leads of the
 # keyword ranking. ConcordeGo appears only when Claude has judged an update
 # significant; without a summary it simply is not listed.
-NEWS_DAYS = 30
+NEWS_DAYS = 30                           # how far back anything is considered
+NEWS_MORE_DAYS = 14                      # what the More toggle reaches back to
 NEWS_KEY = "news"
 NEWS_PROMPT = Path(__file__).with_name("news-prompt.md")
 NEWS_FEATURES = 3
@@ -1229,28 +1232,33 @@ def go_news(go, auto, today=None):
     return out[:NEWS_FEATURES]
 
 
-def news_html(entries):
-    """The region: one block per day, newest first, its updates bulleted."""
-    if not entries:
+def news_row(e):
+    d = datetime.date.fromisoformat(e["date"])
+    href, name = ANCHOR[e["key"]]
+    head = '<a href="%s">%s</a>' % (href, name)
+    if e.get("title"):
+        head += " %s now available" % html.escape(e["title"])
+    tail = "; ".join(html.escape(f) for f in e["features"])
+    return ['      <div class="news-day">',
+            '        <time datetime="%s">%d %s</time>' % (e["date"], d.day, MONTHS[d.month - 1]),
+            '        <ul><li>%s%s</li></ul>' % (head, (" &mdash; " + tail) if tail else ""),
+            '      </div>']
+
+
+def news_html(entries, today=None):
+    """The region: the latest update per channel, then More."""
+    latest, more = news_split(entries, today)
+    if not latest:
         return '      <p class="news-none">Nothing new in the last %d days.</p>\n' % NEWS_DAYS
-    days = {}
-    for e in entries:
-        days.setdefault(e["date"], []).append(e)
     out = []
-    for date in sorted(days, reverse=True):
-        d = datetime.date.fromisoformat(date)
-        out.append('      <div class="news-day">')
-        out.append('        <time datetime="%s">%d %s</time>' % (date, d.day, MONTHS[d.month - 1]))
-        out.append('        <ul>')
-        for e in days[date]:
-            href, name = ANCHOR[e["key"]]
-            head = '<a href="%s">%s</a>' % (href, name)
-            if e.get("title"):
-                head += " %s now available" % html.escape(e["title"])
-            tail = "; ".join(html.escape(f) for f in e["features"])
-            out.append('          <li>%s%s</li>' % (head, (" &mdash; " + tail) if tail else ""))
-        out.append('        </ul>')
-        out.append('      </div>')
+    for e in latest:
+        out += news_row(e)
+    if more:
+        out.append('      <details class="sum news-more">')
+        out.append('        <summary>More</summary>')
+        for e in more:
+            out += ["  " + line for line in news_row(e)]
+        out.append('      </details>')
     return "\n".join(out) + "\n"
 
 
@@ -1266,11 +1274,35 @@ def news_entries(go=None, today=None):
             raise Incomplete("%s releases unreadable (%s)" % (key, exc))
         for date, title, rels in groups:
             entries.append({"date": date, "key": key, "title": title,
-                            "features": news_features(repo, rels, auto)})
+                            "channel": "prerelease" if rels[0].get("prerelease") else "stable",
+                            "stamp": rels[0]["published_at"], "features": news_features(repo, rels, auto)})
     if go:
         for date, text in go_news(go, auto, today):
-            entries.append({"date": date, "key": "go", "title": "", "features": [text]})
+            entries.append({"date": date, "key": "go", "title": "", "channel": "go",
+                            "stamp": date, "features": [text]})
     return entries
+
+
+def news_split(entries, today=None):
+    """(latest, more): the newest entry per channel in product order — a
+    prerelease only while it is ahead of that app's stable — and the rest
+    from the last NEWS_MORE_DAYS, newest first."""
+    latest = []
+    for key, _repo, _b in PRODUCTS + [("go", None, None)]:
+        mine = sorted((e for e in entries if e["key"] == key), key=lambda e: e["stamp"], reverse=True)
+        stable = next((e for e in mine if e["channel"] == "stable"), None)
+        pre = next((e for e in mine if e["channel"] == "prerelease"), None)
+        go = next((e for e in mine if e["channel"] == "go"), None)
+        if stable:
+            latest.append(stable)
+        if pre and (not stable or pre["stamp"] > stable["stamp"]):
+            latest.append(pre)
+        if go:
+            latest.append(go)
+    since = ((today or news_today()) - datetime.timedelta(days=NEWS_MORE_DAYS)).isoformat()
+    more = sorted((e for e in entries if e not in latest and e["date"] >= since),
+                  key=lambda e: e["stamp"], reverse=True)
+    return latest, more
 
 
 def main():
