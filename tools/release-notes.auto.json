@@ -47,47 +47,6 @@
     }
   },
   "bigmillz/concordevpn-releases": {
-    "e0fdaa81a189bf81": {
-      "channel": "stable 1.3",
-      "source_tags": [
-        "v37",
-        "v39",
-        "v40",
-        "v41",
-        "v43",
-        "v44",
-        "v45",
-        "v47",
-        "v48"
-      ],
-      "generated": "2026-09-27",
-      "bullets": [
-        "**First-run setup** — builds your server on DigitalOcean end to end, or takes your own server's keys",
-        "**Automatic speed test** in Performance mode — re-runs when the network changes and every 30 minutes while connected",
-        "**Updates** — choose stable, beta or nightly in Settings; updates come as an offer you can skip, with What's new in About",
-        "**DNS** — NextDNS is optional, otherwise DNS runs encrypted via Cloudflare; Settings can flush the DNS cache"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
-    "82b249b0a670b61f": {
-      "channel": "prerelease 1.4 RC 2",
-      "source_tags": [
-        "v49",
-        "v50",
-        "v51",
-        "v52"
-      ],
-      "generated": "2026-09-28",
-      "bullets": [
-        "**Kill switch** — while the tunnel is up, nothing gets around it; its self-test tells blocked from broken",
-        "**Server upkeep** — full OS updates for your servers from the app, and a warning on a server that isn't answering",
-        "**Speed** — Performance and Ultra use the fastest transport; the full test says if the VPN or your line is the limit",
-        "**Fixes** — apps that require encrypted DNS no longer stall, and switching off no longer strands open connections"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "a4b619ac33f8e66f": {
       "channel": "nightly 1.4 nightly 327639a",
       "source_tags": [
@@ -100,6 +59,25 @@
         "**Removed** — the \"Auto\" option in Route"
       ],
       "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "797e9ddfb71bfb2f": {
+      "channel": "stable 1.4",
+      "source_tags": [
+        "v49",
+        "v50",
+        "v51",
+        "v52",
+        "v53"
+      ],
+      "generated": "2026-09-29",
+      "bullets": [
+        "**Kill switch** — while the tunnel is up, nothing gets around it",
+        "**Speed modes** — Auto optimize speed-tests each network to pick its mode; Performance and Ultra use the fastest protocol",
+        "**Servers** — OS updates from the app, and a warning on a server that isn't answering",
+        "Apps that require encrypted DNS, such as IPTV One, no longer stall; switching off no longer strands connections"
+      ],
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
