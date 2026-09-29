@@ -1,0 +1,32 @@
+{
+ "_": "Releases whose notes have been checked against the FAQ, as repo@tag. Written by tools/faq-audit.py in the Sync releases Action. Delete an entry to have it checked again.",
+ "audited": [
+  "bigmillz/concordeai@v268",
+  "bigmillz/concordeai@v269",
+  "bigmillz/concordeai@v270",
+  "bigmillz/concordeai@v271",
+  "bigmillz/concordeai@v272",
+  "bigmillz/concordeai@v273",
+  "bigmillz/concordeai@v274",
+  "bigmillz/concordeai@v275",
+  "bigmillz/concordevpn-releases@v33",
+  "bigmillz/concordevpn-releases@v34",
+  "bigmillz/concordevpn-releases@v35",
+  "bigmillz/concordevpn-releases@v36",
+  "bigmillz/concordevpn-releases@v37",
+  "bigmillz/concordevpn-releases@v38",
+  "bigmillz/concordevpn-releases@v39",
+  "bigmillz/concordevpn-releases@v40",
+  "bigmillz/concordevpn-releases@v41",
+  "bigmillz/concordevpn-releases@v42",
+  "bigmillz/concordevpn-releases@v43",
+  "bigmillz/concordevpn-releases@v44",
+  "bigmillz/concordevpn-releases@v45",
+  "bigmillz/concordevpn-releases@v47",
+  "bigmillz/concordevpn-releases@v48",
+  "bigmillz/concordevpn-releases@v49",
+  "bigmillz/concordevpn-releases@v50",
+  "bigmillz/concordevpn-releases@v51",
+  "bigmillz/concordevpn-releases@v52"
+ ]
+}

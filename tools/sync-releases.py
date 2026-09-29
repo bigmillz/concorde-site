@@ -992,7 +992,7 @@ def block(key, repo, buttons):
 CHAN_NAME = '<span class="chan-name">'
 # Markers are matched exactly, indent included: twelve spaces, except Go's
 # notes list, which sits deeper in its card.
-MARKER_INDENT = {"go": 20}
+MARKER_INDENT = {"go": 20, "news": 6}
 
 
 def region(page, key):
@@ -1026,6 +1026,7 @@ def page_problem(page=None):
     try:
         inside = sum(page[slice(*region(page, k))].count(CHAN_NAME) for k, _r, _b in PRODUCTS)
         gi, gj = region(page, "go")
+        region(page, "news")
     except SystemExit as exc:
         return str(exc)
     if page.count(CHAN_NAME) != inside:
@@ -1104,6 +1105,174 @@ def stamp_since(page):
     return new, new != page
 
 
+# ---- What's new ----------------------------------------------------------
+# The section above Products: every prerelease and stable of the apps in the
+# last NEWS_DAYS, and ConcordeGo's significant updates, newest day first,
+# each app name linking down to its card (Pat, 2026-09-28). A release gets
+# one to three short features: Claude's (tools/news-prompt.md, cached under
+# "news" in release-notes.auto.json), else the first bold leads of the
+# keyword ranking. ConcordeGo appears only when Claude has judged an update
+# significant; without a summary it simply is not listed.
+NEWS_DAYS = 30
+NEWS_KEY = "news"
+NEWS_PROMPT = Path(__file__).with_name("news-prompt.md")
+NEWS_FEATURES = 3
+ANCHOR = {"ai": ("#concordeai", "ConcordeAI"), "vpn": ("#concordevpn", "ConcordeVPN"), "go": ("#concordego", "ConcordeGo")}
+
+
+def news_key(kind, items):
+    """Like channel_key, for news: its own prompt file is part of the hash."""
+    try:
+        prompt = hashlib.sha256(NEWS_PROMPT.read_bytes()).hexdigest()[:12]
+    except OSError:
+        prompt = "no-prompt"
+    doc = {"model": MODEL, "prompt": prompt, "kind": kind,
+           "notes": [[i["text"], bool(i.get("restates"))] for i in items]}
+    raw = json.dumps(doc, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def release_title(rel):
+    """"6.1 beta 2", "1.4 RC 2", "1.3 beta", "6.0.4": from the release's own
+    title (the 6.0 candidates shipped files named 6.1.0, so the files are
+    no guide here), in the download cards' spelling."""
+    name = rel.get("name") or ""
+    m = re.match(r"\s*(\d+\.\d+(?:\.\d+)?)", name)
+    v = display_version(m.group(1) if m else release_version(rel))
+    if not rel.get("prerelease"):
+        return v
+    m = re.search(r"\bRC\s*(\d+)?", name, re.I)
+    if m:
+        return "%s RC %s" % (v, m.group(1) or "1")
+    m = re.search(r"\bbeta\s*(\d+)?\b", name, re.I)
+    return "%s beta%s" % (v, (" " + m.group(1)) if m and m.group(1) else "")
+
+
+def news_today():
+    return datetime.datetime.now(datetime.timezone.utc).date()
+
+
+def news_groups(repo, today=None):
+    """[(date, title, releases)], newest first: every stable and prerelease
+    (never a nightly) published in the last NEWS_DAYS, builds that share a
+    title on one day taken together (VPN 1.3 went out as five "1.3 beta"s
+    in a day)."""
+    since = ((today or news_today()) - datetime.timedelta(days=NEWS_DAYS)).isoformat()
+    rels = [r for r in gh("repos/%s/releases?per_page=100" % repo)
+            if not r["draft"] and not is_nightly(r) and (r.get("published_at") or "")[:10] >= since]
+    rels.sort(key=lambda r: r["published_at"], reverse=True)
+    groups = []
+    for r in rels:
+        date, title = r["published_at"][:10], release_title(r)
+        if groups and groups[-1][0] == date and groups[-1][1] == title:
+            groups[-1][2].append(r)
+        else:
+            groups.append((date, title, [r]))
+    return groups
+
+
+def plain(t):
+    """No Markdown emphasis: **bold** and *italic* both lose their stars."""
+    t = re.sub(r"\*\*(.+?)\*\*", r"\1", t)
+    return re.sub(r"(?<![\w*])\*([^*\s][^*]*?)\*(?![\w*])", r"\1", t).strip()
+
+
+def news_fallback(items):
+    """Up to two short features from the keyword ranking: each note's bold
+    lead when it has one, else its first clause."""
+    bullets, _more = rank_notes(items, "prerelease")
+    out = []
+    for b in bullets:
+        m = re.match(r"\*\*(.+?)\*\*", b)
+        f = m.group(1) if m else re.split(r"\s+[—–-]\s+|[;:(]|, (?=and |with )", plain(b))[0]
+        f = f.strip(" .,")
+        if f and len(f) <= 60 and f.lower() not in (x.lower() for x in out):
+            out.append(f)
+        if len(out) == 2:
+            break
+    return out
+
+
+def news_features(repo, rels, auto):
+    items = source_items(repo, rels)
+    if not items:
+        return []
+    entry = (auto.get(NEWS_KEY) or {}).get(news_key("release", items))
+    if usable(entry):
+        return [plain(b) for b in entry["bullets"] if b.strip()][:NEWS_FEATURES]
+    return news_fallback(items)
+
+
+def go_news_items(go):
+    """ConcordeGo's changes in the window, each with the date it went live."""
+    items, seen = [], set()
+    for c in go.get("changes") or []:
+        text = "%s — %s" % (c["date"], go_subject(c["summary"]))
+        if text not in seen:
+            seen.add(text)
+            items.append({"tag": c["commit"], "text": text, "curated": False, "restates": False})
+    return items[:GO_CAP]
+
+
+def go_news(go, auto, today=None):
+    """[(date, text)] of ConcordeGo's significant updates, from Claude only."""
+    items = go_news_items(go)
+    entry = (auto.get(NEWS_KEY) or {}).get(news_key("go", items)) if items else None
+    if not usable(entry):
+        return []
+    since = ((today or news_today()) - datetime.timedelta(days=NEWS_DAYS)).isoformat()
+    out = []
+    for b in entry["bullets"]:
+        m = re.match(r"^(\d{4}-\d{2}-\d{2})\s*[:—–-]\s*(.+)$", plain(b))
+        if m and m.group(1) >= since:
+            out.append((m.group(1), m.group(2).strip()))
+    return out[:NEWS_FEATURES]
+
+
+def news_html(entries):
+    """The region: one block per day, newest first, its updates bulleted."""
+    if not entries:
+        return '      <p class="news-none">Nothing new in the last %d days.</p>\n' % NEWS_DAYS
+    days = {}
+    for e in entries:
+        days.setdefault(e["date"], []).append(e)
+    out = []
+    for date in sorted(days, reverse=True):
+        d = datetime.date.fromisoformat(date)
+        out.append('      <div class="news-day">')
+        out.append('        <time datetime="%s">%d %s</time>' % (date, d.day, MONTHS[d.month - 1]))
+        out.append('        <ul>')
+        for e in days[date]:
+            href, name = ANCHOR[e["key"]]
+            head = '<a href="%s">%s</a>' % (href, name)
+            if e.get("title"):
+                head += " %s now available" % html.escape(e["title"])
+            tail = "; ".join(html.escape(f) for f in e["features"])
+            out.append('          <li>%s%s</li>' % (head, (" &mdash; " + tail) if tail else ""))
+        out.append('        </ul>')
+        out.append('      </div>')
+    return "\n".join(out) + "\n"
+
+
+def news_entries(go=None, today=None):
+    """Everything the section lists; raises Incomplete when a product's
+    releases cannot be read (the section is then left as it is)."""
+    auto = load_auto()
+    entries = []
+    for key, repo, _buttons in PRODUCTS:
+        try:
+            groups = news_groups(repo, today)
+        except SystemExit as exc:
+            raise Incomplete("%s releases unreadable (%s)" % (key, exc))
+        for date, title, rels in groups:
+            entries.append({"date": date, "key": key, "title": title,
+                            "features": news_features(repo, rels, auto)})
+    if go:
+        for date, text in go_news(go, auto, today):
+            entries.append({"date": date, "key": "go", "title": "", "features": [text]})
+    return entries
+
+
 def main():
     check = "--check" in sys.argv
     page = INDEX.read_text(encoding="utf-8")
@@ -1157,6 +1326,17 @@ def main():
             page = new
         print("  go   version %s, updated %s%s" % (gv["version"], gv["updated"],
                                                  "" if "go version" in behind else "  (unchanged)"))
+    try:
+        news = news_entries(go)
+    except Incomplete as exc:
+        print("  news %s — leaving the section untouched" % exc)
+    else:
+        i, j = region(page, "news")
+        new = news_html(news)
+        if page[i:j] != new:
+            behind.append("news")
+            page = page[:i] + new + page[j:]
+        print("  news %d update(s) in the last %d days%s" % (len(news), NEWS_DAYS, "" if "news" in behind else "  (unchanged)"))
     page, relabelled = stamp_since(page)
     n = sum(1 for m in SINCE.finditer(page) if page.rfind("<!--", 0, m.start()) <= page.rfind("-->", 0, m.start()))
     if n:

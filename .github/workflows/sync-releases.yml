@@ -39,6 +39,7 @@ on:
 
 permissions:
   contents: write
+  issues: write      # tools/faq-audit.py opens an issue when a release outdates an FAQ answer
 
 # never two syncs racing each other; a queued one just waits
 concurrency:
@@ -98,14 +99,16 @@ jobs:
               mode=""; [ "$attempt" -gt 1 ] && mode="--offline"
               timeout 480 python3 tools/summarize-notes.py --stash "$stash" $mode \
                 || echo "::warning::the summarizer failed or ran out of time; channels without a summary keep the heuristic notes"
+              timeout 300 python3 tools/faq-audit.py --stash "$RUNNER_TEMP/faq-audit.json" $mode \
+                || echo "::warning::the FAQ check failed or ran out of time; unchecked releases wait for the next run"
             else
               echo "no ANTHROPIC_API_KEY secret: notes are keyword-ranked, not summarized"
             fi
             python3 tools/sync-releases.py
-            if [ -z "$(git status --porcelain -- index.html tools/release-notes.auto.json tools/go-changes.json)" ]; then
+            if [ -z "$(git status --porcelain -- index.html tools/release-notes.auto.json tools/go-changes.json tools/faq-audit.json)" ]; then
               echo "site is current"; exit 0
             fi
-            git add index.html tools/release-notes.auto.json tools/go-changes.json
+            git add index.html tools/release-notes.auto.json tools/go-changes.json tools/faq-audit.json
             git commit --quiet -m "Sync releases"
             if git push --quiet origin main; then
               echo "pushed"; exit 0
