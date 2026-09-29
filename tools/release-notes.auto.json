@@ -67,17 +67,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "68a7a978d6b845bd": {
-      "channel": "nightly 1.5 nightly 7c13da6",
+    "8f0a725e0f01adde": {
+      "channel": "nightly 1.5 nightly 4ae2837",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**iPhone setup** — Settings > Servers shows a QR code for each protocol, for adding your server to Shadowrocket",
-        "**ISP detection** — your ISP is picked up while the tunnel is up, no Test needed"
+        "**iPhone setup** — shows one QR code at a time"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
