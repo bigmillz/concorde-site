@@ -33,16 +33,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "4046c5e24bedc86b": {
-      "channel": "nightly 6.1 nightly 877d3e0",
+    "671cdef53066ed06": {
+      "channel": "nightly 6.1 nightly fe6f283",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**Accounts** — work continues: the encryption component that accounts rely on is now included in every build, including Windows"
+        "**ARM64 build** — the app window now opens, using a new display engine"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
@@ -66,16 +66,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "e775be7de2b818a4": {
-      "channel": "nightly 1.5 nightly b7428b2",
+    "d1d66bd1e33e0d98": {
+      "channel": "nightly 1.5 nightly 7f9a1a7",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**Main window** — status ring beside the status, Mode and Exit as two rows, and Test available in every mode",
-        "**Test options** — under Auto optimize, Test offers Quick or Extended",
-        "**Advanced** — now lists Hysteria 2 x4 and Hysteria 2 + Brutal"
+        "**Change passwords** — in Settings > Servers, new passwords go from your server straight into this Mac",
+        "**ISP line** — back under the IP with the star beside it gone, and Auto's popup now in three parts"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
