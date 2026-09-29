@@ -1107,16 +1107,14 @@ def stamp_since(page):
 
 # ---- What's new ----------------------------------------------------------
 # The section above Products (Pat, 2026-09-28): the latest update on each
-# channel, in product order: each app's newest stable, its newest
-# prerelease when that is ahead of the stable, and ConcordeGo's latest
-# significant update. A "More" toggle holds the rest from the last
-# NEWS_MORE_DAYS. Never a nightly. Each app name links down to its card. A release gets
+# channel, newest first: each app's newest stable, its newest prerelease
+# when that is ahead of the stable, and ConcordeGo's latest significant
+# update. Nothing else, never a nightly. Each app name links to its card. A release gets
 # one to three short features: Claude's (tools/news-prompt.md, cached under
 # "news" in release-notes.auto.json), else the first bold leads of the
 # keyword ranking. ConcordeGo appears only when Claude has judged an update
 # significant; without a summary it simply is not listed.
 NEWS_DAYS = 30                           # how far back anything is considered
-NEWS_MORE_DAYS = 14                      # what the More toggle reaches back to
 NEWS_KEY = "news"
 NEWS_PROMPT = Path(__file__).with_name("news-prompt.md")
 NEWS_FEATURES = 3
@@ -1246,19 +1244,13 @@ def news_row(e):
 
 
 def news_html(entries, today=None):
-    """The region: the latest update per channel, then More."""
-    latest, more = news_split(entries, today)
+    """The region: the latest update per channel, newest first."""
+    latest = news_latest(entries)
     if not latest:
         return '      <p class="news-none">Nothing new in the last %d days.</p>\n' % NEWS_DAYS
     out = []
     for e in latest:
         out += news_row(e)
-    if more:
-        out.append('      <details class="sum news-more">')
-        out.append('        <summary>More</summary>')
-        for e in more:
-            out += ["  " + line for line in news_row(e)]
-        out.append('      </details>')
     return "\n".join(out) + "\n"
 
 
@@ -1283,10 +1275,9 @@ def news_entries(go=None, today=None):
     return entries
 
 
-def news_split(entries, today=None):
-    """(latest, more): the newest entry per channel in product order — a
-    prerelease only while it is ahead of that app's stable — and the rest
-    from the last NEWS_MORE_DAYS, newest first."""
+def news_latest(entries):
+    """The newest entry per channel — a prerelease only while it is ahead of
+    that app's stable — newest first."""
     latest = []
     for key, _repo, _b in PRODUCTS + [("go", None, None)]:
         mine = sorted((e for e in entries if e["key"] == key), key=lambda e: e["stamp"], reverse=True)
@@ -1299,10 +1290,8 @@ def news_split(entries, today=None):
             latest.append(pre)
         if go:
             latest.append(go)
-    since = ((today or news_today()) - datetime.timedelta(days=NEWS_MORE_DAYS)).isoformat()
-    more = sorted((e for e in entries if e not in latest and e["date"] >= since),
-                  key=lambda e: e["stamp"], reverse=True)
-    return latest, more
+    latest.sort(key=lambda e: e["stamp"], reverse=True)     # newest first (Pat, 2026-09-28)
+    return latest
 
 
 def main():

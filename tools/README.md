@@ -249,11 +249,11 @@ otherwise they read the footer's `data-build`.
 ## What's new
 
 The section above Products shows the latest update on each channel, in
-product order: each app's newest stable, its newest prerelease while that
-is ahead of the stable, and ConcordeGo's latest significant update (never a
-nightly, nothing older than 30 days). Each line: the date, the app name
-linking to its card, "<version> now available", and one to three short
-features. A "More" toggle holds the rest from the last 14 days. Builds that
+order newest first: each app's newest stable, its newest prerelease while
+that is ahead of the stable, and ConcordeGo's latest significant update
+(never a nightly, nothing older than 30 days). Each line: the date, the app
+name linking to its card, "<version> now available", and one to three short
+features. Builds that
 share a title on one day are one line. The
 features are Claude's (rules in `news-prompt.md`, cached under "news" in
 `release-notes.auto.json`); until a release has one, the keyword ranking's
