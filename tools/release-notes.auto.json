@@ -97,7 +97,7 @@
     }
   },
   "news": {
-    "407a76bdc0a7e1ed": {
+    "4371f212bfa22f9d": {
       "channel": "release ai 6.1 RC 1",
       "source_tags": [
         "v276"
@@ -106,12 +106,12 @@
       "bullets": [
         "Chats saved as you go, no limit",
         "Backdrops that change scene hourly",
-        "Maps display again"
+        "App answers only its own window"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "6c69c1d5991d6419": {
+    "41131bf8657d5638": {
       "channel": "release ai 6.1 beta 1",
       "source_tags": [
         "v275"
@@ -125,7 +125,7 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "791d99d9dc830529": {
+    "1ba522b0a4602b6b": {
       "channel": "release ai 6.0.4",
       "source_tags": [
         "v274"
@@ -134,38 +134,38 @@
       "bullets": [
         "Image generation on your Mac",
         "Clearer model download progress",
-        "Automatic update checks now optional"
+        "Optional automatic update checks"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "da58272f2a4cf8c9": {
+    "40eb891618af5e64": {
       "channel": "release ai 6.0.4 beta 1",
       "source_tags": [
         "v273"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "Image generation on your Mac",
+        "Image generation on your Mac or in the cloud",
         "Real progress for model downloads",
-        "Choice of automatic update checks"
+        "Choose whether to check for updates automatically"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "b58827d72ea6645a": {
+    "e1599b3d28475d4a": {
       "channel": "release ai 6.0.3",
       "source_tags": [
         "v272"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "Clean-up dialog shows what it will remove"
+        "Interface polish"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "542f295450079c61": {
+    "df2413d05487f39f": {
       "channel": "release ai 6.0.2",
       "source_tags": [
         "v271"
@@ -173,55 +173,55 @@
       "generated": "2026-09-29",
       "bullets": [
         "Clean up now frees space from old models",
-        "Shorter post-update dialog",
+        "A shorter post-update dialog",
         "Today and tonight follow your home clock"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "d06a8992a2371f56": {
+    "aa1e522e434e573d": {
       "channel": "release ai 6.0.1",
       "source_tags": [
         "v270"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "Local answers use each place's own time zone",
+        "Local questions answered in local time",
         "Venue answers flag closures and unverified hours",
         "Recommendations always appear after the last question"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "051edd9c5ba54a04": {
+    "be9671c963282393": {
       "channel": "release ai 6.0",
       "source_tags": [
         "v269"
       ],
       "generated": "2026-09-29",
       "bullets": [
+        "Local answers on the place's own clock",
         "Search your past chats",
-        "Local answers on local time",
-        "Auto-clean for superseded models"
+        "A second model checks every recommendation"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "80f072202333e405": {
+    "9c7a4f6ba2db4221": {
       "channel": "release ai 6.0 RC 4",
       "source_tags": [
         "v268"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "Auto-cleanup for old model versions",
-        "More accurate local search answers",
-        "Weather with a second live source"
+        "Automatic cleanup of old model versions",
+        "More accurate local, weather and movie answers",
+        "Recommendations that honor every option you pick"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "30c9537ec03974b6": {
+    "92edd353f2603ee0": {
       "channel": "release vpn 1.4",
       "source_tags": [
         "v53"
@@ -235,7 +235,7 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "c6327cf7bc107f63": {
+    "d084db3aa709e22e": {
       "channel": "release vpn 1.4 RC 2",
       "source_tags": [
         "v52"
@@ -243,13 +243,13 @@
       "generated": "2026-09-29",
       "bullets": [
         "Retest line speeds from the menu bar",
-        "Fixes apps stalling on encrypted DNS",
+        "Apps requiring encrypted DNS no longer stall",
         "Fast modes lock onto the fastest line"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "20b71a7611371237": {
+    "83f088a9e9dde7e1": {
       "channel": "release vpn 1.4 RC 1",
       "source_tags": [
         "v51"
@@ -257,13 +257,13 @@
       "generated": "2026-09-29",
       "bullets": [
         "In-app OS updates for your servers",
-        "Warning for servers that stop responding",
-        "Auto mode shows measuring progress"
+        "Warning for servers that stop answering",
+        "Auto measuring shows its progress"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "831bf9053131bb1e": {
+    "2fdd2d568ee6ee0b": {
       "channel": "release vpn 1.4 beta 2",
       "source_tags": [
         "v50"
@@ -271,13 +271,13 @@
       "generated": "2026-09-29",
       "bullets": [
         "A kill switch",
-        "Performance and Ultra pick the fastest transport",
-        "A full test that pinpoints the bottleneck"
+        "A full test that shows what limits speed",
+        "Performance and Ultra pick the fastest transport"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "fb055f8e9f4718c7": {
+    "796849eecf7ace44": {
       "channel": "release vpn 1.4 beta 1",
       "source_tags": [
         "v49"
@@ -291,21 +291,21 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "9dc369514b4e0204": {
+    "09045503ca89e3b9": {
       "channel": "release vpn 1.3",
       "source_tags": [
         "v48"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "Update offers with a Skip option",
-        "Release notes in the About window",
-        "Fixed Apply after removing an exit"
+        "Automatic update checks with an update dialog",
+        "Release notes in About",
+        "Fixed Apply breaking after removing an exit"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "4b641bd5084c8860": {
+    "b9f7c534cd62761c": {
       "channel": "release vpn 1.3 beta 2",
       "source_tags": [
         "v47"
@@ -318,7 +318,7 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "e71aae83d0ff8e3d": {
+    "45bae80114c38f6c": {
       "channel": "release vpn 1.3 beta",
       "source_tags": [
         "v43",
@@ -328,13 +328,13 @@
       "generated": "2026-09-29",
       "bullets": [
         "Server setup on DigitalOcean from first run",
-        "Encrypted DNS without NextDNS",
-        "A DNS cache flush in Settings"
+        "Encrypted DNS via Cloudflare without NextDNS",
+        "Flush the DNS cache from Settings"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "1bb7c3efbc926f1a": {
+    "d1faeadde95423fa": {
       "channel": "release vpn 1.3 beta",
       "source_tags": [
         "v37",
@@ -345,40 +345,39 @@
       "generated": "2026-09-29",
       "bullets": [
         "Automatic speed test in Performance mode",
-        "Speed test re-runs on network changes",
-        "Quit now actually quits the app"
+        "Notifications carry the ConcordeVPN icon",
+        "Quit now actually quits"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "6c5f6c0d31d85451": {
+    "6d1002b50f610e48": {
       "channel": "release vpn 1.2.2",
       "source_tags": [
         "v35"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "Optimize and Bypass in the menu",
-        "A redesigned, more compact window"
+        "Live Optimize mode shown in the menu"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "f0ed784e7eeb1cd0": {
+    "8c7b09406cfe00bc": {
       "channel": "release vpn 1.2",
       "source_tags": [
         "v33"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "Steadier connections on poor Wi-Fi",
-        "Nearest exit picked by latency",
-        "Traffic presents Chrome's TLS fingerprint"
+        "Steadier connections on bad Wi-Fi",
+        "Automatically picks the nearest exit",
+        "Connections now look like Chrome"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "5c3a13726963a200": {
+    "4f380f6165f7852a": {
       "channel": "go-news ConcordeGo, 30 days to version 0.1.4365, deployed 28 Sep 2026",
       "source_tags": [
         "03331d6",
@@ -528,8 +527,8 @@
       "generated": "2026-09-29",
       "bullets": [
         "2026-09-24: Round-trip fares",
-        "2026-09-28: A sort menu for results",
-        "2026-09-24: Price history and airline ratings in flight details"
+        "2026-09-24: Award charts with a points transfer planner",
+        "2026-09-24: Price history and airline ratings in details"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
