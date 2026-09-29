@@ -248,10 +248,13 @@ otherwise they read the footer's `data-build`.
 
 ## What's new
 
-The section above Products lists every ConcordeAI and ConcordeVPN prerelease
-and stable from the last 30 days (never a nightly), newest day first: the
-app name linking to its card, "<version> now available", and one to three
-short features. Builds that share a title on one day are one line. The
+The section above Products shows the latest update on each channel, in
+product order: each app's newest stable, its newest prerelease while that
+is ahead of the stable, and ConcordeGo's latest significant update (never a
+nightly, nothing older than 30 days). Each line: the date, the app name
+linking to its card, "<version> now available", and one to three short
+features. A "More" toggle holds the rest from the last 14 days. Builds that
+share a title on one day are one line. The
 features are Claude's (rules in `news-prompt.md`, cached under "news" in
 `release-notes.auto.json`); until a release has one, the keyword ranking's
 bold leads stand in. ConcordeGo is listed only when Claude judges an update
