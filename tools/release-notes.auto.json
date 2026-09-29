@@ -33,15 +33,14 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "fa2322f7f2b9c0f0": {
-      "channel": "nightly 6.1 nightly 003eae7",
+    "8e4b9199ad2eeb42": {
+      "channel": "nightly 6.1 nightly 7e702ec",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-09-28",
+      "generated": "2026-09-29",
       "bullets": [
-        "**Usage & Stats** — a new pane in Settings › Usage that keeps a ledger of your usage",
-        "Usage fixes — stats are grouped by actual time of day, answers are more accurate, and the ledger is saved more safely"
+        "**Sidebar meters** — the hardware meters card in the sidebar gets even spacing around the chip name and bars"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
@@ -89,14 +88,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "ca4a4ba353695328": {
-      "channel": "nightly 1.4 nightly dce2fc2",
+    "a4b619ac33f8e66f": {
+      "channel": "nightly 1.4 nightly 327639a",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-09-28",
+      "generated": "2026-09-29",
       "bullets": [
-        "**Route line** — now names the protocol in use, and a lock explains Brutal's held speeds"
+        "**Bonding** — spread the tunnel across the connections you tick",
+        "**Speed line** — now warns when a test measured only a share of the line",
+        "**Removed** — the \"Auto\" option in Route"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
