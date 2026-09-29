@@ -1044,33 +1044,11 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             <div class="chan">
               <div class="chan-top">
                 <span class="chan-name">Stable</span>
-                <span class="chan-ver">1.3</span>
-                <span class="chan-date">Released <time datetime="2026-09-18">18 Sep 2026</time></span>
-              </div>
-              <div class="btns">
-                <a class="btn" href="https://github.com/bigmillz/concordevpn-releases/releases/download/v48/ConcordeVPN-1.3.0.dmg">
-                  <span class="os">macOS</span>
-                  <span class="file">ConcordeVPN-1.3.0.dmg</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-              </div>
-              <details class="sum notes">
-                <summary>Release notes</summary>
-                <div class="sum-body">
-<ul><li><b>First-run setup</b> — builds your server on DigitalOcean end to end, or takes your own server's keys</li><li><b>Automatic speed test</b> in Performance mode — re-runs when the network changes and every 30 minutes while connected</li><li><b>Updates</b> — choose stable, beta or nightly in Settings; updates come as an offer you can skip, with What's new in About</li><li><b>DNS</b> — NextDNS is optional, otherwise DNS runs encrypted via Cloudflare; Settings can flush the DNS cache</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordevpn-releases/releases">full notes on GitHub</a></li></ul>
-                </div>
-              </details>
-            </div>
-
-            <div class="chan">
-              <div class="chan-top">
-                <span class="chan-name">Prerelease</span>
                 <span class="chan-ver">1.4</span>
-                <span class="chan-commit">RC 2</span>
-                <span class="chan-date">Released <time datetime="2026-09-28">28 Sep 2026</time></span>
+                <span class="chan-date">Released <time datetime="2026-09-29">29 Sep 2026</time></span>
               </div>
               <div class="btns">
-                <a class="btn" href="https://github.com/bigmillz/concordevpn-releases/releases/download/v52/ConcordeVPN-1.4.0.dmg">
+                <a class="btn" href="https://github.com/bigmillz/concordevpn-releases/releases/download/v53/ConcordeVPN-1.4.0.dmg">
                   <span class="os">macOS</span>
                   <span class="file">ConcordeVPN-1.4.0.dmg</span>
                   <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1079,7 +1057,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li><b>Kill switch</b> — while the tunnel is up, nothing gets around it; its self-test tells blocked from broken</li><li><b>Server upkeep</b> — full OS updates for your servers from the app, and a warning on a server that isn't answering</li><li><b>Speed</b> — Performance and Ultra use the fastest transport; the full test says if the VPN or your line is the limit</li><li><b>Fixes</b> — apps that require encrypted DNS no longer stall, and switching off no longer strands open connections</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordevpn-releases/releases">full notes on GitHub</a></li></ul>
+<ul><li>Speed limits: choose auto or state the line yourself</li><li>The fast modes lock onto the line the table calls fastest</li><li>Auto's speed line shows the last measurement: down | up</li><li>Engine setup revision 7: the SSH-only server rule reaches installed engines</li><li class="more">Plus more changes &mdash; <a href="https://github.com/bigmillz/concordevpn-releases/releases">full notes on GitHub</a></li></ul>
                 </div>
               </details>
             </div>
@@ -1288,10 +1266,10 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           <h3><span class="lockup">Concorde<span class="tld">VPN</span></span></h3>
           <div class="qs">
             <details><summary>Is a Windows version coming?</summary><div class="a"><p>Not at the moment. ConcordeVPN is macOS only and no Windows version has been announced: it is built from macOS parts, from the background service that runs the tunnel to the menu-bar app itself.</p></div></details>
-            <details><summary>What does it do that other VPN software doesn&#x27;t?</summary><div class="a"><p>It has three ways through, Trojan, VLESS + REALITY and Hysteria 2, and when one stops answering it moves to the next. REALITY answers a probe with the real website whose certificate it borrows. The app names your exit only after checking your public address, has a built-in leak test, and has a kill switch that stops internet traffic leaving outside the tunnel <strong class="since inline" data-since="vpn 1.4">(from 1.4, in Prerelease for now)</strong>.</p></div></details>
+            <details><summary>What does it do that other VPN software doesn&#x27;t?</summary><div class="a"><p>It has three ways through, Trojan, VLESS + REALITY and Hysteria 2, and when one stops answering it moves to the next. REALITY answers a probe with the real website whose certificate it borrows. The app names your exit only after checking your public address, has a built-in leak test, and has a kill switch that stops internet traffic leaving outside the tunnel <strong class="since inline" data-since="vpn 1.4">(from 1.4)</strong>.</p></div></details>
             <details><summary>Why do I need to run my own server?</summary><div class="a"><p>ConcordeVPN is only the client: there is no ConcordeVPN network or account to sign up for. The tunnel ends at a server you run, where the installer generates the passwords and keeps the system log in memory only. The app can also create one on DigitalOcean for you. It is not an anonymity tool: the server sits in your own hosting account.</p></div></details>
-            <details><summary>How does Auto optimize work?</summary><div class="a"><p>A slider sets how the app trades privacy for speed, in five modes: Ultra Stealth, Stealth, Balanced, Performance and Ultra Performance. Auto optimize picks the mode for you. It runs the Quick speed test on the network you&rsquo;re on, which takes about three minutes, then takes the fastest mode, unless a more private one comes within 5% of it. It tests again whenever you join a new network, and every two hours on the same one; <span class="path">Settings &rsaquo; Network &rsaquo; Retest every</span> changes the interval. The two Ultra modes are left out unless you tick <strong>Include Ultra modes</strong>. <strong class="since" data-since="vpn 1.4">Available from 1.4, in Prerelease for now.</strong></p></div></details>
-            <details><summary>What are the Ultra modes for?</summary><div class="a"><p>They are the two ends of the slider, with no compromise: Ultra Stealth for the most stealth and privacy, Ultra Performance for the most speed. Ultra Stealth is for networks that inspect traffic or block VPNs: it uses one disguised line, VLESS + REALITY, with no fallback, and keeps even your bank, region and captcha exceptions inside the tunnel. Ultra Performance holds on to the quickest line even when it wobbles, pushes its speed limit a little past Performance&rsquo;s and keeps adjusting it as you go, and sends big game and system-update downloads, such as Steam or Windows Update, outside the tunnel from your real address. Those extra tweaks are what can cause glitches, such as some sites not loading or speed that comes and goes; the other three modes are less likely to have quirks. To see which is best on your network, run the Speed test in <span class="path">Settings &rsaquo; Network</span>. <strong class="since" data-since="vpn 1.4">Available from 1.4, in Prerelease for now.</strong></p></div></details>
+            <details><summary>How does Auto optimize work?</summary><div class="a"><p>A slider sets how the app trades privacy for speed, in five modes: Ultra Stealth, Stealth, Balanced, Performance and Ultra Performance. Auto optimize picks the mode for you. It runs the Quick speed test on the network you&rsquo;re on, which takes about three minutes, then takes the fastest mode, unless a more private one comes within 5% of it. It tests again whenever you join a new network, and every two hours on the same one; <span class="path">Settings &rsaquo; Network &rsaquo; Retest every</span> changes the interval. The two Ultra modes are left out unless you tick <strong>Include Ultra modes</strong>. <strong class="since" data-since="vpn 1.4">Available from 1.4.</strong></p></div></details>
+            <details><summary>What are the Ultra modes for?</summary><div class="a"><p>They are the two ends of the slider, with no compromise: Ultra Stealth for the most stealth and privacy, Ultra Performance for the most speed. Ultra Stealth is for networks that inspect traffic or block VPNs: it uses one disguised line, VLESS + REALITY, with no fallback, and keeps even your bank, region and captcha exceptions inside the tunnel. Ultra Performance holds on to the quickest line even when it wobbles, pushes its speed limit a little past Performance&rsquo;s and keeps adjusting it as you go, and sends big game and system-update downloads, such as Steam or Windows Update, outside the tunnel from your real address. Those extra tweaks are what can cause glitches, such as some sites not loading or speed that comes and goes; the other three modes are less likely to have quirks. To see which is best on your network, run the Speed test in <span class="path">Settings &rsaquo; Network</span>. <strong class="since" data-since="vpn 1.4">Available from 1.4.</strong></p></div></details>
           </div>
         </div>
         <div class="faq-group">
