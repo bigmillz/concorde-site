@@ -33,15 +33,14 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "74817614fa245bd4": {
-      "channel": "nightly 6.1 nightly b064e9b",
+    "d8c60f3fb3aa542b": {
+      "channel": "nightly 6.1 nightly be07dc2",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**Accounts** — work continues on profiles: your personal data is now read and written through the active profile",
-        "**Profile switching** — one switch at a time, no leftover data from another profile, and an unsaved file is kept and named"
+        "**License** — ConcordeAI is now licensed under the GNU GPL, version 3 or later"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -67,14 +66,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "8f0a725e0f01adde": {
-      "channel": "nightly 1.5 nightly 4ae2837",
+    "2357b022b3c03e74": {
+      "channel": "nightly 1.5 nightly 6d82265",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**iPhone setup** — shows one QR code at a time"
+        "**Bonding: Low data** — the phone stands by and only joins once the main line is nearly full",
+        "**Bonding prompt** — bonding is offered when a second line comes up, and only live connections are listed"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
