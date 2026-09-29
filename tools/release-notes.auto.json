@@ -33,16 +33,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "671cdef53066ed06": {
-      "channel": "nightly 6.1 nightly fe6f283",
+    "74817614fa245bd4": {
+      "channel": "nightly 6.1 nightly b064e9b",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**ARM64 build** — the app window now opens, using a new display engine"
+        "**Accounts** — work continues on profiles: your personal data is now read and written through the active profile",
+        "**Profile switching** — one switch at a time, no leftover data from another profile, and an unsaved file is kept and named"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
@@ -66,17 +67,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "d1d66bd1e33e0d98": {
-      "channel": "nightly 1.5 nightly 7f9a1a7",
+    "21bf08ad3fb6c420": {
+      "channel": "nightly 1.5 nightly f4c1083",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-29",
       "bullets": [
-        "**Change passwords** — in Settings > Servers, new passwords go from your server straight into this Mac",
-        "**ISP line** — back under the IP with the star beside it gone, and Auto's popup now in three parts"
+        "**Setup** — waits up to 20 seconds for the VPN engine to respond, instead of a single check after 2 seconds"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
