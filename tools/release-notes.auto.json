@@ -77,6 +77,22 @@
       ],
       "fold": false,
       "model": "claude-opus-5-5"
+    },
+    "7b16af7f7c6f8b3e": {
+      "channel": "prerelease 1.5 beta 1",
+      "source_tags": [
+        "v54"
+      ],
+      "generated": "2026-09-30",
+      "bullets": [
+        "**Bonding** — use two connections at once, like Wi-Fi and Ethernet or a phone by USB, for networks that cap each device",
+        "**Metered connections** — phones and data-plan lines are detected, counted and kept in reserve, joining only when your main line is nearly full",
+        "**Auto picks the fastest server** — measures each of your servers on your network and uses the fastest",
+        "**Mobile setup and server management** — QR codes for phone VPN apps; change a server's passwords, name or address from the app",
+        "**A cleaner main window** — Mode and Exit open in place, your ISP under your IP, and the speed test in every mode"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
     }
   },
   "concordego": {
@@ -529,6 +545,20 @@
         "2026-09-24: Round-trip fares",
         "2026-09-24: Award charts with a points transfer planner",
         "2026-09-24: Price history and airline ratings in details"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "cedb35eb242d7c36": {
+      "channel": "release vpn 1.5 beta 1",
+      "source_tags": [
+        "v54"
+      ],
+      "generated": "2026-09-30",
+      "bullets": [
+        "Bonding two connections at once",
+        "Metered connections kept in reserve",
+        "Auto picks the fastest server"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
