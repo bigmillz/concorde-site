@@ -33,17 +33,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "a6b93825d472295a": {
-      "channel": "nightly 6.1 nightly 6006155",
+    "ca2f7ce222fc54eb": {
+      "channel": "nightly 6.1 nightly f663f94",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-30",
       "bullets": [
-        "**Your own servers** — early work on connecting the app to servers you run yourself; pictures stay on the server",
-        "**Server setup fixes** — safer memory test and disk space reserve handling, and a typo no longer loses a model"
+        "**Engine menu** — now fits the window and scrolls instead of running off the screen"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
