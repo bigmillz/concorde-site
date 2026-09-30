@@ -33,16 +33,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "2b424c3c8e9b1e8c": {
-      "channel": "nightly 6.1 nightly 7e8106d",
+    "15e7bf6903292f1b": {
+      "channel": "nightly 6.1 nightly b3d72c3",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-09-29",
+      "generated": "2026-09-30",
       "bullets": [
-        "**Accounts** — in progress: switching between accounts, with a new account window",
-        "**Account data safety** — data set aside during a switch is erased only when you choose, and kept out of Time Machine",
-        "Fixes a possible freeze in account handling, and nothing is erased without a record"
+        "**Hardware benchmark** — a new benchmark of your computer's hardware, in Settings › Usage",
+        "**Benchmark fixes** — Stop now stops the run, memory is cleaned up afterward, and nothing is lost",
+        "**Re-verify** — Try again runs once per click"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -68,17 +68,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "d8698b1b5dc0bfa1": {
-      "channel": "nightly 1.5 nightly 219a9a9",
+    "349f482af2942ada": {
+      "channel": "nightly 1.5 nightly 1bd3be1",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-09-29",
+      "generated": "2026-09-30",
       "bullets": [
-        "**Edit servers in place** — change a server's address or rename it without re-adding it",
-        "**Hostname addresses** — a server can be a hostname, so a home server kept current by DDNS works",
-        "**NextDNS** — set it up in Settings",
-        "**Auto exit** — let the app pick the exit for you"
+        "**Auto exit** — now picks the fastest measured server, and never your own line",
+        "**Latency list** — in Stealth, servers it never contacts now say so instead of showing a dash"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
