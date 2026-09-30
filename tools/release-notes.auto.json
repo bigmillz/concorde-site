@@ -33,16 +33,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "ca2f7ce222fc54eb": {
-      "channel": "nightly 6.1 nightly f663f94",
+    "6a983c1ab941c2c4": {
+      "channel": "nightly 6.1 nightly 38e00a0",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-30",
       "bullets": [
-        "**Engine menu** — now fits the window and scrolls instead of running off the screen"
+        "**Dictation hotkey** — Cmd+D on a Mac, Ctrl+D on a PC; hold to talk, or tap to keep listening",
+        "**Local models** — if no graphics card is found at first, the app keeps looking for one"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
