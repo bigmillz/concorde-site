@@ -66,15 +66,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "349f482af2942ada": {
-      "channel": "nightly 1.5 nightly 1bd3be1",
+    "d871283c70267679": {
+      "channel": "nightly 1.5 nightly 6bff27b",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-09-30",
       "bullets": [
-        "**Auto exit** — now picks the fastest measured server, and never your own line",
-        "**Latency list** — in Stealth, servers it never contacts now say so instead of showing a dash"
+        "**Servers** — the app now says why a server's updates can't be checked",
+        "**Home exit on a Pi** — setup scripts for running an exit from home on a Raspberry Pi, installed on a USB SSD, not the SD card"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
