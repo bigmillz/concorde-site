@@ -1122,7 +1122,11 @@ DevicePolicy=closed
 WantedBy=multi-user.target
 UNIT
 systemctl daemon-reload
-systemctl enable --now hysteria-server.service >/dev/null 2>&1
+# RESTART, not "enable --now": on a re-run the service is already running, so
+# "--now" does nothing and it keeps serving the PREVIOUS run's passwords (the
+# files say one thing, the process another; Pat's home Pi, 2026-09-30)
+systemctl enable hysteria-server.service >/dev/null 2>&1
+systemctl restart hysteria-server.service >/dev/null 2>&1
 sleep 2
 if systemctl is-active --quiet hysteria-server.service; then
   ok "hysteria-server running on UDP/${PORT}"
@@ -1208,7 +1212,10 @@ DevicePolicy=closed
 WantedBy=multi-user.target
 SBUNIT
   systemctl daemon-reload
-  systemctl enable --now sing-box.service >/dev/null 2>&1
+  # restart for the same reason as hysteria-server above: a re-run rewrote
+  # the Trojan password, and "enable --now" left the old one in memory
+  systemctl enable sing-box.service >/dev/null 2>&1
+  systemctl restart sing-box.service >/dev/null 2>&1
   sleep 2
   if systemctl is-active --quiet sing-box.service; then
     ok "sing-box running (Trojan) on TCP/${PORT}"
