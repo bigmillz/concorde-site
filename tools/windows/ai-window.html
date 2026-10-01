@@ -73,14 +73,20 @@ body{
 /* the page's <body> (16164) */
 .app{
   flex:1;min-height:0;display:flex;
-  background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;
+  /* the app plays an Apple TV aerial behind the window; this is a still of
+     our own (tools/make-backdrop.py), under the same frosted glass */
+  background:var(--panel) url(backdrop-clouds.jpg) center / cover no-repeat;
+  color:var(--text);font-family:var(--sans);font-size:15px;
 }
 
-/* ---------- sidebar (16205; body.novideo 16217) ---------- */
+/* ---------- sidebar (28858; the visual-effects-on glass) ---------- */
 #sidebar{
   position:relative;z-index:1;
   width:300px;min-width:300px;height:100%;
-  background:var(--panel);
+  /* real frosted glass (28861): ~34% panel, heavy blur */
+  background:rgba(6,7,10,.34);
+  -webkit-backdrop-filter:blur(26px) saturate(1.45);
+          backdrop-filter:blur(26px) saturate(1.45);
   border-right:1px solid rgba(255,255,255,.07);
   box-shadow:inset -1px 0 0 rgba(0,0,0,.25);
   display:flex;flex-direction:column;padding:16px 16px;gap:8px;
@@ -218,6 +224,8 @@ body{
 #composer{
   max-width:780px;margin:0 auto;
   background:rgba(15,17,23,.60);
+  -webkit-backdrop-filter:blur(26px) saturate(1.4);
+          backdrop-filter:blur(26px) saturate(1.4);
   /* focused, as at launch (input.focus(), 23270): the :focus-within
      look of 17643 */
   border:1px solid rgba(255,255,255,.32);
