@@ -305,10 +305,8 @@ whatever happened to be on screen. They are HTML so they stay crisp at any
 size and can be restaged without re-shooting. The AI window is the opening
 screen of a new chat (greeting, starter chips, message box) with visual
 effects on: the sidebar and message box are the app's frosted glass over a
-backdrop. The real app plays Apple TV aerial clips there; those are Apple's,
-so the site's is a cloudscape drawn from noise by `make-backdrop.py` into
-`windows/backdrop-clouds.jpg` (a photo you have the rights to can be saved
-over that file). The VPN
+backdrop: a still of a night skyline, `windows/backdrop.jpg` (swap that file
+for any other photo and re-run `make-shots.py`). The VPN
 window is the main window as ConcordeVPN 1.4 draws it, 460x856: connected
 through New York, Balanced, with the speed and route cards.
 ConcordeGo is a website, so its window is a plain browser frame (the address
