@@ -85,18 +85,16 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "68fdb2589988771e": {
-      "channel": "nightly 1.5 nightly bac4cdb",
+    "64181de73ebebdfc": {
+      "channel": "nightly 1.5 nightly 74f35e3",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-01",
       "bullets": [
-        "**Shortcuts** — ⌃⌘P bypasses the VPN for five minutes; both shortcuts are listed in Settings and can be changed",
-        "**Settings** — refreshed look each time it opens; clicking anywhere on the server bar opens its details",
-        "**Engine** — mihomo updated to v1.19.32"
+        "**Visual effects switch** — a new setting; turning it off stills the sky, the ring's light and the connecting spin"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
