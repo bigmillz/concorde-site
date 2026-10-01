@@ -33,15 +33,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "6a983c1ab941c2c4": {
-      "channel": "nightly 6.1 nightly 38e00a0",
+    "17059e858a2f3d24": {
+      "channel": "nightly 6.1 nightly ca116ac",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-09-30",
+      "generated": "2026-10-01",
       "bullets": [
-        "**Dictation hotkey** — Cmd+D on a Mac, Ctrl+D on a PC; hold to talk, or tap to keep listening",
-        "**Local models** — if no graphics card is found at first, the app keeps looking for one"
+        "**Server Only mode** — run everything on your own server, picked from a single server row; no pictures or agents",
+        "**Your server first** — Fast, Thinking, Pro and the Code lane try your server before other models; server models in Advanced",
+        "**Quieter Mac** — picking a server leaves this Mac's graphics card idle, and an idle card is reported plainly",
+        "**Mode fixes** — each mode answers with its own models, servers that are down are skipped, and Pro uses four models"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
