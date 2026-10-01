@@ -69,18 +69,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "dfa063eff12b1f19": {
-      "channel": "nightly 1.5 nightly 02f0600",
-      "source_tags": [
-        "nightly"
-      ],
-      "generated": "2026-09-30",
-      "bullets": [
-        "**Server setup** — running setup again on your server now restarts its VPN services"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "7b16af7f7c6f8b3e": {
       "channel": "prerelease 1.5 beta 1",
       "source_tags": [
@@ -95,6 +83,20 @@
         "**A cleaner main window** — Mode and Exit open in place, your ISP under your IP, and the speed test in every mode"
       ],
       "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "68fdb2589988771e": {
+      "channel": "nightly 1.5 nightly bac4cdb",
+      "source_tags": [
+        "nightly"
+      ],
+      "generated": "2026-10-01",
+      "bullets": [
+        "**Shortcuts** — ⌃⌘P bypasses the VPN for five minutes; both shortcuts are listed in Settings and can be changed",
+        "**Settings** — refreshed look each time it opens; clicking anywhere on the server bar opens its details",
+        "**Engine** — mihomo updated to v1.19.32"
+      ],
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
