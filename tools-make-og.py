@@ -183,14 +183,15 @@ def main():
     tracked(img, "FLY CONCORDE, FLY.", f_slog, int(17 * X * 0.34),
             int(372 * X), fill=FAINT)
 
-    # hairline + the two products, so the card says what the link is
+    # hairline + the three products, so the card says what the link is
     d = ImageDraw.Draw(img)
     d.line([(W * 0.34, 468 * X), (W * 0.66, 468 * X)], fill=(38, 39, 44),
            width=max(1, X))
     f_prod = ImageFont.truetype(FONT, int(19 * X))
     b = max(1, int(1.1 * X))          # synthetic weight for the suffixes
     segments(img, [("CONCORDE", 0), ("AI", b), ("   \u00b7   ", 0),
-                   ("CONCORDE", 0), ("VPN", b)],
+                   ("CONCORDE", 0), ("VPN", b), ("   \u00b7   ", 0),
+                   ("CONCORDE", 0), ("GO", b)],
              f_prod, int(19 * X * 0.15), int(516 * X), (180, 180, 180))
 
     img.resize((W // X, H // X), Image.LANCZOS).save(OUT)
