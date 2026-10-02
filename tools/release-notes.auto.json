@@ -33,17 +33,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "17059e858a2f3d24": {
-      "channel": "nightly 6.1 nightly ca116ac",
+    "ff8711729a9093ff": {
+      "channel": "nightly 6.1 nightly 686b319",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-01",
+      "generated": "2026-10-02",
       "bullets": [
-        "**Server Only mode** — run everything on your own server, picked from a single server row; no pictures or agents",
-        "**Your server first** — Fast, Thinking, Pro and the Code lane try your server before other models; server models in Advanced",
-        "**Quieter Mac** — picking a server leaves this Mac's graphics card idle, and an idle card is reported plainly",
-        "**Mode fixes** — each mode answers with its own models, servers that are down are skipped, and Pro uses four models"
+        "**Auto sleep** — the server can go to sleep on its own, and you can wake it from the app",
+        "**Server setup** — server name, user, LAN, domain and disks are now chosen during setup instead of being fixed",
+        "**Warm microphone** — now off unless you turn it on",
+        "Editing a message in another chat no longer stops the answer in the chat you are in"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
