@@ -1,38 +1,6 @@
 {
   "_": "Channel summaries, generated. Keyed by repo (\"concordego\" for ConcordeGo's notes), then a hash of the channel's source notes + tools/release-notes-prompt.md + the model (see channel_key in sync-releases.py). Written by tools/summarize-notes.py in the GitHub Action (model = the Claude model that wrote it) or by hand (model \"hand\"). Edit \"bullets\" freely: an entry is kept until its channel's notes change. \"fold\": true adds the closing \"Plus smaller fixes and polish\" line. An entry with \"failed\" is ignored by the page and asked again after 7 days; delete it to try sooner. Keep this file valid JSON: while it does not parse, nothing is summarized.",
   "bigmillz/concordeai": {
-    "c29d0e8f2290a5b8": {
-      "channel": "stable 6.0.4",
-      "source_tags": [
-        "v273",
-        "v274"
-      ],
-      "generated": "2026-09-27",
-      "bullets": [
-        "**Image generation** — ask for a picture and you get one; it runs on your Mac, or a cloud model fills in",
-        "**Model downloads** — progress reflects what is actually downloading and names each item; the preset that fits your disk is marked",
-        "**Enable visual effects** — replaces performance mode and now switches only the moving backdrop, not spinners and animations",
-        "**Check for updates automatically** — your choice: at launch and once a day, or only when you press the button"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
-    "b0d206189640c079": {
-      "channel": "prerelease 6.1 RC 1",
-      "source_tags": [
-        "v275",
-        "v276"
-      ],
-      "generated": "2026-09-28",
-      "bullets": [
-        "**Windows** — chats, web search, read-aloud and voice input on Intel, AMD and ARM PCs; Ollama is installed for you",
-        "**Video and exports** — short clips rendered on your Mac, and answers saved in twenty formats, from PDF to slides",
-        "**Chats saved as you go** — questions and answers are kept even after Stop or quit; the 60-chat limit is gone",
-        "**Removed** — Contribute and the free community image cloud"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "ff8711729a9093ff": {
       "channel": "nightly 6.1 nightly 686b319",
       "source_tags": [
@@ -44,6 +12,22 @@
         "**Server setup** — server name, user, LAN, domain and disks are now chosen during setup instead of being fixed",
         "**Warm microphone** — now off unless you turn it on",
         "Editing a message in another chat no longer stops the answer in the chat you are in"
+      ],
+      "fold": true,
+      "model": "claude-opus-5-5"
+    },
+    "3393e542fe94e67b": {
+      "channel": "stable 6.1",
+      "source_tags": [
+        "v275",
+        "v277"
+      ],
+      "generated": "2026-10-02",
+      "bullets": [
+        "**Windows** — chats, searches the web, speaks and listens on Intel, AMD and ARM PCs; installs Ollama for you",
+        "**Video** — ask for a short clip and it renders on your Mac; a size ladder shows what each quality costs",
+        "**Export** — ask for an answer as a PDF, Word document, spreadsheet, slides, calendar file, CSV and more",
+        "**Removed** — Contribute and the free community image cloud"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
