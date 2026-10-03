@@ -1,21 +1,6 @@
 {
   "_": "Channel summaries, generated. Keyed by repo (\"concordego\" for ConcordeGo's notes), then a hash of the channel's source notes + tools/release-notes-prompt.md + the model (see channel_key in sync-releases.py). Written by tools/summarize-notes.py in the GitHub Action (model = the Claude model that wrote it) or by hand (model \"hand\"). Edit \"bullets\" freely: an entry is kept until its channel's notes change. \"fold\": true adds the closing \"Plus smaller fixes and polish\" line. An entry with \"failed\" is ignored by the page and asked again after 7 days; delete it to try sooner. Keep this file valid JSON: while it does not parse, nothing is summarized.",
   "bigmillz/concordeai": {
-    "ff8711729a9093ff": {
-      "channel": "nightly 6.1 nightly 686b319",
-      "source_tags": [
-        "nightly"
-      ],
-      "generated": "2026-10-02",
-      "bullets": [
-        "**Auto sleep** — the server can go to sleep on its own, and you can wake it from the app",
-        "**Server setup** — server name, user, LAN, domain and disks are now chosen during setup instead of being fixed",
-        "**Warm microphone** — now off unless you turn it on",
-        "Editing a message in another chat no longer stops the answer in the chat you are in"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "3393e542fe94e67b": {
       "channel": "stable 6.1",
       "source_tags": [
@@ -28,6 +13,21 @@
         "**Video** — ask for a short clip and it renders on your Mac; a size ladder shows what each quality costs",
         "**Export** — ask for an answer as a PDF, Word document, spreadsheet, slides, calendar file, CSV and more",
         "**Removed** — Contribute and the free community image cloud"
+      ],
+      "fold": true,
+      "model": "claude-opus-5-5"
+    },
+    "e54f647bd655af28": {
+      "channel": "nightly 6.1 nightly 402aacd",
+      "source_tags": [
+        "nightly"
+      ],
+      "generated": "2026-10-03",
+      "bullets": [
+        "**Image annotation** — in progress in this build; annotated images save to the profile you are using",
+        "**Cloud Only** — follow-up rewrites, export titles, chat titles and memory updates no longer go to a server",
+        "**Server image generation** — results save to the right profile, even if you switch profiles while it saves",
+        "**GPU tuning** — added, off by default"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
