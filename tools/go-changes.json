@@ -2,6 +2,72 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "4bc1e6c",
+   "version": "0.1.4615",
+   "date": "2026-10-04",
+   "summary": "Lite's options read Trip, Leaving, Cabin, Travellers, Bags, with bold headings"
+  },
+  {
+   "commit": "86ac691",
+   "version": "0.1.4606",
+   "date": "2026-10-04",
+   "summary": "Lite keeps every option label, and Leaving matches the others' size in bold"
+  },
+  {
+   "commit": "15163b5",
+   "version": "0.1.4600",
+   "date": "2026-10-04",
+   "summary": "Lite's options sit on one centred line under the box, with bullets between"
+  },
+  {
+   "commit": "370a2d5",
+   "version": "0.1.4591",
+   "date": "2026-10-04",
+   "summary": "Lite puts Leaving in the centre, in bold, with Today, Tomorrow or a date"
+  },
+  {
+   "commit": "7f4aa94",
+   "version": "0.1.4572",
+   "date": "2026-10-04",
+   "summary": "Lite shows earliest arrival and cheapest side by side, and opens a flight in place"
+  },
+  {
+   "commit": "b860d36",
+   "version": "0.1.4548",
+   "date": "2026-10-04",
+   "summary": "Lite asks \"Anything else?\" as it searches, and the options sit on one line"
+  },
+  {
+   "commit": "e57b88e",
+   "version": "0.1.4498",
+   "date": "2026-10-04",
+   "summary": "ConcordeGo Lite asks one thing: where you need to be, and gets you there now"
+  },
+  {
+   "commit": "a2749d3",
+   "version": "0.1.4425",
+   "date": "2026-10-04",
+   "summary": "Lite centres the date on a one-way trip, and four layout sketches at /lite/mock"
+  },
+  {
+   "commit": "09671a6",
+   "version": "0.1.4416",
+   "date": "2026-10-04",
+   "summary": "ConcordeGo Lite opens on a round trip, with the options on top and each date under its place"
+  },
+  {
+   "commit": "f3b8562",
+   "version": "0.1.4403",
+   "date": "2026-10-04",
+   "summary": "ConcordeGo Lite is lighter and simpler: big fields, the options tucked below"
+  },
+  {
+   "commit": "a5b88a0",
+   "version": "0.1.4372",
+   "date": "2026-10-04",
+   "summary": "ConcordeGo Lite: three good flights from one short search, at /lite"
+  },
+  {
    "commit": "690ebe4",
    "version": "0.1.4370",
    "date": "2026-10-01",
