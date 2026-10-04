@@ -83,17 +83,17 @@
     }
   },
   "concordego": {
-    "366e8bfd3cebf10f": {
-      "channel": "live version 0.1.4370, deployed 1 Oct 2026",
+    "faafff041ffbdc0b": {
+      "channel": "live version 0.1.4615, deployed 4 Oct 2026",
       "source_tags": [
-        "690ebe4"
+        "4bc1e6c"
       ],
-      "generated": "2026-10-01",
+      "generated": "2026-10-04",
       "bullets": [
-        "**Round-trip fares** — each fare names who sells it, with other countries' booking sites as links",
-        "**Points and miles** — priced on airlines' published award charts, with a transfer planner; phone-only awards say so",
-        "**Flight details** — airline ratings by cabin, a comfort grade on every flight, and a price history chart",
-        "**Sorting** — fastest door to door, soonest at your door and more; results lead with the ticket price, all-in total below"
+        "**Lite** — a simpler search: say where you need to be, and see the earliest arrival and the cheapest side by side",
+        "**Round trips and points** — round-trip fares, and award prices from airlines' published charts with a transfer planner",
+        "**Flight details** — price history chart, journey bar, who sells each fare, and airline ratings by cabin",
+        "**Results** — ticket price first with the all-in total under it, more ways to sort, and comfort grades on every flight"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -394,22 +394,22 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "b6fa968e9994409a": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4370, deployed 1 Oct 2026",
+    "b9b50428d68375bc": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4615, deployed 4 Oct 2026",
       "source_tags": [
         "03331d6",
         "03c725a",
         "046f0cf",
-        "04a2511",
         "0597d86",
         "06c221d",
+        "09671a6",
         "0a5b26e",
         "0c3119e",
         "0f1a4df",
         "0f3c41d",
         "104b4c6",
         "1207183",
-        "125a17c",
+        "15163b5",
         "16abb95",
         "173ad2e",
         "17ede22",
@@ -429,10 +429,10 @@
         "353edeb",
         "35c89df",
         "364fe60",
+        "370a2d5",
         "3a0c792",
         "3af27c2",
         "3df7863",
-        "41f084a",
         "425f8b3",
         "42f50b6",
         "431e094",
@@ -442,6 +442,7 @@
         "472b6bc",
         "48b1865",
         "4b7c965",
+        "4bc1e6c",
         "4dd6e79",
         "4f4bfab",
         "500a4ab",
@@ -469,11 +470,13 @@
         "7c16bd5",
         "7d6aea9",
         "7e01e0e",
+        "7f4aa94",
         "801130d",
         "804d0a8",
         "828ee2b",
         "84abf94",
         "84ba834",
+        "86ac691",
         "8a1baf3",
         "8dcbfbd",
         "91e0355",
@@ -486,7 +489,9 @@
         "99f6efc",
         "9d2bb73",
         "a0c8ff7",
+        "a2749d3",
         "a425274",
+        "a5b88a0",
         "a6e0053",
         "a7b343a",
         "a8d4e17",
@@ -506,6 +511,7 @@
         "b7e98ee",
         "b7ee55d",
         "b7fa503",
+        "b860d36",
         "b9b035b",
         "bcd7845",
         "c036182",
@@ -531,22 +537,22 @@
         "debbd39",
         "e01c1ce",
         "e1db7f0",
-        "e26c8ca",
         "e3d660c",
-        "e6912de",
+        "e57b88e",
         "e982bad",
         "eb93717",
         "eefd2ec",
         "f1a661d",
         "f2313f3",
         "f2a39e2",
+        "f3b8562",
         "ffcb74b"
       ],
-      "generated": "2026-10-01",
+      "generated": "2026-10-04",
       "bullets": [
+        "2026-10-04: Lite, three good flights from one short search",
         "2026-09-24: Round-trip fares",
-        "2026-09-24: Award charts with a points transfer planner",
-        "2026-10-01: Five free searches a day without signing in"
+        "2026-09-24: Award charts and a points transfer planner"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
