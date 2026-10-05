@@ -2,6 +2,12 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "4a298d9",
+   "version": "0.1.4816",
+   "date": "2026-10-05",
+   "summary": "Each top pick says in a sentence why it is there; fewer lookups for nearby days, round trips and repeat searches"
+  },
+  {
    "commit": "56e31e9",
    "version": "0.1.4785",
    "date": "2026-10-05",
