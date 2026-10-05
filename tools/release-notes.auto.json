@@ -17,15 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "f1d0f86443066f57": {
-      "channel": "nightly 7.0 nightly af37b01",
+    "2b683ca0c04da872": {
+      "channel": "nightly 7.0 nightly 4a29555",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-04",
+      "generated": "2026-10-05",
       "bullets": [
-        "**7.0** — first nightly of the 7.0 series",
-        "**Suggestion chips** — switching profiles while a suggestion is being saved is now caught instead of silently ignored"
+        "**Model sets** — No limits now warns only about models bigger than your memory, if there are any",
+        "**Model sets** — the warning triangle on Everything turns red when it includes a giant model",
+        "**First run** — starts in Light mode, and the setup wizard's studio options are now two short rows",
+        "**Chips** — a server can write at most 1200 tokens when generating them"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
