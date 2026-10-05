@@ -53,6 +53,7 @@ SOURCES = {
     "ai":  ("ai-window.html",  (1400, 1520)),
     "vpn": ("vpn-window.html", (780, 1220)),
     "go":  ("go-window.html",  (1470, 1600)),   # a browser frame round go-capture.png
+    "lite": ("lite-window.html", (1470, 1600)),  # the same frame round lite-capture.png
 }
 
 

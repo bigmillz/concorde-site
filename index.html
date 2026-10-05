@@ -238,13 +238,13 @@ main .section:last-child{padding-bottom:76px}
 }
 
 /* ---------- products: one full-width card each ----------
-   The three products stack, ConcordeAI, ConcordeVPN, ConcordeGo, and every
+   The products stack, ConcordeAI, ConcordeVPN, ConcordeGo, ConcordeGo Lite, and every
    card is the same card: the product's window on the left and, on the right,
    one column read top to bottom: the name, line and chips, the numbered
    features, then the action box. The text column sets the card's height
    and the window is sized to it (the fit script at the bottom of the
    page), so the window's column is the wider one (6:5).
-   In all three cards the lockups, feature lists and action boxes start on
+   In every card the lockups, feature lists and action boxes start on
    one x, and the action boxes are one width. */
 .prods{display:flex;flex-direction:column;gap:22px}
 .card{
@@ -320,6 +320,27 @@ html.hdrmarks .card-head .mark-hdr{position:relative;top:-2.5px}
 .card-head .chip{
   margin:-4px 0 -4px 4px;border:1px solid var(--line);border-radius:999px;
   padding:3px 10px 3px 11px;color:var(--dim);line-height:1.5;
+}
+/* "Lite" after the ConcordeGo name, as the Lite page's own header sets it:
+   the display face, small, faint and wide. */
+.card-head .lite-tag{
+  font-family:var(--disp);font-size:10.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--faint);margin-left:-3px;
+}
+/* With "Lite" the row runs about 50px past the others; under 440px its BETA
+   chip takes the line under the name, where every card's goes under 360. */
+.card-head .row-brk{display:none}
+@media (max-width:440px){
+  #concordego-lite .card-head .row{flex-wrap:wrap;row-gap:0}
+  #concordego-lite .card-head .row-brk{display:block;flex:0 0 100%;height:0}
+  #concordego-lite .card-head .chip{margin:10px 0 0 33px}
+}
+/* under 360 the name and "Lite" no longer share a line either: Lite goes
+   down beside the chip, both under the name */
+@media (max-width:359px){
+  #concordego-lite .card-head .row-brk{order:1}
+  #concordego-lite .card-head .lite-tag{order:2;margin:10px 0 0 33px}
+  #concordego-lite .card-head .chip{order:3;margin:10px 0 0 4px}
 }
 
 .feats{padding:6px 26px 10px}
@@ -1195,6 +1216,93 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                     <!-- /releases:go -->
                   </div>
                 </details>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ============ CARD: CONCORDEGO LITE ============
+             ConcordeGo's quick page, go.flyconcordefly.com/lite: part of the
+             same app, so the same build, version and date (the Worker and
+             sync-releases.py stamp every [data-go-version] and
+             time[data-go-date] on the page, this card's too). Its changes
+             are in ConcordeGo's Release notes, so it has no notes box of its
+             own; keep it that way, the script checks that box is the Go
+             card's only one. The name is ConcordeGo's lockup and HDR
+             nameplate (the nameplate script wants one per lockup) with
+             "Lite" set beside it, as the page's own header does.
+             The window is tools/windows/lite-window.html round a signed-out
+             capture of a real search; tools/README.md says how to retake it. -->
+        <article class="card reveal" id="concordego-lite" aria-labelledby="lite-name">
+          <div class="stage">
+            <div class="stage-in">
+              <a class="shot" href="assets/shot-lite.png">
+                <picture>
+                  <source srcset="assets/shot-lite.webp" type="image/webp">
+                  <img src="assets/shot-lite.png" width="1458" height="1532" loading="lazy" decoding="async"
+                       alt="ConcordeGo Lite in a browser, answering Union Square, San Francisco to Los Angeles today: the three earliest arrivals and the three cheapest flights side by side.">
+                </picture>
+                <span class="visually-hidden">Enlarge</span>
+              </a>
+              <p class="how"><span class="label">In your browser</span>No download, no install.<br>Free: it shares ConcordeGo&rsquo;s 4 searches a day, or 20 with an&nbsp;account.</p>
+            </div>
+          </div>
+
+          <div class="card-main">
+            <div class="card-head">
+              <div class="row">
+                <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
+                  <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+                  <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+                  <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+                  <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+                  <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+                <h3 id="lite-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">Go</span></span><video class="mark-hdr" data-mark="go" muted playsinline loop preload="none" aria-hidden="true"></video><span class="visually-hidden"> Lite</span></h3>
+                <span class="lite-tag" aria-hidden="true">Lite</span>
+                <span class="row-brk" aria-hidden="true"></span>
+                <span class="chip label">Beta</span>
+              </div>
+              <p class="desc">For when you need a flight now. One question, and the best flights you can still make.</p>
+              <div class="plats label">
+                <span>Any browser</span>
+                <span>Desktop + phone</span>
+              </div>
+            </div>
+
+            <ul class="feats">
+              <li>
+                <span class="n">01</span>
+                <div><b>One question</b><span class="d">&ldquo;Where do you need to be?&rdquo; It assumes today, one way, economy and one bag. One tap changes any of them.</span></div>
+              </li>
+              <li>
+                <span class="n">02</span>
+                <div><b>Earliest or cheapest</b><span class="d">Three of each, side by side, from the flights you can still get to.</span></div>
+              </li>
+              <li>
+                <span class="n">03</span>
+                <div><b>Door to door</b><span class="d">When to leave the house, when you reach the door at the other end, and the all-in price.</span></div>
+              </li>
+              <li>
+                <span class="n">04</span>
+                <div><b>Anything else?</b><span class="d">Type or say it: &ldquo;nothing before 9&rdquo;, &ldquo;not through Dallas&rdquo;, a seat, an airline.</span></div>
+              </li>
+            </ul>
+
+            <div class="dl go-dl">
+              <div class="chan">
+                <div class="chan-top">
+                  <span class="chan-ver">BETA</span>
+                  <span class="chan-commit" data-go-vline>version <span data-go-version>0.1.4732</span></span>
+                  <span class="chan-date">Updated <time datetime="2026-10-04" data-go-date>4 Oct 2026</time></span>
+                </div>
+                <div class="btns">
+                  <a class="btn open" href="https://go.flyconcordefly.com/lite" target="_blank" rel="noopener">
+                    <span class="os">Open ConcordeGo Lite</span>
+                    <span class="file">go.flyconcordefly.com/lite</span>
+                    <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9 9.2 2.8M4 2.6h5.4V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="visually-hidden">(opens in a new tab)</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
