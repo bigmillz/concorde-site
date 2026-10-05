@@ -2,6 +2,18 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "56e31e9",
+   "version": "0.1.4785",
+   "date": "2026-10-05",
+   "summary": "Rides are off the price unless switched on; podium cards say why, fold pros and cons; Find flights first"
+  },
+  {
+   "commit": "170b2ad",
+   "version": "0.1.4762",
+   "date": "2026-10-05",
+   "summary": "Lite gets quicker: book the earliest, home and recent places, the rest of the trip, firmer prices"
+  },
+  {
    "commit": "c1f02fa",
    "version": "0.1.4732",
    "date": "2026-10-04",

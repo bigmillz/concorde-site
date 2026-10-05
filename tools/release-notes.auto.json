@@ -17,17 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "2b683ca0c04da872": {
-      "channel": "nightly 7.0 nightly 4a29555",
+    "42454ccb8e74c5bf": {
+      "channel": "nightly 7.0 nightly 39401ff",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-05",
       "bullets": [
-        "**Model sets** — No limits now warns only about models bigger than your memory, if there are any",
-        "**Model sets** — the warning triangle on Everything turns red when it includes a giant model",
-        "**First run** — starts in Light mode, and the setup wizard's studio options are now two short rows",
-        "**Chips** — a server can write at most 1200 tokens when generating them"
+        "**Wake** — tells you when this computer refuses every wake packet, noted per profile; the app now declares Local Network use",
+        "**Hardware panel** — new Network box, a single storage total and a trimmed Fans header",
+        "**Burn test** — press Enter in the hardware panel to run a 30 s processor burn, then a 30 s card burn",
+        "**Chips** — only use a server that already has a model loaded, and never wake a card to do it"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -50,32 +50,33 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "908c2d884c95ccf3": {
-      "channel": "nightly 1.5.1 nightly fb2c6d2",
+    "37b7caf34eb29be8": {
+      "channel": "nightly 1.5.2 nightly 1e6528e",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-04",
+      "generated": "2026-10-05",
       "bullets": [
-        "**Low speed results** — the explanation now points to a weak Wi-Fi signal when that is the cause, and can be hidden per measurement",
-        "**Visual effects off** — the speed chart redraws once a second"
+        "**Connection tests** — running a test again now says so, and the leak test works with any exit",
+        "**Interface fixes** — the shortcut recorder lets go, Escape closes things in the right order, and the server list stays open",
+        "**Server setup** — added safeguards for server install and the dynamic DNS token"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
     }
   },
   "concordego": {
-    "576bb9ef6c8af783": {
-      "channel": "live version 0.1.4732, deployed 4 Oct 2026",
+    "5043b4ac34889b0e": {
+      "channel": "live version 0.1.4785, deployed 5 Oct 2026",
       "source_tags": [
-        "c1f02fa"
+        "56e31e9"
       ],
       "generated": "2026-10-05",
       "bullets": [
-        "**Lite** — say where you need to be and get three good flights, earliest arrival and cheapest side by side",
-        "**Anything else?** — Lite takes requests like avoiding an airport or a certain aircraft, and checks the web when needed",
-        "**Results** — a sort menu, the ticket price first with the all-in total under it, round-trip fares, and who sells each fare",
-        "**Flight details** — price history, airline ratings by cabin, and points priced on airlines' award charts with a transfer planner"
+        "**Lite** — a short search for where you need to be: three flights, with soonest arrival and cheapest side by side",
+        "**Ask for more** — name an aircraft, an airport to avoid or another need; questions the data can't answer are looked up online",
+        "**Results** — ticket price first with the all-in total below, a sort menu, round-trip fares, rides left off unless switched on",
+        "**Flight details** — per-cabin airline ratings, comfort grades, price history, and points from award charts with a transfer planner"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -390,12 +391,11 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "bea045ea77be0ad2": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4732, deployed 4 Oct 2026",
+    "61e4343090260cb6": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4785, deployed 5 Oct 2026",
       "source_tags": [
         "03331d6",
         "03c725a",
-        "046f0cf",
         "0597d86",
         "06c221d",
         "09671a6",
@@ -408,6 +408,7 @@
         "15163b5",
         "1574986",
         "16abb95",
+        "170b2ad",
         "173ad2e",
         "17ede22",
         "1a5b72c",
@@ -444,8 +445,8 @@
         "50c04f2",
         "51534af",
         "52f09fe",
+        "56e31e9",
         "5ad7697",
-        "5c143ed",
         "5d53dcc",
         "60f858c",
         "63e1c9c",
@@ -547,8 +548,8 @@
       "generated": "2026-10-05",
       "bullets": [
         "2026-10-04: Lite, three good flights from one short search",
-        "2026-10-01: Five free searches a day without signing in",
-        "2026-09-24: Round-trip fares"
+        "2026-09-24: Round-trip fares",
+        "2026-09-24: Points and miles priced on published award charts"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
