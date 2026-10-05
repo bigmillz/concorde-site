@@ -422,38 +422,29 @@ anywhere in it.
 
 ### Retaking `windows/lite-capture.png`
 
-The capture is a real signed-out search on the live Lite page, so it has
-the page's answer in it: Union Square, San Francisco to Los Angeles, today,
-the three earliest arrivals beside the three cheapest. Same size and scale
-as the Go capture (1050x1075 CSS px at 2x). **Pick the From place by its
-suggestion first:** the geocoder names some places badly ("Times Square,
-Manhattan Community Board 5, New York"), and that name becomes the page's
-headline. Never let the page use your own location. The run spends one of
-the day's four signed-out searches:
+The capture is the live Lite page exactly as a first-time visitor opens it,
+signed out and with nothing typed: the one "Where do you need to be?" box,
+the chosen-for-you row (today, one way, economy) and the red button. That
+blank start is the point of the picture, so keep it empty; it also spends
+no search. Same size and scale as the Go capture (1050x1075 CSS px at 2x).
+`measure.mjs`'s fresh profile has no location permission, so the From
+field stays "Where are you?"; never take it from a browser that has one,
+or your street ends up in it:
 
     MEASURE_DPR=2 node tools/measure.mjs https://go.flyconcordefly.com/lite 1050x1075 \
       '(async () => {
-         const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-         const btn = (t) => [...document.querySelectorAll("button,a")]
-           .find((b) => b.offsetParent !== null && b.innerText.trim() === t);
-         const pick = async (sel, list, v) => {
-           const i = document.querySelector(sel); i.focus(); i.value = v;
-           i.dispatchEvent(new Event("input", {bubbles: true})); await wait(1800);
-           const o = document.querySelector(list + " [role=option]");
-           o.dispatchEvent(new MouseEvent("mousedown", {bubbles: true})); o.click();
-           await wait(700); };
-         await wait(2000);
-         await pick("#from", "#sugg-from", "Union Square, San Francisco");
-         await pick("#to", "#sugg-to", "Los Angeles");
-         btn("Get me there now").click(); await wait(2500);
-         btn("Show my flights").click(); await wait(35000);
-         return { signedOut: !/@|left today|Admin/i.test(document.body.innerText),
-                  head: document.body.innerText.slice(0, 120) };
+         await new Promise((r) => setTimeout(r, 2500));
+         document.activeElement && document.activeElement.blur();
+         await new Promise((r) => setTimeout(r, 300));
+         return { from: document.querySelector("#from").value,
+                  to: document.querySelector("#to").value,
+                  signedOut: !/@|left today|Admin/i.test(document.body.innerText) };
        })()' /tmp/lite.png
     python3 -c "from PIL import Image; Image.open('/tmp/lite.png').convert('RGB').crop((0, 0, 2100, 2150)).save('tools/windows/lite-capture.png', optimize=True)"
 
-It must print `"signedOut": true`; then look at the PNG (both columns
-filled, a clean headline) before running `make-shots.py`.
+It must print empty `from` and `to` and `"signedOut": true`; then look at
+the PNG (the option row on one line, nothing typed) before running
+`make-shots.py`.
 
 ### Checking a layout
 
