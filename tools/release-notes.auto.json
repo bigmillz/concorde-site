@@ -50,31 +50,32 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "f4b49df128154519": {
-      "channel": "nightly 1.5.2 nightly b5eeb0b",
+    "9b93448bb716d5a0": {
+      "channel": "nightly 1.5.2 nightly 790627e",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-05",
       "bullets": [
-        "**Fixes** — fewer stuck states, safer password prompts, and a steadier Speed card"
+        "**Mode explainer** — what each connection mode does and what it gives up, in three tiers from plain summary to technical detail",
+        "Opened from the Auto tooltip; the line under the mode scale is gone"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     }
   },
   "concordego": {
-    "636bce4195111c9b": {
-      "channel": "live version 0.1.4816, deployed 5 Oct 2026",
+    "256b4e756af7a7b3": {
+      "channel": "live version 0.1.4823, deployed 5 Oct 2026",
       "source_tags": [
-        "4a298d9"
+        "28297c3"
       ],
       "generated": "2026-10-05",
       "bullets": [
-        "**Lite** — say where you need to be and get three flights; add requests like an airport to avoid, checked on the web if needed",
-        "**Results** — round-trip fares, the ticket price first with the all-in total under it, a sort menu, and why each top pick",
-        "**Flight details** — airline ratings per cabin, a price history chart, and points from award charts with a transfer planner",
-        "**Free searches** — five a day without signing in, thirty when signed in"
+        "**Lite** — say where you need to be and get three good flights from one short search; add requests like airports to avoid",
+        "**Ratings** — airlines rated per cabin, a comfort grade on every flight, and a price history chart in each flight's details",
+        "**Results** — the ticket price leads with the all-in total under it, more ways to sort, and each top pick says why",
+        "Round-trip fares, points priced from airlines' award charts, and five free searches a day without signing in (30 signed in)"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -389,8 +390,8 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "d1cc893f4a6b4c9c": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4816, deployed 5 Oct 2026",
+    "5cea15045cf8d83f": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4823, deployed 5 Oct 2026",
       "source_tags": [
         "03331d6",
         "03c725a",
@@ -415,6 +416,7 @@
         "24b7c79",
         "25116ed",
         "26b610b",
+        "28297c3",
         "2f1664f",
         "2fdbcaf",
         "327a776",
@@ -476,7 +478,6 @@
         "91e0355",
         "93ac69b",
         "9541fac",
-        "95f2ce5",
         "965e799",
         "98d51b0",
         "99793b7",
