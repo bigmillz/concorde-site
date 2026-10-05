@@ -200,6 +200,20 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# Values typed by hand end up UNQUOTED in a file that is later `source`d, and
+# inside JSON and YAML. A space, quote, $ or backtick would run as a command or
+# break a config after the certificate was already made. Refuse them up front.
+check_plain() {   # flag, value, what is allowed
+  local re='^[A-Za-z0-9._@%+=:/?-]+$'
+  [[ -z "$2" || "$2" =~ $re ]] \
+    || die "$1: a character here can't be stored safely. Use letters, digits and . _ - : / ? @ % + = only (no spaces, quotes, \$ or &)."
+}
+check_plain --password "${PASSWORD:-}"
+check_plain --sni "${SNI:-}"
+check_plain --domain "${DOMAIN:-}"
+check_plain --masquerade "${MASQ_URL:-}"
+check_plain --obfs "${OBFS_PW:-}"
+check_plain --email "${ACME_EMAIL:-}"
 [[ "$CC_MODE" == "brutal" || "$CC_MODE" == "bbr" ]] || die "--cc must be 'brutal' or 'bbr'"
 [[ "$TUN_MTU" =~ ^[0-9]+$ ]] && (( TUN_MTU >= 1200 && TUN_MTU <= 1500 )) \
   || die "--mtu must be 1200-1500"
