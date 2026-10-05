@@ -1119,6 +1119,11 @@ NEWS_KEY = "news"
 NEWS_PROMPT = Path(__file__).with_name("news-prompt.md")
 NEWS_FEATURES = 3
 ANCHOR = {"ai": ("#concordeai", "ConcordeAI"), "vpn": ("#concordevpn", "ConcordeVPN"), "go": ("#concordego", "ConcordeGo")}
+# A ConcordeGo update whose every line is about Lite ("Lite, three good
+# flights…") links to Lite's own card instead, named in full, the "Lite" lead
+# dropped from the line (Pat, 2026-10-05). A mixed update stays with ConcordeGo.
+LITE_ANCHOR = ("#concordego-lite", "ConcordeGo Lite")
+LITE_LEAD = re.compile(r"^Lite\b\s*[,:;\u2014\u2013-]?\s*")
 
 
 def news_key(kind, items):
@@ -1233,10 +1238,16 @@ def go_news(go, auto, today=None):
 def news_row(e):
     d = datetime.date.fromisoformat(e["date"])
     href, name = ANCHOR[e["key"]]
+    feats = list(e["features"])
+    if e["key"] == "go" and feats and all(LITE_LEAD.match(f) for f in feats):
+        rest = [LITE_LEAD.sub("", f, count=1) for f in feats]
+        if all(rest):
+            href, name = LITE_ANCHOR
+            feats = [r[:1].upper() + r[1:] for r in rest]
     head = '<a href="%s">%s</a>' % (href, name)
     if e.get("title"):
         head += " %s now available" % html.escape(e["title"])
-    tail = "; ".join(html.escape(f) for f in e["features"])
+    tail = "; ".join(html.escape(f) for f in feats)
     return ['      <div class="news-day">',
             '        <time datetime="%s">%d %s</time>' % (e["date"], d.day, MONTHS[d.month - 1]),
             '        <ul><li>%s%s</li></ul>' % (head, (" &mdash; " + tail) if tail else ""),
