@@ -63,17 +63,17 @@
     }
   },
   "concordego": {
-    "faafff041ffbdc0b": {
-      "channel": "live version 0.1.4615, deployed 4 Oct 2026",
+    "576bb9ef6c8af783": {
+      "channel": "live version 0.1.4732, deployed 4 Oct 2026",
       "source_tags": [
-        "4bc1e6c"
+        "c1f02fa"
       ],
-      "generated": "2026-10-04",
+      "generated": "2026-10-05",
       "bullets": [
-        "**Lite** — a simpler search: say where you need to be, and see the earliest arrival and the cheapest side by side",
-        "**Round trips and points** — round-trip fares, and award prices from airlines' published charts with a transfer planner",
-        "**Flight details** — price history chart, journey bar, who sells each fare, and airline ratings by cabin",
-        "**Results** — ticket price first with the all-in total under it, more ways to sort, and comfort grades on every flight"
+        "**Lite** — say where you need to be and get three good flights, earliest arrival and cheapest side by side",
+        "**Anything else?** — Lite takes requests like avoiding an airport or a certain aircraft, and checks the web when needed",
+        "**Results** — a sort menu, the ticket price first with the all-in total under it, round-trip fares, and who sells each fare",
+        "**Flight details** — price history, airline ratings by cabin, and points priced on airlines' award charts with a transfer planner"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -374,8 +374,22 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "b9b50428d68375bc": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4615, deployed 4 Oct 2026",
+    "bb1c7fc4edacdef6": {
+      "channel": "release vpn 1.5",
+      "source_tags": [
+        "v55"
+      ],
+      "generated": "2026-10-04",
+      "bullets": [
+        "Bonding of two connections at once",
+        "Auto picks the fastest server",
+        "Metered connections kept in reserve"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "bea045ea77be0ad2": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4732, deployed 4 Oct 2026",
       "source_tags": [
         "03331d6",
         "03c725a",
@@ -390,11 +404,11 @@
         "104b4c6",
         "1207183",
         "15163b5",
+        "1574986",
         "16abb95",
         "173ad2e",
         "17ede22",
         "1a5b72c",
-        "1c359bf",
         "2362477",
         "2443af4",
         "24b7c79",
@@ -419,7 +433,6 @@
         "4516455",
         "464cb95",
         "46fd16d",
-        "472b6bc",
         "48b1865",
         "4b7c965",
         "4bc1e6c",
@@ -432,7 +445,6 @@
         "5ad7697",
         "5c143ed",
         "5d53dcc",
-        "60c4a4f",
         "60f858c",
         "63e1c9c",
         "6434f71",
@@ -442,6 +454,7 @@
         "6fe77a1",
         "7134ae2",
         "7268f7d",
+        "75fa3a7",
         "766d293",
         "78771c7",
         "7966370",
@@ -474,16 +487,17 @@
         "a5b88a0",
         "a6e0053",
         "a7b343a",
+        "a7d973f",
         "a8d4e17",
         "a8fc8d3",
         "ab1996a",
         "ab436dd",
+        "ad8ff6c",
         "aec4b37",
         "af231e6",
         "b07b1ac",
         "b180e18",
         "b1bbb27",
-        "b3e07cc",
         "b459a8f",
         "b587e63",
         "b6d66df",
@@ -495,11 +509,11 @@
         "b9b035b",
         "bcd7845",
         "c036182",
+        "c1f02fa",
         "c24bd6c",
         "c4ac8a3",
         "c73c5e3",
         "c8435b0",
-        "c9738ee",
         "cbe7691",
         "cc77428",
         "cec9b34",
@@ -517,36 +531,22 @@
         "debbd39",
         "e01c1ce",
         "e1db7f0",
-        "e3d660c",
         "e57b88e",
         "e982bad",
-        "eb93717",
         "eefd2ec",
+        "f103401",
         "f1a661d",
         "f2313f3",
         "f2a39e2",
+        "f330e15",
         "f3b8562",
         "ffcb74b"
       ],
-      "generated": "2026-10-04",
+      "generated": "2026-10-05",
       "bullets": [
         "2026-10-04: Lite, three good flights from one short search",
-        "2026-09-24: Round-trip fares",
-        "2026-09-24: Award charts and a points transfer planner"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "bb1c7fc4edacdef6": {
-      "channel": "release vpn 1.5",
-      "source_tags": [
-        "v55"
-      ],
-      "generated": "2026-10-04",
-      "bullets": [
-        "Bonding of two connections at once",
-        "Auto picks the fastest server",
-        "Metered connections kept in reserve"
+        "2026-10-01: Five free searches a day without signing in",
+        "2026-09-24: Round-trip fares"
       ],
       "fold": false,
       "model": "claude-opus-5-5"

@@ -2,6 +2,48 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "c1f02fa",
+   "version": "0.1.4732",
+   "date": "2026-10-04",
+   "summary": "Any request can now be acted on: airports, aircraft, and things only the web can answer"
+  },
+  {
+   "commit": "1574986",
+   "version": "0.1.4705",
+   "date": "2026-10-04",
+   "summary": "The server can research a question the flight data cannot answer, on the web"
+  },
+  {
+   "commit": "f330e15",
+   "version": "0.1.4686",
+   "date": "2026-10-04",
+   "summary": "Lite's wait creeps steadily, and requests can name an aircraft or a need the data cannot check"
+  },
+  {
+   "commit": "75fa3a7",
+   "version": "0.1.4658",
+   "date": "2026-10-04",
+   "summary": "Lite keeps airports out of the trip when asked, and shows a wing and progress bar while it works"
+  },
+  {
+   "commit": "f103401",
+   "version": "0.1.4626",
+   "date": "2026-10-04",
+   "summary": "Lite's flights open a \"More details\" panel with the aircraft, on-time record and more"
+  },
+  {
+   "commit": "a7d973f",
+   "version": "0.1.4620",
+   "date": "2026-10-04",
+   "summary": "Lite centres the example chips under the \"Anything else?\" box"
+  },
+  {
+   "commit": "ad8ff6c",
+   "version": "0.1.4619",
+   "date": "2026-10-04",
+   "summary": "Lite's option headings sit on the same line as their choices"
+  },
+  {
    "commit": "4bc1e6c",
    "version": "0.1.4615",
    "date": "2026-10-04",
