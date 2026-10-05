@@ -93,6 +93,7 @@ HARDEN_SSH=1     # key-only SSH (skipped, never forced, if root has no key)
 FAIL2BAN=1       # only where OpenSSH lacks its own repeat-failure blocking
 AUTO_REBOOT=1    # reboot for security updates at 04:00 in the region's time
 ASSUME_YES=0
+ROTATE_EVERYTHING=0
 
 # ------------------------------------------------------------------- output --
 if [[ -t 1 ]]; then
@@ -141,6 +142,8 @@ Options:
                       (default: www.microsoft.com). Pick one that is fast
                       from THIS droplet, speaks TLS 1.3 + HTTP/2, and is
                       not blocked where you will be connecting FROM.
+  --rotate-everything Install over a server that is already set up: NEW passwords,
+                      certificate and keys, so every client must be set up again
   --yes               Skip confirmations
   -h, --help          This message
 
@@ -190,6 +193,7 @@ while [[ $# -gt 0 ]]; do
                       REALITY_PORT_SET=1; shift 2 ;;
     --reality-sni)    REALITY_SNI="$2"; REALITY_SNI_ARG="$2"
                       REALITY_SNI_SET=1; shift 2 ;;
+    --rotate-everything) ROTATE_EVERYTHING=1; shift ;;
     --yes|-y)      ASSUME_YES=1; shift ;;
     -h|--help)     usage; exit 0 ;;
     *)             die "unknown option: $1 (try --help)" ;;
@@ -613,6 +617,12 @@ REALSUM
 # ---------------------------------------------------------------- preflight --
 say "Preflight"
 [[ $EUID -eq 0 ]] || die "must run as root (sudo ./concordevpn-server.sh install)"
+# `install` generates NEW passwords, a new certificate and new Reality keys:
+# on a server that is already set up that locks out every client. Say so
+# instead of doing it by accident (a re-run "to be safe").
+if [[ -r "$META_FILE" && "${ROTATE_EVERYTHING:-0}" != 1 ]]; then
+  die "this server is already installed (${META_FILE}). Running install again would change every password and the certificate, and every Mac already set up would stop connecting. To change passwords on purpose use: v23 rotate. To start over completely: ./concordevpn-server.sh install --rotate-everything"
+fi
 [[ -r /etc/os-release ]] || die "cannot read /etc/os-release"
 . /etc/os-release
 [[ "${ID:-}" == "ubuntu" || "${ID_LIKE:-}" == *debian* ]] \
