@@ -426,12 +426,14 @@ The capture is the live Lite page exactly as a first-time visitor opens it,
 signed out and with nothing typed: the one "Where do you need to be?" box,
 the chosen-for-you row (today, one way, economy) and the red button. That
 blank start is the point of the picture, so keep it empty; it also spends
-no search. Same size and scale as the Go capture (1050x1075 CSS px at 2x).
-`measure.mjs`'s fresh profile has no location permission, so the From
+no search. The output is the same 2100x2150 px as the Go capture, but the
+page is laid out zoomed out: a 1470x1505 CSS px viewport at a device scale of
+1.4285714 (2100/1470), so the search box is about 75% of the width instead of
+filling it (2026-10-05, per Pat: simpler, more airy). `measure.mjs`'s fresh profile has no location permission, so the From
 field stays "Where are you?"; never take it from a browser that has one,
 or your street ends up in it:
 
-    MEASURE_DPR=2 node tools/measure.mjs https://go.flyconcordefly.com/lite 1050x1075 \
+    MEASURE_DPR=1.4285714 node tools/measure.mjs https://go.flyconcordefly.com/lite 1470x1505 \
       '(async () => {
          await new Promise((r) => setTimeout(r, 2500));
          document.activeElement && document.activeElement.blur();
@@ -442,7 +444,8 @@ or your street ends up in it:
        })()' /tmp/lite.png
     python3 -c "from PIL import Image; Image.open('/tmp/lite.png').convert('RGB').crop((0, 0, 2100, 2150)).save('tools/windows/lite-capture.png', optimize=True)"
 
-It must print empty `from` and `to` and `"signedOut": true`; then look at
+It must print empty `from` and `to` and `"signedOut": true` (the box is
+about 75% of the page); then look at
 the PNG (the option row on one line, nothing typed) before running
 `make-shots.py`.
 
