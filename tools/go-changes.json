@@ -2,6 +2,12 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "28297c3",
+   "version": "0.1.4823",
+   "date": "2026-10-05",
+   "summary": "Pros and cons back on the cards, side by side; the list's trip bars use the full width"
+  },
+  {
    "commit": "4a298d9",
    "version": "0.1.4816",
    "date": "2026-10-05",
