@@ -2,6 +2,12 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "e78faa3",
+   "version": "0.1.4870",
+   "date": "2026-10-06",
+   "summary": "LATAM Pass and Copa ConnectMiles join the miles list; LATAM, Copa and Avianca join the status list"
+  },
+  {
    "commit": "76a442c",
    "version": "0.1.4868",
    "date": "2026-10-05",
