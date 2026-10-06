@@ -17,17 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "1db015acd4c81239": {
-      "channel": "nightly 7.0 nightly 7be33d3",
+    "182a3ae61409176c": {
+      "channel": "nightly 7.0 nightly 5a39113",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-06",
       "bullets": [
-        "**Wake relay** — an optional relay per server, for waking it while you're away",
-        "**Test wake-up** button; on Mac, the Local Network permission prompt now appears at a moment you can see",
-        "A sleeping server's \"Only\" option and its modes stay selectable",
-        "The warm-microphone switch is now saved, so it survives a restart"
+        "**Starter chips** — complete, relevant questions, with a fresh set at every new chat",
+        "**Manage models** — the list now shows only models on this computer; cloud entries are removed",
+        "Fixed a stray black box under searched answers, caused by bold phrases being read as places",
+        "**Cooler** — pump mode can be set, and empty fan ports are hidden"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -64,17 +64,17 @@
     }
   },
   "concordego": {
-    "5957c05c46b3cb85": {
-      "channel": "live version 0.1.4868, deployed 5 Oct 2026",
+    "e960d713f7abb7f8": {
+      "channel": "live version 0.1.4870, deployed 6 Oct 2026",
       "source_tags": [
-        "76a442c"
+        "e78faa3"
       ],
       "generated": "2026-10-06",
       "bullets": [
-        "**ConcordeGo Lite** — at /lite, say where you need to be and see the earliest and cheapest flights side by side",
-        "**Round-trip fares**, and five free searches a day without signing in, thirty when signed in",
-        "**Results** — a sort menu, ticket price first with the all-in total below, and each top pick says why it's there",
-        "**Flight details** — price history, aircraft, on-time record, points value, and per-cabin airline ratings in the grade"
+        "**Lite** — a simpler search: say where you need to be and get three good flights, earliest and cheapest side by side",
+        "**Ask for anything** — requests can name airports, aircraft or needs the flight data can't check; the site looks them up",
+        "**Grades and points** — airline ratings per cabin count in the grade; award charts and transfer planner, now with LATAM and Copa",
+        "**Results** — ticket price first, all-in total under it, more ways to sort, round-trip fares, a price history chart"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -389,8 +389,8 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "c1f83faaa9bcda7b": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4868, deployed 5 Oct 2026",
+    "859dcb5edeefe7df": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4870, deployed 6 Oct 2026",
       "source_tags": [
         "008b869",
         "03331d6",
@@ -464,7 +464,6 @@
         "78771c7",
         "7966370",
         "7b89ab5",
-        "7c0bbb6",
         "7c16bd5",
         "7cd0915",
         "7d6aea9",
@@ -531,6 +530,7 @@
         "debbd39",
         "e01c1ce",
         "e57b88e",
+        "e78faa3",
         "e982bad",
         "eefd2ec",
         "f103401",
