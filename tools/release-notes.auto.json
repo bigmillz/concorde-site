@@ -17,17 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "42454ccb8e74c5bf": {
-      "channel": "nightly 7.0 nightly 39401ff",
+    "1db015acd4c81239": {
+      "channel": "nightly 7.0 nightly 7be33d3",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-05",
+      "generated": "2026-10-06",
       "bullets": [
-        "**Wake** — tells you when this computer refuses every wake packet, noted per profile; the app now declares Local Network use",
-        "**Hardware panel** — new Network box, a single storage total and a trimmed Fans header",
-        "**Burn test** — press Enter in the hardware panel to run a 30 s processor burn, then a 30 s card burn",
-        "**Chips** — only use a server that already has a model loaded, and never wake a card to do it"
+        "**Wake relay** — an optional relay per server, for waking it while you're away",
+        "**Test wake-up** button; on Mac, the Local Network permission prompt now appears at a moment you can see",
+        "A sleeping server's \"Only\" option and its modes stay selectable",
+        "The warm-microphone switch is now saved, so it survives a restart"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -50,32 +50,31 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "9b93448bb716d5a0": {
-      "channel": "nightly 1.5.2 nightly 790627e",
+    "8f10beb0425dd61a": {
+      "channel": "nightly 1.5.2 nightly 7ca3461",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-05",
+      "generated": "2026-10-06",
       "bullets": [
-        "**Mode explainer** — what each connection mode does and what it gives up, in three tiers from plain summary to technical detail",
-        "Opened from the Auto tooltip; the line under the mode scale is gone"
+        "**Mode explainer** — now slides down from the title bar as an attached sheet"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
     }
   },
   "concordego": {
-    "256b4e756af7a7b3": {
-      "channel": "live version 0.1.4823, deployed 5 Oct 2026",
+    "5957c05c46b3cb85": {
+      "channel": "live version 0.1.4868, deployed 5 Oct 2026",
       "source_tags": [
-        "28297c3"
+        "76a442c"
       ],
-      "generated": "2026-10-05",
+      "generated": "2026-10-06",
       "bullets": [
-        "**Lite** — say where you need to be and get three good flights from one short search; add requests like airports to avoid",
-        "**Ratings** — airlines rated per cabin, a comfort grade on every flight, and a price history chart in each flight's details",
-        "**Results** — the ticket price leads with the all-in total under it, more ways to sort, and each top pick says why",
-        "Round-trip fares, points priced from airlines' award charts, and five free searches a day without signing in (30 signed in)"
+        "**ConcordeGo Lite** — at /lite, say where you need to be and see the earliest and cheapest flights side by side",
+        "**Round-trip fares**, and five free searches a day without signing in, thirty when signed in",
+        "**Results** — a sort menu, ticket price first with the all-in total below, and each top pick says why it's there",
+        "**Flight details** — price history, aircraft, on-time record, points value, and per-cabin airline ratings in the grade"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -390,9 +389,10 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "5cea15045cf8d83f": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4823, deployed 5 Oct 2026",
+    "c1f83faaa9bcda7b": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4868, deployed 5 Oct 2026",
       "source_tags": [
+        "008b869",
         "03331d6",
         "03c725a",
         "0597d86",
@@ -408,7 +408,6 @@
         "1574986",
         "16abb95",
         "170b2ad",
-        "173ad2e",
         "17ede22",
         "1a5b72c",
         "2362477",
@@ -430,6 +429,7 @@
         "3a0c792",
         "3af27c2",
         "3df7863",
+        "406604e",
         "425f8b3",
         "42f50b6",
         "431e094",
@@ -457,13 +457,16 @@
         "6fe77a1",
         "7134ae2",
         "7268f7d",
+        "732213c",
         "75fa3a7",
         "766d293",
+        "76a442c",
         "78771c7",
         "7966370",
         "7b89ab5",
         "7c0bbb6",
         "7c16bd5",
+        "7cd0915",
         "7d6aea9",
         "7e01e0e",
         "7f4aa94",
@@ -508,17 +511,12 @@
         "b7ee55d",
         "b7fa503",
         "b860d36",
-        "b9b035b",
         "bcd7845",
         "c036182",
         "c1f02fa",
-        "c24bd6c",
         "c4ac8a3",
-        "c73c5e3",
         "c8435b0",
         "cbe7691",
-        "cc77428",
-        "cec9b34",
         "cff9550",
         "d000598",
         "d05c3db",
@@ -532,7 +530,6 @@
         "dd64a83",
         "debbd39",
         "e01c1ce",
-        "e1db7f0",
         "e57b88e",
         "e982bad",
         "eefd2ec",
@@ -542,13 +539,15 @@
         "f2a39e2",
         "f330e15",
         "f3b8562",
+        "f4a40d6",
+        "f67749e",
         "ffcb74b"
       ],
-      "generated": "2026-10-05",
+      "generated": "2026-10-06",
       "bullets": [
         "2026-10-04: Lite, three good flights from one short search",
-        "2026-10-01: Five free searches a day without signing in",
-        "2026-09-24: Round-trip fares"
+        "2026-09-24: Round-trip fares",
+        "2026-09-24: Award charts with a points transfer planner"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
