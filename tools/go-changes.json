@@ -2,6 +2,48 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "76a442c",
+   "version": "0.1.4868",
+   "date": "2026-10-05",
+   "summary": "Step 1 gets a gray More options button beside Find flights"
+  },
+  {
+   "commit": "7cd0915",
+   "version": "0.1.4866",
+   "date": "2026-10-05",
+   "summary": "The airline's rating is its own part of the grade; an unrated airline leaves the grade untouched"
+  },
+  {
+   "commit": "008b869",
+   "version": "0.1.4860",
+   "date": "2026-10-05",
+   "summary": "Airline names on the cards are plain white again, not HDR"
+  },
+  {
+   "commit": "732213c",
+   "version": "0.1.4859",
+   "date": "2026-10-05",
+   "summary": "The booking box drops its filler lines and the repeated grade"
+  },
+  {
+   "commit": "406604e",
+   "version": "0.1.4857",
+   "date": "2026-10-05",
+   "summary": "An opened flight leads with its legs in two tidy columns; every row shows its points option and what the points are worth"
+  },
+  {
+   "commit": "f67749e",
+   "version": "0.1.4848",
+   "date": "2026-10-05",
+   "summary": "Lite's tab icon is inverted: a black wing on a white square"
+  },
+  {
+   "commit": "f4a40d6",
+   "version": "0.1.4838",
+   "date": "2026-10-05",
+   "summary": "Flights landing two or more days later now say +2, not +1"
+  },
+  {
    "commit": "28297c3",
    "version": "0.1.4823",
    "date": "2026-10-05",
