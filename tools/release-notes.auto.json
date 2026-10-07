@@ -17,14 +17,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "b04850f8db840484": {
-      "channel": "nightly 7.0 nightly 248c6bb",
+    "55ea772d515c6f37": {
+      "channel": "nightly 7.0 nightly 0dd560a",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-07",
       "bullets": [
-        "**Mac** — the app now starts through its own launcher, so macOS asks for Local Network permission"
+        "**Model menu reworked** — pick Fast, Thinking, Pro or Max; Cloud Only and servers move into sub-menus",
+        "Each mode gets its own pop-out menu"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
