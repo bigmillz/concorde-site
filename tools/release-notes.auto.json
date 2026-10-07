@@ -17,16 +17,14 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "f490ef3a36346b1b": {
-      "channel": "nightly 7.0 nightly 64b7f7e",
+    "b04850f8db840484": {
+      "channel": "nightly 7.0 nightly 248c6bb",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-07",
       "bullets": [
-        "**Cloud Only modes** — work on Cloud Only modes and model picks, a Max option, and pop-out window placement",
-        "**Estimated Claude balance** — shown in Settings > Cloud power",
-        "**Claude prices** — price table checked against the live price page; adds Opus 4.5, Sonnet 4.5 and Fable 5 cache reads"
+        "**Mac** — the app now starts through its own launcher, so macOS asks for Local Network permission"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
