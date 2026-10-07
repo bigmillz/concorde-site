@@ -17,17 +17,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "182a3ae61409176c": {
-      "channel": "nightly 7.0 nightly 5a39113",
+    "f490ef3a36346b1b": {
+      "channel": "nightly 7.0 nightly 64b7f7e",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-06",
+      "generated": "2026-10-07",
       "bullets": [
-        "**Starter chips** — complete, relevant questions, with a fresh set at every new chat",
-        "**Manage models** — the list now shows only models on this computer; cloud entries are removed",
-        "Fixed a stray black box under searched answers, caused by bold phrases being read as places",
-        "**Cooler** — pump mode can be set, and empty fan ports are hidden"
+        "**Cloud Only modes** — work on Cloud Only modes and model picks, a Max option, and pop-out window placement",
+        "**Estimated Claude balance** — shown in Settings > Cloud power",
+        "**Claude prices** — price table checked against the live price page; adds Opus 4.5, Sonnet 4.5 and Fable 5 cache reads"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
