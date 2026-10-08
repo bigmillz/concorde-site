@@ -17,17 +17,18 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "55ea772d515c6f37": {
-      "channel": "nightly 7.0 nightly 0dd560a",
+    "f26cacc6b35edb1b": {
+      "channel": "nightly 7.0 nightly 0db294e",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-07",
+      "generated": "2026-10-08",
       "bullets": [
-        "**Model menu reworked** — pick Fast, Thinking, Pro or Max; Cloud Only and servers move into sub-menus",
-        "Each mode gets its own pop-out menu"
+        "**Server panel** — the panel and the text dashboard now refresh twice a second",
+        "**Model list** — Ollama's internal llama.cpp copy no longer shows up as a model, in the app or the server kit",
+        "**Server kit** — nothing stays loaded on the graphics card across a sleep, and idle detection accounts for a busy card"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
