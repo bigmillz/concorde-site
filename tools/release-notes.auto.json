@@ -17,16 +17,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "223fe055bd5fac50": {
-      "channel": "nightly 7.0 nightly 6a81d84",
+    "eccc222c2a2feec6": {
+      "channel": "nightly 7.0 nightly aa048c0",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-08",
       "bullets": [
-        "**Sidebar** — the last server bar now shows the graphics card's memory (VRAM)"
+        "**Starter chips** — suggestions are reworded to fit their chips, shown whole with no cut-off text"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
@@ -62,17 +62,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "8474740e8594bd53": {
-      "channel": "nightly 1.5.2 nightly 2e139d6",
+    "517f663127eb9837": {
+      "channel": "nightly 1.5.2 nightly f562800",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-08",
       "bullets": [
-        "**DigitalOcean location picker** — choose a city, with its datacenters in a submenu, one recommended and a price for each",
-        "**More DigitalOcean regions** — every region that sells a shared-CPU server is offered, with the sizes it actually sells"
+        "**Location menu** — scrolling the list with the wheel or scrollbar no longer closes the menu"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
