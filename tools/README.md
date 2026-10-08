@@ -308,8 +308,9 @@ screen of a new chat (greeting, starter chips, message box) with visual
 effects on: the sidebar and message box are the app's frosted glass over a
 backdrop: a still of a night skyline, `windows/backdrop.jpg` (swap that file
 for any other photo and re-run `make-shots.py`). The VPN
-window is the main window as ConcordeVPN 1.4 draws it, 460x856: connected
-through New York, Balanced, with the speed and route cards.
+window is the main window as ConcordeVPN 1.5 draws it, 460x590: connected
+through New York, Balanced, with the speed card and the Mode and Exit rows. It
+is a capture of the app's real page (see "Retaking `windows/vpn-capture.png`").
 ConcordeGo is a website, so its window is a plain browser frame (the address
 bar reads go.flyconcordefly.com) round a capture of the live app,
 `windows/go-capture.png`. ConcordeGo Lite is the same frame (reading
@@ -337,7 +338,7 @@ sets the card's height, and the image, with the line under it, fills that
 height or the column's width, whichever runs out first — and on a short
 screen no more than the screen can show whole (at 1366x657 all three
 windows come out 451px tall; the sticky then keeps them beside the text).
-At 1440x900 that is about 542x575 (AI), 351x653 (VPN) and 446x473 (Go).
+At 1440x900 that is about 542x575 (AI), 510x653 (VPN) and 446x473 (Go).
 Under 1180px the window moves above the text at the card's width, its image
 capped at the screen height less 170px but never below 530px (a 450px
 window), and never so tall that the window outgrows the screen under the
@@ -368,7 +369,7 @@ page as a faint line). The script refuses a capture whose shadow runs off
 the edge, so if it complains, enlarge that entry's size in `SOURCES`. Both
 `.png` and `.webp` are written to `assets/`; set the `width`/`height`
 attributes in `index.html` to the printed dimensions if they change (today
-1458x1532 for AI and Go, 931x1532 for VPN) — they are what reserves each
+1458x1532 for AI, Go and Lite, 1246x1532 for VPN) — they are what reserves each
 image's box before it loads.
 
 **`--virtual-time-budget` is not optional** (the script passes it). Without
@@ -377,6 +378,51 @@ back to system faces — the render looks subtly wrong and nothing warns you.
 
 `--default-background-color=00000000` is what keeps the page transparent, which
 is what lets the site's starfield show around the window instead of a flat box.
+
+### Retaking `windows/vpn-capture.png`
+
+The VPN window is a 2x capture (920x1180 px) of the app's own page, so it
+changes whenever the app's main window does: retake it after a release that
+touches the main window. Nothing here uses the real app, a real server or a
+real address. Run the app's own code (its HTTP server and page) from the
+ConcordeVPN repo with a throwaway HOME, the way its `tests/` do (`import
+_env` first), and replace `state_payload` with a fake healthy state:
+
+    import sys; sys.path.insert(0, "<concorde-vpn>/tests")
+    import _env, time, concordevpn as c
+    real = c.state_payload
+    def fake():
+        s = real(); now = time.time()
+        s.update({"phase": "ready", "tun": True, "route": "NYC", "active": "nyc-vless",
+          "location": "auto", "optimize": "balanced", "exit_city": "New York",
+          "latency": {"nyc-vless": 14}, "connections": 12,
+          "egress": {"ip": "", "city": "New York", "country": "US", "ok": True,
+                     "verified": True, "ts": now, "retries": 0, "checking": False},
+          "protocol": {"labels": ["Reality"]}, "active_label": "New York · Reality",
+          "exit_auto": {"sid": "nyc", "why": "the fastest measured server"},
+          "speeds": [412.0, 38.5], "speeds_ts": now - 600,
+          "traffic": TRAFFIC})        # 90 [t, up, down] samples; the old
+        return s                      # window's, scaled 30x, are in git history
+    c.state_payload = fake; c.start_backend(); print(c.PORT, c.ACCESS_KEY)
+
+`egress.ip` stays empty so the exit IP never reaches the page. Then, with
+`measure.mjs` set to a **desktop** viewport (its `mobile: width < 768` makes
+a 460px window a 980px phone layout; change it to `mobile: false` for this):
+
+    MEASURE_DPR=2 node measure.mjs "http://127.0.0.1:<port>/?key=<key>" 460x590 \
+      '(async () => { await new Promise((r) => setTimeout(r, 6000));
+         return { sub: document.querySelector("#stsub").innerText,
+                  mode: document.querySelector("#modeval").innerText,
+                  bottom: document.querySelector("#route").getBoundingClientRect().bottom };
+       })()' /tmp/vpn.png
+
+`bottom` plus 16 + 2 is the height the app's own `/api/fit` gives the
+window (571 -> 590); if it changes, change the 590 in `vpn-window.html`
+and in `SOURCES` (the capture window, 960). Then crop the screenshot to
+920 x (2 x that height) into `tools/windows/vpn-capture.png`, look at it
+(Mode and Exit filled in, no address anywhere), and run `make-shots.py`.
+The page's top 32px is the app's own empty titlebar strip; the window file
+draws the real chrome over it.
 
 ### Retaking `windows/go-capture.png`
 

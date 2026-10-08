@@ -664,8 +664,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
    the screen), never below 530px (a 450px window), and never so tall that
    the window itself, 1300/1532 of the image, outgrows the screen under the
    header (the 1.18 and the 80px; that is what holds on a landscape phone).
-   The narrow VPN window takes 340-530px of height outright so it is not a
-   sliver on a phone. The columns dissolve (display:contents) so their
+   The columns dissolve (display:contents) so their
    pieces can be put in order: window, name and features, what it takes,
    the action box. "What it takes" is moved by the fit script into the
    text column, after the features, so the reading order is the order on
@@ -676,7 +675,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
   .shot{order:0}
   .shot::before{inset:0}
   .shot img{max-height:530px;max-height:min(max(530px, 100svh - 170px), (100svh - 80px) * 1.18)}
-  .stage-narrow .shot img{height:clamp(340px,112vw,530px)}
   .shot:focus-visible{border-radius:var(--radius) var(--radius) 0 0}
   .card-head{order:1;border-top:1px solid var(--line-soft)}
   .feats{order:2}
@@ -1012,13 +1010,13 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
 
         <!-- ============ CARD: CONCORDEVPN ============ -->
         <article class="card reveal" id="concordevpn" aria-labelledby="vpn-name">
-          <div class="stage stage-narrow">
+          <div class="stage">
             <div class="stage-in">
               <a class="shot" href="assets/shot-vpn.png">
                 <picture>
                   <source srcset="assets/shot-vpn.webp" type="image/webp">
-                  <img src="assets/shot-vpn.png" width="931" height="1532" loading="lazy" decoding="async"
-                       alt="The ConcordeVPN window: connected through New York, with its speed graph and the route set to Balanced.">
+                  <img src="assets/shot-vpn.png" width="1246" height="1532" loading="lazy" decoding="async"
+                       alt="The ConcordeVPN window: connected, leaving through New York, with its speed graph and last measurement, the mode set to Balanced and the exit on Auto.">
                 </picture>
                 <span class="visually-hidden">Enlarge</span>
               </a>
