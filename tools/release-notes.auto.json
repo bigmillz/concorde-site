@@ -62,17 +62,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "272672756c2c2a1b": {
-      "channel": "nightly 1.5.2 nightly 9733fbd",
+    "e4ed1e11b20a668a": {
+      "channel": "nightly 1.5.2 nightly aa9765a",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-08",
       "bullets": [
-        "**iOS profiles** — a server set by hostname no longer gets the whole profile refused",
-        "**Wake relay** — wake requests to a device on the home network now travel through the tunnel"
+        "**Extra tunnel entries** — each entry can name the exit it uses; off by default and settable from the env file",
+        "**Profile fix** — installs that took the previous nightly rebuild their profile without the leftover personal default"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
