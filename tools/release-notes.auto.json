@@ -17,14 +17,14 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "8e63149aca3151e2": {
-      "channel": "nightly 7.0 nightly 7530379",
+    "223fe055bd5fac50": {
+      "channel": "nightly 7.0 nightly 6a81d84",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-08",
       "bullets": [
-        "**Button alignment** — buttons now line up with the controls beside them, using one consistent layout for control rows"
+        "**Sidebar** — the last server bar now shows the graphics card's memory (VRAM)"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
@@ -62,15 +62,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "e4ed1e11b20a668a": {
-      "channel": "nightly 1.5.2 nightly aa9765a",
+    "57e0b0a44f0c592c": {
+      "channel": "nightly 1.5.2 nightly d950704",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-08",
       "bullets": [
-        "**Extra tunnel entries** — each entry can name the exit it uses; off by default and settable from the env file",
-        "**Profile fix** — installs that took the previous nightly rebuild their profile without the leftover personal default"
+        "**DigitalOcean setup** — asks for a Full Access token, with an option to save it in the Keychain, plus a caution; use or forget it later",
+        "**Home network access** — your server can open one home-LAN address and TCP port to VPN clients"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
