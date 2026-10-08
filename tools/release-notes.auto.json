@@ -62,17 +62,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "57e0b0a44f0c592c": {
-      "channel": "nightly 1.5.2 nightly d950704",
+    "8474740e8594bd53": {
+      "channel": "nightly 1.5.2 nightly 2e139d6",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-08",
       "bullets": [
-        "**DigitalOcean setup** — asks for a Full Access token, with an option to save it in the Keychain, plus a caution; use or forget it later",
-        "**Home network access** — your server can open one home-LAN address and TCP port to VPN clients"
+        "**DigitalOcean location picker** — choose a city, with its datacenters in a submenu, one recommended and a price for each",
+        "**More DigitalOcean regions** — every region that sells a shared-CPU server is offered, with the sizes it actually sells"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
