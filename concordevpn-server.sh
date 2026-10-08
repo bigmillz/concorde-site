@@ -94,6 +94,9 @@ FAIL2BAN=1       # only where OpenSSH lacks its own repeat-failure blocking
 AUTO_REBOOT=1    # reboot for security updates at 04:00 in the region's time
 ASSUME_YES=0
 ROTATE_EVERYTHING=0
+ALLOW_LAN=""          # "ADDR:PORT,..." home-LAN destinations clients may reach (none by default)
+ALLOW_LAN_SET=0
+ALLOW_LAN_VALUES=()
 
 # ------------------------------------------------------------------- output --
 if [[ -t 1 ]]; then
@@ -142,6 +145,10 @@ Options:
                       (default: www.microsoft.com). Pick one that is fast
                       from THIS droplet, speaks TLS 1.3 + HTTP/2, and is
                       not blocked where you will be connecting FROM.
+  --allow-lan A:P     Let VPN clients reach one service on the server's own LAN,
+                      TCP only: a private IPv4 address and port, e.g.
+                      192.168.1.50:8097. Repeat the option or comma-separate for
+                      more; 'none' clears. Everything else private stays blocked.
   --rotate-everything Install over a server that is already set up: NEW passwords,
                       certificate and keys, so every client must be set up again
   --yes               Skip confirmations
@@ -150,7 +157,11 @@ Options:
 Add REALITY to a server that is already running (touches nothing else):
   ./concordevpn-server.sh reality
 
-Manage afterwards:  v23 status | client | tune <down> <up> | obfs on|off | rotate
+Change the allowed LAN list on a server that is already set up (no passwords
+or keys change; only the allow rules in the live configs are edited):
+  ./concordevpn-server.sh allow-lan 192.168.1.50:8097     (or: none)
+
+Manage afterwards:  v23 status | client | tune <down> <up> | obfs on|off | allow-lan | rotate
 USAGE
 }
 
@@ -159,6 +170,9 @@ ACTION="${1:-install}"
 [[ "$ACTION" == "-h" || "$ACTION" == "--help" ]] && { usage; exit 0; }
 case "$ACTION" in
   install|uninstall|reality) shift || true ;;
+  allow-lan)  shift || true
+              # the list may follow as a bare word: allow-lan 192.168.1.50:8097
+              if [[ -n "${1:-}" && "$1" != -* ]]; then ALLOW_LAN_VALUES+=("$1"); ALLOW_LAN_SET=1; shift; fi ;;
   *) ACTION="install" ;;
 esac
 
@@ -194,6 +208,8 @@ while [[ $# -gt 0 ]]; do
     --reality-sni)    REALITY_SNI="$2"; REALITY_SNI_ARG="$2"
                       REALITY_SNI_SET=1; shift 2 ;;
     --rotate-everything) ROTATE_EVERYTHING=1; shift ;;
+    --allow-lan)   [[ -n "${2:-}" ]] || die "--allow-lan needs ADDRESS:PORT or 'none'"
+                   ALLOW_LAN_VALUES+=("$2"); ALLOW_LAN_SET=1; shift 2 ;;
     --yes|-y)      ASSUME_YES=1; shift ;;
     -h|--help)     usage; exit 0 ;;
     *)             die "unknown option: $1 (try --help)" ;;
@@ -444,6 +460,7 @@ install_reality() {
   }
 }
 XRCFG
+  apply_lan_rules   # --allow-lan rules, ahead of the private block (none by default)
   # The private key lives in here, so nobody but the service may read it.
   chown root:xray /usr/local/etc/xray/config.json
   chmod 0640 /usr/local/etc/xray/config.json
@@ -624,6 +641,569 @@ password are exactly as they were.
 REALSUM
   exit 0
 }
+# ------------------------------------------------------------- allow-lan --
+# By design every private destination is refused (xray geoip:private, sing-box
+# ip_is_private, hysteria reject(10/8, 172.16/12, 192.168/16)), so a client can
+# never reach the server's own network. --allow-lan opens ONE address and TCP
+# port at a time, for something like a Wake-on-LAN relay on the home network,
+# as a rule listed ahead of that block. Nothing is allowed unless asked for.
+check_allow_lan() {   # $1 = list, or "none"; sets ALLOW_LAN cleaned, or dies
+  local spec="$1" ent a b c d port out="" ents
+  if [[ "$spec" == none ]]; then ALLOW_LAN=""; return 0; fi
+  [[ -n "$spec" && "$spec" != ,* && "$spec" != *, && "$spec" != *,,* ]] \
+    || die "--allow-lan: an empty entry in '${spec}'. Give ADDRESS:PORT, e.g. 192.168.1.50:8097, or 'none'."
+  IFS=',' read -ra ents <<< "$spec"
+  for ent in "${ents[@]}"; do
+    [[ "$ent" != */* ]] \
+      || die "--allow-lan ${ent}: a whole subnet is not allowed. Name one address and one port, like 192.168.1.50:8097."
+    [[ "$ent" =~ ^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}):([0-9]{1,5})$ ]] \
+      || die "--allow-lan ${ent}: must look like 192.168.1.50:8097 (an IPv4 address, a colon, a TCP port; no names, no IPv6)."
+    a="${BASH_REMATCH[1]}"; b="${BASH_REMATCH[2]}"; c="${BASH_REMATCH[3]}"; d="${BASH_REMATCH[4]}"; port="${BASH_REMATCH[5]}"
+    for n in "$a" "$b" "$c" "$d" "$port"; do
+      [[ "$n" == 0 || "$n" != 0* ]] || die "--allow-lan ${ent}: no leading zeros (010 would be read as octal)."
+    done
+    (( a <= 255 && b <= 255 && c <= 255 && d <= 255 )) \
+      || die "--allow-lan ${ent}: each part of the address must be 0-255."
+    (( port >= 1 && port <= 65535 )) \
+      || die "--allow-lan ${ent}: the port must be a number from 1 to 65535."
+    if ! { (( a == 10 )) || (( a == 172 && b >= 16 && b <= 31 )) || (( a == 192 && b == 168 )); }; then
+      die "--allow-lan ${ent}: not a private address. Only 10.x.x.x, 172.16-31.x.x and 192.168.x.x can be opened; loopback and 169.254.x.x (the cloud metadata address) never can."
+    fi
+    ent="${a}.${b}.${c}.${d}:${port}"
+    [[ ",${out}," == *",${ent},"* ]] || out="${out:+${out},}${ent}"
+  done
+  ALLOW_LAN="$out"
+}
+
+# genlan.sh edits the allow rules of the three configs in place, from
+# V23_ALLOW_LAN in v23.env. Install, `reality` and `allow-lan` all use it.
+write_genlan() {
+  cat > "${LIB_DIR}/genlan.sh" <<'GENLAN'
+#!/usr/bin/env python3
+# Apply V23_ALLOW_LAN (from /etc/v23/v23.env) to the three server configs.
+#
+#   genlan.sh            edit xray, sing-box and hysteria IN PLACE; print
+#                        "changed xray|sing-box|hysteria" for each one touched
+#   genlan.sh --check L  validate list L, print it cleaned (empty for none)
+#
+# Only the allow rules are touched: the run of allow rules at the very top of
+# each private-address list is replaced, nothing else is rewritten. The
+# private-address block stays below them, so everything not named here is
+# still refused. Run as root; the services are restarted by the caller.
+import ipaddress, json, os, re, subprocess, sys
+
+ENV = os.environ.get("V23_ENV_FILE", "/etc/v23/v23.env")
+XRAY = os.environ.get("V23_XRAY_CFG", "/usr/local/etc/xray/config.json")
+SB = os.environ.get("V23_SB_CFG", "/etc/sing-box/config.json")
+HY = os.environ.get("V23_HY_CFG", "/etc/hysteria/config.yaml")
+PRIVATE = [ipaddress.ip_network(n) for n in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")]
+OCT = r"(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])"
+IP_RE = re.compile(r"^%s(\.%s){3}$" % (OCT, OCT))
+
+
+def parse(spec):
+    spec = spec.strip()
+    if spec in ("", "none"):
+        return []
+    out = []
+    for ent in spec.split(","):
+        if ent == "":
+            raise ValueError("an empty entry in '%s'" % spec)
+        if "/" in ent:
+            raise ValueError("'%s': a whole subnet is not allowed; name one address and one port, like 192.168.1.50:8097" % ent)
+        if ent.count(":") != 1:
+            raise ValueError("'%s' must look like 192.168.1.50:8097 (an IPv4 address, a colon, a TCP port; no names, no IPv6)" % ent)
+        ip, port = ent.split(":")
+        if not IP_RE.match(ip):
+            raise ValueError("'%s': '%s' is not an IPv4 address (four numbers 0-255, no leading zeros)" % (ent, ip))
+        if not re.match(r"^[1-9][0-9]{0,4}$", port) or int(port) > 65535:
+            raise ValueError("'%s': the port must be a number from 1 to 65535" % ent)
+        if not any(ipaddress.ip_address(ip) in n for n in PRIVATE):
+            raise ValueError("'%s' is not a private address. Only 10.x.x.x, 172.16-31.x.x and 192.168.x.x can be opened; loopback and 169.254.x.x (the cloud metadata address) never can" % ent)
+        if (ip, int(port)) not in out:
+            out.append((ip, int(port)))
+    return out
+
+
+def want_xray(allow):
+    return [{"type": "field", "ip": ["%s/32" % ip], "port": str(p),
+             "network": "tcp", "outboundTag": "direct"} for ip, p in allow]
+
+
+def want_sb(allow):
+    return [{"ip_cidr": ["%s/32" % ip], "port": [p], "network": "tcp",
+             "action": "route", "outbound": "direct"} for ip, p in allow]
+
+
+def is_cidr32(v):
+    return isinstance(v, list) and len(v) == 1 and isinstance(v[0], str) \
+        and v[0].endswith("/32") and bool(IP_RE.match(v[0][:-3]))
+
+
+def managed_xray(r):
+    return isinstance(r, dict) and set(r) == {"type", "ip", "port", "network", "outboundTag"} \
+        and r["outboundTag"] == "direct" and r["network"] == "tcp" and is_cidr32(r["ip"]) \
+        and isinstance(r["port"], str) and r["port"].isdigit()
+
+
+def managed_sb(r):
+    return isinstance(r, dict) and set(r) == {"ip_cidr", "port", "network", "action", "outbound"} \
+        and r["outbound"] == "direct" and r["action"] == "route" and r["network"] == "tcp" \
+        and is_cidr32(r["ip_cidr"]) and isinstance(r["port"], list) and len(r["port"]) == 1 \
+        and isinstance(r["port"][0], int)
+
+
+def check_binary(kind, path):
+    if os.environ.get("V23_LAN_NOTEST"):
+        return
+    exe, cmd = {"xray": ("/usr/local/bin/xray", ["run", "-test", "-config"]),
+                "sing-box": ("/usr/local/bin/sing-box", ["check", "-c"])}[kind]
+    if not os.path.exists(exe):
+        return
+    r = subprocess.run([exe] + cmd + [path], capture_output=True, text=True)
+    if r.returncode != 0:
+        raise RuntimeError("%s rejected the edited config: %s" % (kind, (r.stdout + r.stderr).strip()[-400:]))
+
+
+def edit_json(kind, path, allow):
+    if not os.path.exists(path):
+        return False
+    raw = open(path).read()
+    cfg = json.loads(raw)
+    if kind == "xray":
+        rules, want, managed = cfg["routing"]["rules"], want_xray(allow), managed_xray
+    else:
+        rules, want, managed = cfg["route"]["rules"], want_sb(allow), managed_sb
+    i = 0
+    while i < len(rules) and managed(rules[i]):
+        i += 1
+    new = want + rules[i:]
+    if new == rules:
+        return False
+    rules[:] = new
+    open(path, "w").write(json.dumps(cfg, indent=2) + "\n")
+    try:
+        check_binary(kind, path)
+    except Exception:
+        open(path, "w").write(raw)
+        raise
+    return True
+
+
+HY_LINE = re.compile(r"^\s*- direct\(\d+\.\d+\.\d+\.\d+, tcp/\d+\)\s*$")
+
+
+def edit_hy(path, allow):
+    if not os.path.exists(path):
+        return False
+    raw = open(path).read()
+    lines = raw.split("\n")
+    try:
+        a = lines.index("acl:")
+        s = lines.index("  inline:", a) + 1
+    except ValueError:
+        raise RuntimeError("%s has no 'acl:' / 'inline:' list to put the rules in" % path)
+    e = s
+    while e < len(lines) and re.match(r"^\s+- ", lines[e]):
+        e += 1
+    block = [l for l in lines[s:e] if not HY_LINE.match(l)]
+    if not block:
+        raise RuntimeError("%s: the acl list is empty; refusing to touch it" % path)
+    ind = re.match(r"^\s*", block[0]).group(0)
+    new = ["%s- direct(%s, tcp/%d)" % (ind, ip, p) for ip, p in allow] + block
+    if new == lines[s:e]:
+        return False
+    open(path, "w").write("\n".join(lines[:s] + new + lines[e:]))
+    return True
+
+
+def main():
+    if len(sys.argv) >= 2 and sys.argv[1] == "--check":
+        try:
+            if len(sys.argv) < 3 or not sys.argv[2].strip():
+                raise ValueError("give ADDRESS:PORT, e.g. 192.168.1.50:8097, or 'none'")
+            print(",".join("%s:%d" % x for x in parse(sys.argv[2])))
+        except ValueError as exc:
+            sys.exit("allow-lan: %s" % exc)
+        return
+    spec = ""
+    if os.path.exists(ENV):
+        for line in open(ENV).read().splitlines():
+            if line.startswith("V23_ALLOW_LAN="):
+                spec = line.split("=", 1)[1].strip()
+    try:
+        allow = parse(spec)
+    except ValueError as exc:
+        sys.exit("allow-lan: V23_ALLOW_LAN in %s is invalid: %s" % (ENV, exc))
+    try:
+        for name, fn in (("xray", lambda: edit_json("xray", XRAY, allow)),
+                         ("sing-box", lambda: edit_json("sing-box", SB, allow)),
+                         ("hysteria", lambda: edit_hy(HY, allow))):
+            if fn():
+                print("changed " + name)
+    except Exception as exc:
+        sys.exit("allow-lan: %s" % exc)
+
+
+main()
+GENLAN
+  chmod 0755 "${LIB_DIR}/genlan.sh"
+}
+apply_lan_rules() {   # after a config was written from scratch
+  write_genlan
+  "${LIB_DIR}/genlan.sh" >/dev/null
+}
+meta_put() {
+  if grep -q "^$1=" "$META_FILE"; then sed -i "s|^$1=.*|$1=$2|" "$META_FILE"
+  else echo "$1=$2" >> "$META_FILE"; fi
+  chmod 0600 "$META_FILE"
+}
+
+write_genserver() {
+cat > "${LIB_DIR}/genserver.sh" <<'GENSRV'
+#!/usr/bin/env bash
+# Regenerate /etc/hysteria/config.yaml from /etc/v23/v23.env
+set -euo pipefail
+. /etc/v23/v23.env
+CFG=/etc/hysteria/config.yaml
+
+if [[ -n "${V23_DOMAIN}" ]]; then
+  TLS_BLOCK="acme:
+  domains:
+    - ${V23_DOMAIN}
+  email: ${V23_EMAIL}
+  dir: /var/lib/hysteria/acme"
+else
+  TLS_BLOCK="tls:
+  cert: ${V23_CERT}
+  key: ${V23_KEY}"
+fi
+
+if [[ -n "${V23_OBFS_PW}" ]]; then
+  # Salamander wraps every QUIC packet so there is no TLS handshake, no SNI
+  # and no QUIC header for a classifier to fingerprint. Non-matching packets
+  # are dropped without reply, so active probes learn nothing.
+  OBFS_BLOCK="obfs:
+  type: salamander
+  salamander:
+    password: ${V23_OBFS_PW}"
+else
+  OBFS_BLOCK="# obfs off: presents a genuine TLS/QUIC handshake with SNI ${V23_SNI}"
+fi
+
+# LAN destinations the owner chose to open (--allow-lan): TCP to one private
+# address and port, listed ahead of the private-address rejects. Empty by
+# default, and then the file below is exactly what it always was.
+LAN_ACL=""
+if [[ -n "${V23_ALLOW_LAN:-}" ]]; then
+  /usr/local/lib/v23/genlan.sh --check "${V23_ALLOW_LAN}" >/dev/null
+  IFS=',' read -ra LAN_ENTRIES <<< "${V23_ALLOW_LAN}"
+  for e in "${LAN_ENTRIES[@]}"; do
+    LAN_ACL+="    - direct(${e%%:*}, tcp/${e##*:})"$'\n'
+  done
+fi
+
+# TCP masquerade listeners only when nothing else owns the port (see below)
+if [[ "${V23_TROJAN_PW:-}" == "" ]]; then
+  MASQ_TCP_BLOCK="  listenHTTP: :80
+  listenHTTPS: :${V23_PORT}
+  forceHTTPS: true"
+else
+  MASQ_TCP_BLOCK="  # tcp/${V23_PORT} belongs to sing-box (Trojan/TLS)"
+fi
+
+cat > "$CFG" <<CONF
+# v23 Hysteria 2 server — generated $(date -u +%Y-%m-%dT%H:%M:%SZ)
+# Edit /etc/v23/v23.env and run 'v23 apply' instead of editing this file.
+listen: :${V23_PORT}
+
+${TLS_BLOCK}
+
+auth:
+  type: password
+  password: ${V23_PASSWORD}
+
+${OBFS_BLOCK}
+
+# Answer TCP probes like an ordinary HTTPS host rather than a closed port.
+# NOTE: the TCP listeners are conditional. When sing-box serves Trojan on
+# tcp/PORT (the default), IT owns that port and its real TLS handshake with
+# the pinned cert is a better masquerade than a reverse proxy — and two
+# processes cannot bind the same port ("address already in use", hit live
+# on the Singapore build 2026-08-22). Only a trojan-less server opens them.
+masquerade:
+  type: proxy
+  proxy:
+    url: ${V23_MASQ}
+    rewriteHost: true
+${MASQ_TCP_BLOCK}
+
+# No server bandwidth block on purpose, and the client IS listened to.
+# Hysteria decides per connection: a client that declares a rate gets Brutal
+# at that rate, a client that declares nothing gets BBR. That is exactly the
+# split the app wants - Performance and Ultra Performance declare a measured
+# rate, Balanced, Stealth and Ultra Stealth declare none and stay on BBR.
+#
+# Deliberately NO 'bandwidth:' block (unlike the config before 2026-08-15):
+# a fixed server ceiling is a guess that caps a fast line, whereas the
+# client's number comes from an actual measurement of the line in front of
+# it. V23_SRV_UP/V23_SRV_DOWN stay unused for that reason.
+#
+# This was 'true' from 2026-08-15 to 2026-09-18, which silently discarded
+# every rate the app measured: Performance's turbo tuning and the Ultra
+# controller were both writing numbers nothing read. Measured on the live
+# NYC exit before and after - a client asking for a 1 Mbps cap got 13.96
+# Mbps with it true, and 0.97 with it false, while a client declaring
+# nothing got ~14 either way.
+ignoreClientBandwidth: false
+
+# Big QUIC windows are what let one flow fill a fat pipe.
+quic:
+  initStreamReceiveWindow: 26843545
+  maxStreamReceiveWindow: 26843545
+  initConnReceiveWindow: 67108864
+  maxConnReceiveWindow: 67108864
+  maxIdleTimeout: 30s
+  maxIncomingStreams: 1024
+  disablePathMTUDiscovery: false
+
+# No 'resolver:' block on purpose. Hysteria's own DoH/DoT resolver silently
+# falls back to the system resolver when it fails, with nothing logged, which
+# makes DNS behaviour impossible to reason about — and it bypasses any
+# filtering configured on the host. Leaving it out means every lookup goes
+# through systemd-resolved, so whatever you point that at (NextDNS, etc.)
+# actually applies to proxied traffic.
+
+# Refuse to proxy into the droplet's own networks. Without this, any client
+# can read 169.254.169.254 and lift the droplet's cloud credentials.
+acl:
+  inline:
+${LAN_ACL}    - reject(127.0.0.0/8)
+    - reject(::1/128)
+    - reject(169.254.0.0/16)
+    - reject(fe80::/10)
+    - reject(10.0.0.0/8)
+    - reject(172.16.0.0/12)
+    - reject(192.168.0.0/16)
+    - reject(fc00::/7)
+    - direct(all)
+
+udpIdleTimeout: 60s
+
+# Required for 'v23-mac.sh bench' (hysteria speedtest). Without it the server
+# tries to resolve the magic host "@SpeedTest" as a real name and the test
+# fails. Only authenticated clients can reach it.
+speedTest: true
+CONF
+chown root:hysteria "$CFG"
+chmod 0640 "$CFG"
+GENSRV
+chmod 0755 "${LIB_DIR}/genserver.sh"
+}
+write_cli() {
+cat > "$CLI_PATH" <<'CLI'
+#!/usr/bin/env bash
+# v23 — management CLI. All state lives in /etc/v23/v23.env.
+set -euo pipefail
+META=/etc/v23/v23.env
+OUT=/etc/v23/client
+LIB=/usr/local/lib/v23
+[[ -r "$META" ]] || { echo "concordevpn is not installed"; exit 1; }
+. "$META"
+
+need_root() { [[ $EUID -eq 0 ]] || { echo "run as root"; exit 1; }; }
+set_meta() { sed -i "s|^$1=.*|$1=$2|" "$META"; }
+put_meta() {   # set KEY=VALUE, adding the line when an older install lacks it
+  if grep -q "^$1=" "$META"; then sed -i "s|^$1=.*|$1=$2|" "$META"; else echo "$1=$2" >> "$META"; fi
+}
+# Edit the xray / sing-box / hysteria allow rules from the env file and restart
+# whichever one changed. $1 = "all" to include hysteria (apply restarts it itself).
+lan_sync() {
+  local out rc=0 u
+  out="$("$LIB/genlan.sh")" || rc=$?
+  for u in xray sing-box; do
+    grep -qx "changed $u" <<<"$out" && { systemctl restart "$u.service"; echo "$u restarted"; }
+  done
+  if [[ "${1:-}" == all ]] && grep -qx "changed hysteria" <<<"$out"; then
+    systemctl restart hysteria-server.service; echo "hysteria restarted"
+  fi
+  return $rc
+}
+apply_all() {
+  "$LIB/genserver.sh"; "$LIB/genclient.sh"
+  lan_sync
+  systemctl restart hysteria-server.service
+  echo "applied — server restarted"
+}
+
+case "${1:-status}" in
+  show)
+    # the six lines ConcordeVPN's first-run screen asks for, in the names it
+    # uses, plus the REALITY line — paste the whole block into the app
+    cat <<S
+# --- paste this into ConcordeVPN's first-run screen ---
+V23_SERVER=${V23_SERVER}
+V23_TROJAN_PW=${V23_TROJAN_PW}
+V23_HY2_PW=${V23_PASSWORD}
+V23_OBFS_PW=${V23_OBFS_PW}
+V23_CERT_PIN=${V23_PIN}
+V23_NEXTDNS_ID=
+V23_VLESS_UUID=${V23_VLESS_UUID}
+V23_REALITY_PBK=${V23_REALITY_PBK}
+V23_REALITY_SID=${V23_REALITY_SID}
+V23_REALITY_SNI=${V23_REALITY_SNI}
+V23_REALITY_PORT=${V23_REALITY_PORT}
+S
+    echo "(V23_NEXTDNS_ID stays empty here: NextDNS is set once in the app, for every" >&2
+    echo " server - Settings > Network > NextDNS, or the first-run screen.)" >&2
+    ;;
+  status)
+    systemctl status hysteria-server.service --no-pager -l | head -14
+    echo
+    echo "server     ${V23_SERVER}:${V23_PORT}   sni=${V23_SNI}"
+    echo "obfs       $([[ -n "${V23_OBFS_PW}" ]] && echo "salamander (on)" || echo "off")"
+    echo "cc         ${V23_CC}  target ${V23_DOWN} down / ${V23_UP} up Mbps"
+    echo "client mtu ${V23_MTU}"
+    echo "lan allow  ${V23_ALLOW_LAN:-none}"
+    [[ "${V23_HOP}" == "1" ]] && echo "port hop   ${V23_HOP_START}-${V23_HOP_END} -> ${V23_PORT}"
+    echo
+    if [[ -n "${V23_REALITY_PBK:-}" ]]; then
+      echo "reality    tcp ${V23_REALITY_PORT:-8443} sni=${V23_REALITY_SNI:-?} $(systemctl is-active xray.service 2>/dev/null)"
+    fi
+    ss -lunp 2>/dev/null | grep -E "hysteria|:${V23_PORT}" || echo "(no UDP socket visible)"
+    ;;
+  log|logs)   journalctl -u hysteria-server.service -f --no-pager ;;
+  restart)    need_root; systemctl restart hysteria-server.service; echo restarted ;;
+  apply)      need_root; apply_all ;;
+  client)
+    for f in "$OUT"/*; do echo "───── $f"; cat "$f"; echo; done ;;
+  uri)        cat "$OUT/v23.uri" ;;
+  reality)
+    [[ -n "${V23_REALITY_PBK:-}" ]] || { echo "reality not installed"; exit 1; }
+    echo "V23_VLESS_UUID=${V23_VLESS_UUID}"
+    echo "V23_REALITY_PBK=${V23_REALITY_PBK}"
+    echo "V23_REALITY_SID=${V23_REALITY_SID}"
+    echo "V23_REALITY_SNI=${V23_REALITY_SNI}"
+    echo "V23_REALITY_PORT=${V23_REALITY_PORT:-8443}"
+    ;;
+  tune)
+    # Client-side only; no server restart needed.
+    need_root
+    [[ $# -eq 3 ]] || { echo "usage: v23 tune <down_mbps> <up_mbps>"; exit 1; }
+    set_meta V23_DOWN "$2"; set_meta V23_UP "$3"
+    "$LIB/genclient.sh"
+    echo "targets now $2 down / $3 up Mbps — re-copy the config to your Mac"
+    ;;
+  mtu)
+    need_root
+    [[ $# -eq 2 ]] || { echo "usage: v23 mtu <1200-1500>"; exit 1; }
+    set_meta V23_MTU "$2"; "$LIB/genclient.sh"
+    echo "client MTU now $2 — re-copy the config to your Mac"
+    ;;
+  obfs)
+    need_root
+    case "${2:-}" in
+      on)
+        pw="$(head -c 24 /dev/urandom | base64 | tr -d '/+=' | head -c 32)"
+        set_meta V23_OBFS_PW "$pw"; apply_all
+        echo "salamander obfuscation ON — re-copy the config to your Mac (it will"
+        echo "not connect until both ends match)"
+        ;;
+      off)
+        set_meta V23_OBFS_PW ""; apply_all
+        echo "obfuscation OFF — re-copy the config to your Mac"
+        ;;
+      *) echo "usage: concordevpn obfs on|off"; exit 1 ;;
+    esac
+    ;;
+  allow-lan)
+    # Open (or close) TCP to chosen private addresses; everything else private
+    # stays blocked. Edits only the allow rules, then restarts what changed.
+    if [[ $# -lt 2 ]]; then echo "lan allow  ${V23_ALLOW_LAN:-none}"; exit 0; fi
+    need_root
+    shift
+    spec="$(IFS=,; echo "$*")"
+    norm="$("$LIB/genlan.sh" --check "$spec")" || exit 1
+    put_meta V23_ALLOW_LAN "$norm"
+    lan_sync all
+    echo "allowed LAN destinations: ${norm:-none}"
+    ;;
+  rotate)
+    need_root
+    new="$(head -c 24 /dev/urandom | base64 | tr -d '/+=' | head -c 32)"
+    set_meta V23_PASSWORD "$new"; apply_all
+    echo "new password: ${new}"
+    ;;
+  speedtest)
+    # Parallel streams: one TCP flow understates a fast line by 2x or more.
+    echo "droplet -> internet, 4 parallel streams:"
+    tmp="$(mktemp -d)"
+    for i in 1 2 3 4; do
+      curl -fsS -o /dev/null -w '%{speed_download}\n' --max-time 30 \
+        "https://speed.cloudflare.com/__down?bytes=25000000" >"${tmp}/${i}" 2>/dev/null &
+    done
+    wait
+    cat "${tmp}"/* 2>/dev/null \
+      | awk '{s+=$1} END{ if (NR) printf "  %.1f Mbps aggregate\n", s*8/1e6;
+                          else print "  measurement failed (endpoint unreachable)" }'
+    rm -rf "$tmp"
+    echo
+    echo "If this far exceeds your client result, the droplet is not the bottleneck."
+    echo "For the end-to-end tunnel number, run on the Mac:  ./v23-mac.sh bench"
+    ;;
+  *)
+    cat <<'H'
+concordevpn <command>
+  show               the block to paste into ConcordeVPN's first-run screen
+  status             service state and current settings
+  log                follow the server log
+  client             print every generated client config
+  uri                print the hy2:// share URI
+  tune <down> <up>   set client Brutal targets in Mbps
+  mtu <n>            set client TUN MTU
+  obfs on|off        toggle salamander obfuscation (both ends must match)
+  allow-lan [A:P|none]  show / set the home-LAN addresses clients may reach,
+                     e.g. 192.168.1.50:8097 (comma-separated; TCP only)
+  rotate             new auth password
+  apply              regenerate configs from /etc/v23/v23.env and restart
+  restart            restart the server
+  speedtest          check the droplet's own line
+H
+    ;;
+esac
+CLI
+chmod 0755 "$CLI_PATH"
+ln -sfn "${CLI_PATH}" "${CLI_ALIAS}" 2>/dev/null || true
+}
+# `allow-lan LIST|none` on a server that is already set up: records the list,
+# refreshes the generator scripts and the concordevpn command (so a later
+# 'concordevpn apply' keeps the rules) and edits ONLY the allow rules in the
+# live configs. No password, key or certificate is touched.
+do_allow_lan() {
+  [[ $EUID -eq 0 ]] || die "must run as root"
+  [[ -r "$META_FILE" ]] || die "no ${META_FILE} - run './concordevpn-server.sh install' first"
+  (( ALLOW_LAN_SET == 1 )) || die "allow-lan needs a list: ADDRESS:PORT[,ADDRESS:PORT...] or none"
+  install -d -m 0755 "$LIB_DIR"
+  write_genlan; write_genserver; write_cli
+  ok "refreshed ${LIB_DIR} and ${CLI_PATH}"
+  "$CLI_PATH" allow-lan "${ALLOW_LAN:-none}"
+  exit 0
+}
+
+if (( ALLOW_LAN_SET )); then
+  (( ${#ALLOW_LAN_VALUES[@]} == 1 )) || [[ " ${ALLOW_LAN_VALUES[*]} " != *" none "* ]] \
+    || die "--allow-lan none cannot be combined with addresses"
+  ALLOW_LAN_RAW="$(IFS=,; echo "${ALLOW_LAN_VALUES[*]}")"
+  check_allow_lan "$ALLOW_LAN_RAW"
+elif [[ "$ACTION" != allow-lan && -r "$META_FILE" ]]; then
+  # a plain re-run keeps what is recorded
+  ALLOW_LAN="$(sed -n 's/^V23_ALLOW_LAN=//p' "$META_FILE" | tail -1)"
+  [[ -z "$ALLOW_LAN" ]] || check_allow_lan "$ALLOW_LAN"
+fi
+if [[ "$ACTION" == reality ]] && (( ALLOW_LAN_SET )); then
+  die "--allow-lan is not an option of 'reality'; use: ./concordevpn-server.sh allow-lan ADDRESS:PORT"
+fi
+[[ "$ACTION" == "allow-lan" ]] && do_allow_lan
 [[ "$ACTION" == "reality" ]] && do_reality
 
 
@@ -810,6 +1390,7 @@ V23_SRV_UP=${SRV_UP_MBPS}
 V23_SRV_DOWN=${SRV_DOWN_MBPS}
 V23_CC=${CC_MODE}
 V23_MTU=${TUN_MTU}
+V23_ALLOW_LAN=${ALLOW_LAN}
 META
   chmod 0600 "$META_FILE"
 }
@@ -817,133 +1398,8 @@ write_meta
 ok "metadata written to ${META_FILE}"
 
 # ------------------------------------------------------- server generator  --
-cat > "${LIB_DIR}/genserver.sh" <<'GENSRV'
-#!/usr/bin/env bash
-# Regenerate /etc/hysteria/config.yaml from /etc/v23/v23.env
-set -euo pipefail
-. /etc/v23/v23.env
-CFG=/etc/hysteria/config.yaml
-
-if [[ -n "${V23_DOMAIN}" ]]; then
-  TLS_BLOCK="acme:
-  domains:
-    - ${V23_DOMAIN}
-  email: ${V23_EMAIL}
-  dir: /var/lib/hysteria/acme"
-else
-  TLS_BLOCK="tls:
-  cert: ${V23_CERT}
-  key: ${V23_KEY}"
-fi
-
-if [[ -n "${V23_OBFS_PW}" ]]; then
-  # Salamander wraps every QUIC packet so there is no TLS handshake, no SNI
-  # and no QUIC header for a classifier to fingerprint. Non-matching packets
-  # are dropped without reply, so active probes learn nothing.
-  OBFS_BLOCK="obfs:
-  type: salamander
-  salamander:
-    password: ${V23_OBFS_PW}"
-else
-  OBFS_BLOCK="# obfs off: presents a genuine TLS/QUIC handshake with SNI ${V23_SNI}"
-fi
-
-# TCP masquerade listeners only when nothing else owns the port (see below)
-if [[ "${V23_TROJAN_PW:-}" == "" ]]; then
-  MASQ_TCP_BLOCK="  listenHTTP: :80
-  listenHTTPS: :${V23_PORT}
-  forceHTTPS: true"
-else
-  MASQ_TCP_BLOCK="  # tcp/${V23_PORT} belongs to sing-box (Trojan/TLS)"
-fi
-
-cat > "$CFG" <<CONF
-# v23 Hysteria 2 server — generated $(date -u +%Y-%m-%dT%H:%M:%SZ)
-# Edit /etc/v23/v23.env and run 'v23 apply' instead of editing this file.
-listen: :${V23_PORT}
-
-${TLS_BLOCK}
-
-auth:
-  type: password
-  password: ${V23_PASSWORD}
-
-${OBFS_BLOCK}
-
-# Answer TCP probes like an ordinary HTTPS host rather than a closed port.
-# NOTE: the TCP listeners are conditional. When sing-box serves Trojan on
-# tcp/PORT (the default), IT owns that port and its real TLS handshake with
-# the pinned cert is a better masquerade than a reverse proxy — and two
-# processes cannot bind the same port ("address already in use", hit live
-# on the Singapore build 2026-08-22). Only a trojan-less server opens them.
-masquerade:
-  type: proxy
-  proxy:
-    url: ${V23_MASQ}
-    rewriteHost: true
-${MASQ_TCP_BLOCK}
-
-# No server bandwidth block on purpose, and the client IS listened to.
-# Hysteria decides per connection: a client that declares a rate gets Brutal
-# at that rate, a client that declares nothing gets BBR. That is exactly the
-# split the app wants - Performance and Ultra Performance declare a measured
-# rate, Balanced, Stealth and Ultra Stealth declare none and stay on BBR.
-#
-# Deliberately NO 'bandwidth:' block (unlike the config before 2026-08-15):
-# a fixed server ceiling is a guess that caps a fast line, whereas the
-# client's number comes from an actual measurement of the line in front of
-# it. V23_SRV_UP/V23_SRV_DOWN stay unused for that reason.
-#
-# This was 'true' from 2026-08-15 to 2026-09-18, which silently discarded
-# every rate the app measured: Performance's turbo tuning and the Ultra
-# controller were both writing numbers nothing read. Measured on the live
-# NYC exit before and after - a client asking for a 1 Mbps cap got 13.96
-# Mbps with it true, and 0.97 with it false, while a client declaring
-# nothing got ~14 either way.
-ignoreClientBandwidth: false
-
-# Big QUIC windows are what let one flow fill a fat pipe.
-quic:
-  initStreamReceiveWindow: 26843545
-  maxStreamReceiveWindow: 26843545
-  initConnReceiveWindow: 67108864
-  maxConnReceiveWindow: 67108864
-  maxIdleTimeout: 30s
-  maxIncomingStreams: 1024
-  disablePathMTUDiscovery: false
-
-# No 'resolver:' block on purpose. Hysteria's own DoH/DoT resolver silently
-# falls back to the system resolver when it fails, with nothing logged, which
-# makes DNS behaviour impossible to reason about — and it bypasses any
-# filtering configured on the host. Leaving it out means every lookup goes
-# through systemd-resolved, so whatever you point that at (NextDNS, etc.)
-# actually applies to proxied traffic.
-
-# Refuse to proxy into the droplet's own networks. Without this, any client
-# can read 169.254.169.254 and lift the droplet's cloud credentials.
-acl:
-  inline:
-    - reject(127.0.0.0/8)
-    - reject(::1/128)
-    - reject(169.254.0.0/16)
-    - reject(fe80::/10)
-    - reject(10.0.0.0/8)
-    - reject(172.16.0.0/12)
-    - reject(192.168.0.0/16)
-    - reject(fc00::/7)
-    - direct(all)
-
-udpIdleTimeout: 60s
-
-# Required for 'v23-mac.sh bench' (hysteria speedtest). Without it the server
-# tries to resolve the magic host "@SpeedTest" as a real name and the test
-# fails. Only authenticated clients can reach it.
-speedTest: true
-CONF
-chown root:hysteria "$CFG"
-chmod 0640 "$CFG"
-GENSRV
-chmod 0755 "${LIB_DIR}/genserver.sh"
+write_genserver
+write_genlan
 
 # ------------------------------------------------------- client generator  --
 cat > "${LIB_DIR}/genclient.sh" <<'GENCLI'
@@ -1210,6 +1666,7 @@ if [[ $TROJAN_ENABLED -eq 1 ]]; then
   }
 }
 SBCFG
+  apply_lan_rules   # --allow-lan rules, ahead of the private block (none by default)
   chmod 0600 /etc/sing-box/config.json
   # sing-box runs as root to bind :443 and read the shared cert; the route
   # rules above are what stop it being an open relay into the VPC.
@@ -1511,147 +1968,7 @@ fi
 ok "a kernel crash reboots in 10 s; the VPN services restart every time"
 
 # ------------------------------------------------------------------ v23 CLI --
-cat > "$CLI_PATH" <<'CLI'
-#!/usr/bin/env bash
-# v23 — management CLI. All state lives in /etc/v23/v23.env.
-set -euo pipefail
-META=/etc/v23/v23.env
-OUT=/etc/v23/client
-LIB=/usr/local/lib/v23
-[[ -r "$META" ]] || { echo "concordevpn is not installed"; exit 1; }
-. "$META"
-
-need_root() { [[ $EUID -eq 0 ]] || { echo "run as root"; exit 1; }; }
-set_meta() { sed -i "s|^$1=.*|$1=$2|" "$META"; }
-apply_all() {
-  "$LIB/genserver.sh"; "$LIB/genclient.sh"
-  systemctl restart hysteria-server.service
-  echo "applied — server restarted"
-}
-
-case "${1:-status}" in
-  show)
-    # the six lines ConcordeVPN's first-run screen asks for, in the names it
-    # uses, plus the REALITY line — paste the whole block into the app
-    cat <<S
-# --- paste this into ConcordeVPN's first-run screen ---
-V23_SERVER=${V23_SERVER}
-V23_TROJAN_PW=${V23_TROJAN_PW}
-V23_HY2_PW=${V23_PASSWORD}
-V23_OBFS_PW=${V23_OBFS_PW}
-V23_CERT_PIN=${V23_PIN}
-V23_NEXTDNS_ID=
-V23_VLESS_UUID=${V23_VLESS_UUID}
-V23_REALITY_PBK=${V23_REALITY_PBK}
-V23_REALITY_SID=${V23_REALITY_SID}
-V23_REALITY_SNI=${V23_REALITY_SNI}
-V23_REALITY_PORT=${V23_REALITY_PORT}
-S
-    echo "(V23_NEXTDNS_ID stays empty here: NextDNS is set once in the app, for every" >&2
-    echo " server - Settings > Network > NextDNS, or the first-run screen.)" >&2
-    ;;
-  status)
-    systemctl status hysteria-server.service --no-pager -l | head -14
-    echo
-    echo "server     ${V23_SERVER}:${V23_PORT}   sni=${V23_SNI}"
-    echo "obfs       $([[ -n "${V23_OBFS_PW}" ]] && echo "salamander (on)" || echo "off")"
-    echo "cc         ${V23_CC}  target ${V23_DOWN} down / ${V23_UP} up Mbps"
-    echo "client mtu ${V23_MTU}"
-    [[ "${V23_HOP}" == "1" ]] && echo "port hop   ${V23_HOP_START}-${V23_HOP_END} -> ${V23_PORT}"
-    echo
-    if [[ -n "${V23_REALITY_PBK:-}" ]]; then
-      echo "reality    tcp ${V23_REALITY_PORT:-8443} sni=${V23_REALITY_SNI:-?} $(systemctl is-active xray.service 2>/dev/null)"
-    fi
-    ss -lunp 2>/dev/null | grep -E "hysteria|:${V23_PORT}" || echo "(no UDP socket visible)"
-    ;;
-  log|logs)   journalctl -u hysteria-server.service -f --no-pager ;;
-  restart)    need_root; systemctl restart hysteria-server.service; echo restarted ;;
-  apply)      need_root; apply_all ;;
-  client)
-    for f in "$OUT"/*; do echo "───── $f"; cat "$f"; echo; done ;;
-  uri)        cat "$OUT/v23.uri" ;;
-  reality)
-    [[ -n "${V23_REALITY_PBK:-}" ]] || { echo "reality not installed"; exit 1; }
-    echo "V23_VLESS_UUID=${V23_VLESS_UUID}"
-    echo "V23_REALITY_PBK=${V23_REALITY_PBK}"
-    echo "V23_REALITY_SID=${V23_REALITY_SID}"
-    echo "V23_REALITY_SNI=${V23_REALITY_SNI}"
-    echo "V23_REALITY_PORT=${V23_REALITY_PORT:-8443}"
-    ;;
-  tune)
-    # Client-side only; no server restart needed.
-    need_root
-    [[ $# -eq 3 ]] || { echo "usage: v23 tune <down_mbps> <up_mbps>"; exit 1; }
-    set_meta V23_DOWN "$2"; set_meta V23_UP "$3"
-    "$LIB/genclient.sh"
-    echo "targets now $2 down / $3 up Mbps — re-copy the config to your Mac"
-    ;;
-  mtu)
-    need_root
-    [[ $# -eq 2 ]] || { echo "usage: v23 mtu <1200-1500>"; exit 1; }
-    set_meta V23_MTU "$2"; "$LIB/genclient.sh"
-    echo "client MTU now $2 — re-copy the config to your Mac"
-    ;;
-  obfs)
-    need_root
-    case "${2:-}" in
-      on)
-        pw="$(head -c 24 /dev/urandom | base64 | tr -d '/+=' | head -c 32)"
-        set_meta V23_OBFS_PW "$pw"; apply_all
-        echo "salamander obfuscation ON — re-copy the config to your Mac (it will"
-        echo "not connect until both ends match)"
-        ;;
-      off)
-        set_meta V23_OBFS_PW ""; apply_all
-        echo "obfuscation OFF — re-copy the config to your Mac"
-        ;;
-      *) echo "usage: concordevpn obfs on|off"; exit 1 ;;
-    esac
-    ;;
-  rotate)
-    need_root
-    new="$(head -c 24 /dev/urandom | base64 | tr -d '/+=' | head -c 32)"
-    set_meta V23_PASSWORD "$new"; apply_all
-    echo "new password: ${new}"
-    ;;
-  speedtest)
-    # Parallel streams: one TCP flow understates a fast line by 2x or more.
-    echo "droplet -> internet, 4 parallel streams:"
-    tmp="$(mktemp -d)"
-    for i in 1 2 3 4; do
-      curl -fsS -o /dev/null -w '%{speed_download}\n' --max-time 30 \
-        "https://speed.cloudflare.com/__down?bytes=25000000" >"${tmp}/${i}" 2>/dev/null &
-    done
-    wait
-    cat "${tmp}"/* 2>/dev/null \
-      | awk '{s+=$1} END{ if (NR) printf "  %.1f Mbps aggregate\n", s*8/1e6;
-                          else print "  measurement failed (endpoint unreachable)" }'
-    rm -rf "$tmp"
-    echo
-    echo "If this far exceeds your client result, the droplet is not the bottleneck."
-    echo "For the end-to-end tunnel number, run on the Mac:  ./v23-mac.sh bench"
-    ;;
-  *)
-    cat <<'H'
-concordevpn <command>
-  show               the block to paste into ConcordeVPN's first-run screen
-  status             service state and current settings
-  log                follow the server log
-  client             print every generated client config
-  uri                print the hy2:// share URI
-  tune <down> <up>   set client Brutal targets in Mbps
-  mtu <n>            set client TUN MTU
-  obfs on|off        toggle salamander obfuscation (both ends must match)
-  rotate             new auth password
-  apply              regenerate configs from /etc/v23/v23.env and restart
-  restart            restart the server
-  speedtest          check the droplet's own line
-H
-    ;;
-esac
-CLI
-chmod 0755 "$CLI_PATH"
-ln -sfn "${CLI_PATH}" "${CLI_ALIAS}" 2>/dev/null || true
+write_cli
 ok "installed ${CLI_PATH}"
 echo
 say "Paste this block into ConcordeVPN's first-run screen (again later: concordevpn show)"
