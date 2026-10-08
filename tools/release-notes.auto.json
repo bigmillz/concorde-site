@@ -60,6 +60,21 @@
       ],
       "fold": false,
       "model": "claude-opus-5-5"
+    },
+    "6d4017fa784555a3": {
+      "channel": "prerelease 1.5.2 beta 1",
+      "source_tags": [
+        "v56"
+      ],
+      "generated": "2026-10-08",
+      "bullets": [
+        "**Mode explainer** — what each mode does and gives up, plain summary first, then trade-offs and technical detail",
+        "**Low speed results** — the note now says it's this Mac, names a weak Wi-Fi signal, and can be hidden",
+        "**iOS profiles** — profiles for a server set up with a hostname are no longer refused",
+        "Fewer stuck states, safer password prompts and a steadier Speed card"
+      ],
+      "fold": true,
+      "model": "claude-opus-5-5"
     }
   },
   "concordego": {
@@ -547,6 +562,20 @@
         "2026-10-04: Lite, three good flights from one short search",
         "2026-09-24: Round-trip fares",
         "2026-09-24: Award charts with a points transfer planner"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "3ca49622bf79d494": {
+      "channel": "release vpn 1.5.2 beta 1",
+      "source_tags": [
+        "v56"
+      ],
+      "generated": "2026-10-08",
+      "bullets": [
+        "An explainer for each connection mode",
+        "Fix for iOS profiles with hostname servers",
+        "Fewer stuck states and safer password prompts"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
