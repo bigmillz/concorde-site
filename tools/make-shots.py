@@ -51,7 +51,7 @@ OPAQUE = 250     # alpha at or above this is window; below is shadow or air
 # window's 2x pixel height; the script refuses a capture that is too small.
 SOURCES = {
     "ai":  ("ai-window.html",  (1400, 1520)),
-    "vpn": ("vpn-window.html", (780, 1220)),
+    "vpn": ("vpn-window.html", (780, 960)),
     "go":  ("go-window.html",  (1470, 1600)),   # a browser frame round go-capture.png
     "lite": ("lite-window.html", (1470, 1600)),  # the same frame round lite-capture.png
 }
