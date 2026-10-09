@@ -17,14 +17,14 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "eccc222c2a2feec6": {
-      "channel": "nightly 7.0 nightly aa048c0",
+    "c051d304064c1aae": {
+      "channel": "nightly 7.0 nightly b746289",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-08",
+      "generated": "2026-10-09",
       "bullets": [
-        "**Starter chips** — suggestions are reworded to fit their chips, shown whole with no cut-off text"
+        "**Model loading** — work on how models are loaded and unloaded on the graphics card, including when one spills over"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
