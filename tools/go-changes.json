@@ -2,6 +2,18 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "4bac5e4",
+   "version": "0.1.4911",
+   "date": "2026-10-09",
+   "summary": "The bags field reads 1 bag, so the whole form row fits"
+  },
+  {
+   "commit": "0089f53",
+   "version": "0.1.4910",
+   "date": "2026-10-09",
+   "summary": "A new front page and results: ask in a sentence, an Our pick panel, photo cards and a details panel"
+  },
+  {
    "commit": "e78faa3",
    "version": "0.1.4870",
    "date": "2026-10-06",

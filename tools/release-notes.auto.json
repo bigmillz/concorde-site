@@ -76,17 +76,17 @@
     }
   },
   "concordego": {
-    "e960d713f7abb7f8": {
-      "channel": "live version 0.1.4870, deployed 6 Oct 2026",
+    "ca15b6ccc0b76d3d": {
+      "channel": "live version 0.1.4911, deployed 9 Oct 2026",
       "source_tags": [
-        "e78faa3"
+        "4bac5e4"
       ],
-      "generated": "2026-10-06",
+      "generated": "2026-10-10",
       "bullets": [
-        "**Lite** — a simpler search: say where you need to be and get three good flights, earliest and cheapest side by side",
-        "**Ask for anything** — requests can name airports, aircraft or needs the flight data can't check; the site looks them up",
-        "**Grades and points** — airline ratings per cabin count in the grade; award charts and transfer planner, now with LATAM and Copa",
-        "**Results** — ticket price first, all-in total under it, more ways to sort, round-trip fares, a price history chart"
+        "**New front page** — ask for a trip in a sentence; results open with an Our pick panel, photo cards and a details panel",
+        "**Lite** — say where you need to be and get three good flights, earliest arrival and cheapest side by side",
+        "**Airline ratings** — rated per cabin and part of each grade; a flight's details add a price history chart and on-time record",
+        "**Points and miles** — priced from airlines' award charts with a transfer planner; LATAM Pass and Copa ConnectMiles added"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -401,9 +401,24 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "859dcb5edeefe7df": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4870, deployed 6 Oct 2026",
+    "3ca49622bf79d494": {
+      "channel": "release vpn 1.5.2 beta 1",
       "source_tags": [
+        "v56"
+      ],
+      "generated": "2026-10-08",
+      "bullets": [
+        "An explainer for each connection mode",
+        "Fix for iOS profiles with hostname servers",
+        "Fewer stuck states and safer password prompts"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "c501a451920e17ec": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.1.4911, deployed 9 Oct 2026",
+      "source_tags": [
+        "0089f53",
         "008b869",
         "03331d6",
         "03c725a",
@@ -418,7 +433,6 @@
         "1207183",
         "15163b5",
         "1574986",
-        "16abb95",
         "170b2ad",
         "17ede22",
         "1a5b72c",
@@ -450,6 +464,7 @@
         "48b1865",
         "4a298d9",
         "4b7c965",
+        "4bac5e4",
         "4bc1e6c",
         "4dd6e79",
         "4f4bfab",
@@ -534,7 +549,6 @@
         "d296802",
         "d2c90d0",
         "d35270b",
-        "d59a8f9",
         "d6a738b",
         "d97ea06",
         "dcf5d68",
@@ -555,25 +569,11 @@
         "f67749e",
         "ffcb74b"
       ],
-      "generated": "2026-10-06",
+      "generated": "2026-10-10",
       "bullets": [
-        "2026-10-04: Lite, three good flights from one short search",
-        "2026-09-24: Round-trip fares",
-        "2026-09-24: Award charts with a points transfer planner"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "3ca49622bf79d494": {
-      "channel": "release vpn 1.5.2 beta 1",
-      "source_tags": [
-        "v56"
-      ],
-      "generated": "2026-10-08",
-      "bullets": [
-        "An explainer for each connection mode",
-        "Fix for iOS profiles with hostname servers",
-        "Fewer stuck states and safer password prompts"
+        "2026-10-09: A new front page, ask in a sentence",
+        "2026-10-04: Lite, three good flights from one search",
+        "2026-09-24: Round-trip fares"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
