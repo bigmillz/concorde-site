@@ -354,6 +354,34 @@ html.hdrmarks .card-head .mark-hdr{position:relative;top:-2.5px}
   border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:8px;
   vertical-align:1px;white-space:nowrap;
 }
+/* ConcordeGo, coming soon: grayed out, its picture and details blurred. The
+   blur is only the look; the page holds no real copy for it (the card's
+   comment says why). The badge sits crisp over the middle. */
+.soon-card{position:relative;filter:grayscale(1)}
+.soon-card .stage,.soon-card .feats,.soon-card .dl{
+  filter:blur(5px);opacity:.5;pointer-events:none;user-select:none;
+}
+.soon-card .shot-soon{cursor:default}
+.soon-card .shot-soon:hover img{transform:none}
+.soon-card .bar{display:block;height:9px;border-radius:5px;background:var(--line)}
+.soon-card .feats b.bar{width:44%;height:10px;margin-bottom:11px}
+.soon-card .feats .bar.d{width:94%;margin-top:8px}
+.soon-card .feats .bar.d.s{width:62%}
+.soon-card .how .bar{width:56%;margin:0 auto}
+.soon-card .btn{cursor:default}
+.soon-badge{
+  position:absolute;inset:0;z-index:5;display:grid;place-items:center;pointer-events:none;
+}
+.soon-card .card-head .chip{white-space:nowrap}
+@media (max-width:1179px){.soon-badge{display:none}}   /* stacked: the chip and the line say it */
+@media (max-width:440px){
+  .soon-card .card-head .row{flex-wrap:wrap;row-gap:10px}
+  .soon-card .card-head .chip{margin:0 0 0 33px}
+}
+.soon-badge .label{
+  padding:12px 24px;border:1px solid var(--line);border-radius:999px;
+  background:rgba(16,16,19,.82);color:var(--text);font-size:12px;letter-spacing:.32em;
+}
 .feats .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--faint);padding-top:2px}
 .feats b{
   display:block;font-family:var(--mono);font-size:11px;font-weight:600;
@@ -1148,108 +1176,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           </div>
         </article>
 
-        <!-- ============ CARD: CONCORDEGO ============
-             Not a download: it runs at go.flyconcordefly.com. Hand-written,
-             except its Release notes list: sync-releases.py writes that
-             (between the releases:go markers, which stay at twenty spaces of
-             indent) from the commits deployed in the 30 days up to the build
-             the live site runs, summarized in the Action like the apps'.
-             Keep that list the card's only bare <ul> and its box the only
-             Release notes box: the script refuses a second one.
-             Its "BETA" is a .chan-ver, never a chan-name span: the script
-             refuses to write a page with a channel name outside the AI and
-             VPN markers.
-             The version and date are what go.flyconcordefly.com/version says
-             it is running ("0.1.<build>", the build counting every commit):
-             tools/sync-releases.py writes them here on every sync, and
-             worker.js rewrites [data-go-version] and time[data-go-date] on
-             every request (cached 5 minutes). Until a version is known the
-             version line stays hidden; a failed read never shows an error.
-             Its HDR nameplate (assets/mark-go-*) is made by
-             tools/make-mark-go.py from the AI and VPN ones.
-             The window is tools/windows/go-window.html round a capture of
-             the live app; tools/README.md says how to retake it. -->
-        <article class="card reveal" id="concordego" aria-labelledby="go-name">
-          <div class="stage">
-            <div class="stage-in">
-              <a class="shot" href="assets/shot-go.png">
-                <picture>
-                  <source srcset="assets/shot-go.webp" type="image/webp">
-                  <img src="assets/shot-go.png" width="1458" height="1532" loading="lazy" decoding="async"
-                       alt="ConcordeGo in a browser, in its dark theme: a Magic trip box with a trip typed in plain words, Long weekend in Lisbon in March, two of us, nothing before 9am, under $600 each, and tabs for Home, Trips, Friends and Meet.">
-                </picture>
-                <span class="visually-hidden">Enlarge</span>
-              </a>
-              <p class="how"><span class="label">In your browser</span>No download, no install.<br>Free to use: 5 searches a day signed out; a free account gives&nbsp;30.</p>
-            </div>
-          </div>
-
-          <div class="card-main">
-            <div class="card-head">
-              <div class="row">
-                <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
-                  <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
-                  <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
-                  <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
-                  <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
-                  <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
-                <h3 id="go-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">Go</span></span><video class="mark-hdr" data-mark="go" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
-                <span class="chip label">Beta</span>
-              </div>
-              <p class="desc">Flights are better when you ask for them in your own words, and better still with friends along the way.</p>
-              <div class="plats label">
-                <span>Any browser</span>
-                <span>Desktop + phone</span>
-              </div>
-            </div>
-
-            <ul class="feats">
-              <li>
-                <span class="n">01</span>
-                <div><b>Say it in plain words</b><span class="d">Type or say the trip the way you would tell a friend: &ldquo;long weekend in Lisbon, nothing before 9am, under $600&rdquo;. ConcordeGo reads it and finds the flights.</span></div>
-              </li>
-              <li>
-                <span class="n">02</span>
-                <div><b>Travel with friends <em class="soon">Coming soon</em></b><span class="d">Plan a trip together, see friends on the move and message them. Being built now.</span></div>
-              </li>
-              <li>
-                <span class="n">03</span>
-                <div><b>Meet people on the way <em class="soon">Coming soon</em></b><span class="d">Find meet-ups and open groups at the airport you are passing through. Being built now.</span></div>
-              </li>
-              <li>
-                <span class="n">04</span>
-                <div><b>Flight Fixer</b><span class="d">Delayed or cancelled? Answer a few questions, one at a time, and it weighs your options and makes the call.</span></div>
-              </li>
-            </ul>
-
-            <div class="dl go-dl">
-              <div class="chan">
-                <div class="chan-top">
-                  <span class="chan-ver">BETA</span>
-                  <span class="chan-commit" data-go-vline>version <span data-go-version>0.2.5136</span></span>
-                  <span class="chan-date">Updated <time datetime="2026-10-10" data-go-date>10 Oct 2026</time></span>
-                </div>
-                <div class="btns">
-                  <a class="btn open" href="https://go.flyconcordefly.com/" target="_blank" rel="noopener">
-                    <span class="os">Open ConcordeGo</span>
-                    <span class="file">go.flyconcordefly.com</span>
-                    <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9 9.2 2.8M4 2.6h5.4V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span class="visually-hidden">(opens in a new tab)</span>
-                  </a>
-                </div>
-                <details class="sum notes">
-                  <summary>Release notes</summary>
-                  <div class="sum-body">
-                    <!-- releases:go -->
-<ul><li><b>Version 0.2</b> — redesigned front page and results: ask in a sentence, an Our pick panel, photo cards, a details panel</li><li><b>Home</b> — search tabs, your trip and friends' meet-ups, a travel-day card, and Live, Auto, Dark and Light themes</li><li><b>Flight Fixer</b> — its own tab; starts from your flight number and asks one question at a time</li><li><b>Lite</b> — say where you need to be and get three good flights, earliest arrival and cheapest side by side</li><li class="more">Plus smaller fixes and polish</li></ul>
-                    <!-- /releases:go -->
-                  </div>
-                </details>
-              </div>
-            </div>
-          </div>
-        </article>
-
         <!-- ============ CARD: CONCORDEGO LITE ============
              ConcordeGo's quick page, go.flyconcordefly.com/lite: part of the
              same app, so the same build, version and date (the Worker and
@@ -1322,7 +1248,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <div class="chan">
                 <div class="chan-top">
                   <span class="chan-ver">BETA</span>
-                  <span class="chan-commit" data-go-vline>version <span data-go-version>0.2.5136</span></span>
+                  <span class="chan-commit" data-go-vline>version <span data-go-version>0.2.5180</span></span>
                   <span class="chan-date">Updated <time datetime="2026-10-10" data-go-date>10 Oct 2026</time></span>
                 </div>
                 <div class="btns">
@@ -1333,6 +1259,79 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                     <span class="visually-hidden">(opens in a new tab)</span>
                   </a>
                 </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ============ CARD: CONCORDEGO (coming soon) ============
+             The full ConcordeGo is being rebuilt behind closed doors (Pat,
+             2026-10-10: blur it and gray it out so nobody can lift the idea);
+             ConcordeGo Lite, above, stays available. Nothing real is on this
+             card on purpose: the picture is a window image blurred into the
+             pixels (assets/shot-go.*, no longer made by make-shots.py; the
+             readable capture is out of the tree), the feature rows are empty
+             bars, and the notes list is a fixed "Coming soon" line, written
+             by tools/sync-releases.py while GO_COMING_SOON is set there. CSS
+             blur alone would leave the words in the page source, so do not
+             "restore" the old copy under a filter. The script still wants
+             the releases:go markers, one notes list and one Release notes
+             box inside this card, so they stay. -->
+        <article class="card reveal soon-card" id="concordego" aria-labelledby="go-name">
+          <div class="soon-badge" role="note"><span class="label">Coming soon</span></div>
+          <div class="stage">
+            <div class="stage-in">
+              <div class="shot shot-soon" aria-hidden="true">
+                <picture>
+                  <source srcset="assets/shot-go.webp" type="image/webp">
+                  <img src="assets/shot-go.png" width="1458" height="1532" loading="lazy" decoding="async" alt="">
+                </picture>
+              </div>
+              <p class="how" aria-hidden="true"><span class="label">In your browser</span><span class="bar"></span></p>
+            </div>
+          </div>
+
+          <div class="card-main">
+            <div class="card-head">
+              <div class="row">
+                <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
+                  <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+                  <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+                  <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+                  <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+                  <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+                <h3 id="go-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">Go</span></span><video class="mark-hdr" data-mark="go" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
+                <span class="chip label">Coming soon</span>
+              </div>
+              <p class="desc">The full ConcordeGo is coming soon. ConcordeGo Lite, above, is available now.</p>
+            </div>
+
+            <ul class="feats" aria-hidden="true">
+              <li><span class="n">01</span><div><b class="bar"></b><span class="bar d"></span><span class="bar d s"></span></div></li>
+              <li><span class="n">02</span><div><b class="bar"></b><span class="bar d"></span><span class="bar d s"></span></div></li>
+              <li><span class="n">03</span><div><b class="bar"></b><span class="bar d"></span><span class="bar d s"></span></div></li>
+              <li><span class="n">04</span><div><b class="bar"></b><span class="bar d"></span><span class="bar d s"></span></div></li>
+            </ul>
+
+            <div class="dl go-dl" aria-hidden="true">
+              <div class="chan">
+                <div class="chan-top">
+                  <span class="chan-ver">SOON</span>
+                </div>
+                <div class="btns">
+                  <span class="btn open">
+                    <span class="os">Open ConcordeGo</span>
+                    <span class="file">coming soon</span>
+                  </span>
+                </div>
+                <details class="sum notes">
+                  <summary>Release notes</summary>
+                  <div class="sum-body">
+                    <!-- releases:go -->
+<ul><li class="more">Coming soon</li></ul>
+                    <!-- /releases:go -->
+                  </div>
+                </details>
               </div>
             </div>
           </div>

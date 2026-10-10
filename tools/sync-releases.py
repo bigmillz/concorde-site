@@ -544,6 +544,15 @@ def cached_notes(repo, kind, items, link=True):
 # changes in the GO_DAYS up to its newest build. The window is anchored to
 # that build's own date, so the notes (and their cache key) change only when
 # Go deploys, never just because a day went by.
+# The full ConcordeGo is "coming soon" on the page (Pat, 2026-10-10: its card is
+# blurred and grayed so the idea cannot be lifted). While this is True the Go
+# card's notes are a fixed "Coming soon" line, and only changes that name Lite
+# go into the store, the summaries and What's new: nothing about the rest is
+# written into this public repo. Turn it off to bring the full card's notes back.
+GO_COMING_SOON = True
+GO_SOON_NOTES = '<ul><li class="more">Coming soon</li></ul>'
+GO_LITE_CHANGE = re.compile(r"\blite\b", re.I)
+
 GO_URL = "https://go.flyconcordefly.com/"
 # ConcordeGo's public change list (2026-09-27: its repository went private,
 # so the site reads no git history). Newest first, ~50 builds deep:
@@ -677,6 +686,8 @@ def go_channel():
     fresh, _found = fetch_go_changes(store[0]["commit"] if store else None)
     known = {c["commit"] for c in store}
     merged = [c for c in fresh if c["commit"] not in known] + store    # newest first; since_found false = match on commit
+    if GO_COMING_SOON:
+        merged = [c for c in merged if GO_LITE_CHANGE.search(c["summary"])]
     if not merged:
         raise Incomplete("ConcordeGo's change list is empty")
     head = merged[0]
@@ -858,6 +869,8 @@ def go_rank(items, cap=SHOW_MAX):
 def go_notes(go):
     """The Go notes list: the cached summary of exactly these notes, else
     the keyword fallback. Never a link to GitHub."""
+    if GO_COMING_SOON:
+        return GO_SOON_NOTES
     items = go["items"]
     if not items:
         return ""
@@ -1281,6 +1294,8 @@ def news_entries(go=None, today=None):
                             "stamp": rels[0]["published_at"], "features": news_features(repo, rels, auto)})
     if go:
         for date, text in go_news(go, auto, today):
+            if GO_COMING_SOON and not LITE_LEAD.match(text):
+                continue        # only Lite's lines, which link to Lite's own card
             entries.append({"date": date, "key": "go", "title": "", "channel": "go",
                             "stamp": date, "features": [text]})
     return entries

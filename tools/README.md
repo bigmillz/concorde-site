@@ -298,8 +298,8 @@ label is out of date.
 ## The product windows
 
 Each product card shows one window: `windows/ai-window.html`,
-`windows/vpn-window.html`, `windows/go-window.html` and
-`windows/lite-window.html`. The first two are
+`windows/vpn-window.html` and `windows/lite-window.html` (ConcordeGo's own
+window is retired while it is coming soon, below). The first two are
 the apps' own UIs, rebuilt as static HTML from each app's real page (its
 markup and its own CSS rules, with fake data) rather than screenshots of
 whatever happened to be on screen. They are HTML so they stay crisp at any
@@ -311,10 +311,10 @@ for any other photo and re-run `make-shots.py`). The VPN
 window is the main window as ConcordeVPN 1.5 draws it, 460x590: connected
 through New York, Balanced, with the speed card and the Mode and Exit rows. It
 is a capture of the app's real page (see "Retaking `windows/vpn-capture.png`").
-ConcordeGo is a website, so its window is a plain browser frame (the address
-bar reads go.flyconcordefly.com) round a capture of the live app,
-`windows/go-capture.png`. ConcordeGo Lite is the same frame (reading
-go.flyconcordefly.com/lite) round `windows/lite-capture.png`.
+ConcordeGo is a website, so its window is a plain browser frame round a
+capture of the live app. ConcordeGo Lite's (the address bar reads
+go.flyconcordefly.com/lite) is `windows/lite-capture.png`; the full ConcordeGo's
+is retired for now (below).
 
 Three rules they exist to enforce:
 
@@ -424,47 +424,21 @@ and in `SOURCES` (the capture window, 960). Then crop the screenshot to
 The page's top 32px is the app's own empty titlebar strip; the window file
 draws the real chrome over it.
 
-### Retaking `windows/go-capture.png`
+### The ConcordeGo card is "coming soon" (2026-10-10)
 
-The capture is the live app's front page, **Home**, signed out, in the
-**dark theme** (to match the rest of this page), with the first-visit tour
-skipped and a trip typed into the Magic trip box in plain words (typed, never
-searched, so it spends no search). It is laid out zoomed out: a 1470x1505
-CSS px viewport at a device scale of 1.4285714, giving the same 2100x2150 px,
-which is exactly the page area of `go-window.html` (a 1050x1113 window less
-its 38px title bar) drawn at the 2x `make-shots.py` captures at. The wider
-layout is what lets the two small lines at the foot of the "real price" and
-"grade" cards stay on one line each, clear of the card edge (at 1050 the
-first wrapped and the grades ran into the edge; 2026-10-10, per Pat). The window keeps the old 1000x1060 frame's proportions, so
-`shot-go` comes out 1458x1532. `measure.mjs` gives a fresh browser profile
-every run, so it is always signed out and always gets the tour and the
-default **Live** theme (the visitor's time of day), which is why the
-expression sets `html[data-phase="night"]`, what Settings > Appearance > Dark
-does. The heading is picked at random on every load (any of them will do):
-
-    MEASURE_DPR=1.4285714 node tools/measure.mjs https://go.flyconcordefly.com/ 1470x1505 \
-      '(async () => {
-         const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-         await wait(2500);
-         document.documentElement.dataset.phase = "night";
-         [...document.querySelectorAll("button,a")]
-           .find((b) => b.offsetParent && b.innerText.trim() === "Skip")?.click();   // the tour
-         await wait(800);
-         const q = document.querySelector("#hq"); q.focus();
-         q.value = "Long weekend in Lisbon in March, two of us, nothing before 9am, under $600 each";
-         q.dispatchEvent(new Event("input", {bubbles: true}));
-         await wait(600); q.blur(); await wait(900);
-         return { signedOut: !/@|searches left|Admin/i.test(document.body.innerText) };
-       })()' /tmp/go-home.png
-    python3 -c "from PIL import Image; Image.open('/tmp/go-home.png').convert('RGB').crop((0, 0, 2100, 2150)).save('tools/windows/go-capture.png', optimize=True)"
-
-It must print `"signedOut": true`. Then look at the PNG before running
-`make-shots.py`: Sign in in the header and nothing else about an account, the
-tour gone, the dark sky, the typed trip in the box, and no email address,
-admin link or searches-left count anywhere in it. If the app has grown its
-header, widen the capture and `go-window.html` together, keeping the window
-at 1000:1060. (The app's earlier look, a stepper whose second step was
-"What matters to you?", is in git history.)
+The full ConcordeGo is hidden on purpose (Pat: blur and gray it so nobody can
+lift the idea; ConcordeGo Lite stays available). `assets/shot-go.png/.webp`
+is now a window image with a heavy gray blur baked into the pixels, made once
+from the last real capture and **no longer generated**: `make-shots.py` has no
+`go` entry, and the readable capture and window file are out of the tree (they
+remain in git history; the repository is public). The card in `index.html` has
+no real copy (empty bars, a fixed "Coming soon" notes line), and
+`sync-releases.py` keeps it that way while `GO_COMING_SOON` is set: the Go
+notes are the fixed line, and only changes that mention Lite are stored,
+summarized or shown in What's new. To bring the full card back: restore the
+card from git history (the commit before "ConcordeGo, coming soon"), set
+`GO_COMING_SOON = False`, re-take a capture (the recipe is in that commit's
+README) and put the `go` entry back in `SOURCES`.
 
 ### Checking a layout
 
