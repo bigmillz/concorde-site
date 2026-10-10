@@ -2,6 +2,168 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "9fb2fb1",
+   "version": "0.2.5108",
+   "date": "2026-10-10",
+   "summary": "A tidier top of the results: matching ask buttons, a quiet \"understood\" line, slim steps, the price check by Top picks"
+  },
+  {
+   "commit": "9d4f1a8",
+   "version": "0.2.5106",
+   "date": "2026-10-10",
+   "summary": "Top picks' price boxes and buttons line up; the progress sits centred under the search"
+  },
+  {
+   "commit": "30f4e53",
+   "version": "0.2.5104",
+   "date": "2026-10-10",
+   "summary": "A fine line between the airport colour and the quality colours in the key"
+  },
+  {
+   "commit": "38384b9",
+   "version": "0.2.5102",
+   "date": "2026-10-10",
+   "summary": "The front page's heading sits higher, with more room above the search"
+  },
+  {
+   "commit": "22b77ff",
+   "version": "0.2.5101",
+   "date": "2026-10-10",
+   "summary": "Two-line headings; the top picks in the cool palette, one size"
+  },
+  {
+   "commit": "ef6790a",
+   "version": "0.2.5094",
+   "date": "2026-10-10",
+   "summary": "Results: one toolbar with Filter and Sort, a smaller colour key, glass rows"
+  },
+  {
+   "commit": "6024eed",
+   "version": "0.2.5089",
+   "date": "2026-10-10",
+   "summary": "Headings: the first sentence on its own line, the rest lighter beneath"
+  },
+  {
+   "commit": "d8707e6",
+   "version": "0.2.5088",
+   "date": "2026-10-10",
+   "summary": "Searching flows into the results with no page change; results in the front page's look"
+  },
+  {
+   "commit": "f469cd0",
+   "version": "0.2.5076",
+   "date": "2026-10-10",
+   "summary": "The microphone shortcut is Option+M / Alt+M"
+  },
+  {
+   "commit": "2024cd2",
+   "version": "0.2.5072",
+   "date": "2026-10-10",
+   "summary": "Flight Fixer asks one question at a time; Home pairs the pitch with a small invitation"
+  },
+  {
+   "commit": "d68fb05",
+   "version": "0.2.5063",
+   "date": "2026-10-10",
+   "summary": "Flight Fixer starts from the flight number; no dollars-per-hour anywhere on the site"
+  },
+  {
+   "commit": "e57ac3c",
+   "version": "0.2.5053",
+   "date": "2026-10-10",
+   "summary": "Flight Fixer's form: what's needed first, the optional details after, shorter boxes"
+  },
+  {
+   "commit": "407858d",
+   "version": "0.2.5049",
+   "date": "2026-10-10",
+   "summary": "The chosen search tab meets its box without a stray corner"
+  },
+  {
+   "commit": "b67cfe4",
+   "version": "0.2.5048",
+   "date": "2026-10-10",
+   "summary": "Home invites signed-out visitors to the social side; graphite second buttons"
+  },
+  {
+   "commit": "0036bf8",
+   "version": "0.2.5041",
+   "date": "2026-10-10",
+   "summary": "Home: your trip above the search, friends and meet-ups below it"
+  },
+  {
+   "commit": "393f41e",
+   "version": "0.2.5035",
+   "date": "2026-10-10",
+   "summary": "Home is the search with a dashboard under it; a travel-day card on the day you fly"
+  },
+  {
+   "commit": "8b44d67",
+   "version": "0.2.5018",
+   "date": "2026-10-10",
+   "summary": "The grades card shows its letters in grade colours"
+  },
+  {
+   "commit": "782c32d",
+   "version": "0.2.5015",
+   "date": "2026-10-10",
+   "summary": "One button style across the site"
+  },
+  {
+   "commit": "b1f85dd",
+   "version": "0.2.5013",
+   "date": "2026-10-10",
+   "summary": "Glass you can see through, a cleaner Flight Fixer heading, and a Home dashboard mockup"
+  },
+  {
+   "commit": "890e55a",
+   "version": "0.2.5006",
+   "date": "2026-10-10",
+   "summary": "Flight Fixer explains itself in its own tab; see-through boxes over the sky"
+  },
+  {
+   "commit": "c9b39d0",
+   "version": "0.2.5003",
+   "date": "2026-10-10",
+   "summary": "A new heading on every visit and search; the first tab sits on a square corner"
+  },
+  {
+   "commit": "6b93082",
+   "version": "0.2.4998",
+   "date": "2026-10-10",
+   "summary": "Friends and Meet tabs, and the front page glides away when a search starts"
+  },
+  {
+   "commit": "a0ea918",
+   "version": "0.2.4990",
+   "date": "2026-10-10",
+   "summary": "Prettier search tabs, Flight Fixer as a tab, a voice shortcut, and a Settings tab"
+  },
+  {
+   "commit": "7000a74",
+   "version": "0.2.4966",
+   "date": "2026-10-10",
+   "summary": "Folder tabs for search, and a simpler front page under them"
+  },
+  {
+   "commit": "8362ac5",
+   "version": "0.2.4962",
+   "date": "2026-10-10",
+   "summary": "Search by Magic trip, Round trip, One way or Multi-city tabs"
+  },
+  {
+   "commit": "97624d9",
+   "version": "0.2.4957",
+   "date": "2026-10-10",
+   "summary": "The fill-it-in form folds under a bar on the front page"
+  },
+  {
+   "commit": "09239df",
+   "version": "0.2.4954",
+   "date": "2026-10-10",
+   "summary": "The app frame: Home, Airport, Trips, Flights and People tabs, and \"I booked it\""
+  },
+  {
    "commit": "6b08f91",
    "version": "0.2.4942",
    "date": "2026-10-10",
