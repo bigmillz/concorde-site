@@ -429,17 +429,20 @@ draws the real chrome over it.
 The capture is the live app's front page, **Home**, signed out, in the
 **dark theme** (to match the rest of this page), with the first-visit tour
 skipped and a trip typed into the Magic trip box in plain words (typed, never
-searched, so it spends no search): 1050x1075 CSS px taken at 2x, so
-2100x2150 px, which is exactly the page area of `go-window.html` (a
-1050x1113 window less its 38px title bar) drawn at the 2x `make-shots.py`
-captures at. The window keeps the old 1000x1060 frame's proportions, so
+searched, so it spends no search). It is laid out zoomed out: a 1470x1505
+CSS px viewport at a device scale of 1.4285714, giving the same 2100x2150 px,
+which is exactly the page area of `go-window.html` (a 1050x1113 window less
+its 38px title bar) drawn at the 2x `make-shots.py` captures at. The wider
+layout is what lets the two small lines at the foot of the "real price" and
+"grade" cards stay on one line each, clear of the card edge (at 1050 the
+first wrapped and the grades ran into the edge; 2026-10-10, per Pat). The window keeps the old 1000x1060 frame's proportions, so
 `shot-go` comes out 1458x1532. `measure.mjs` gives a fresh browser profile
 every run, so it is always signed out and always gets the tour and the
 default **Live** theme (the visitor's time of day), which is why the
 expression sets `html[data-phase="night"]`, what Settings > Appearance > Dark
 does. The heading is picked at random on every load (any of them will do):
 
-    MEASURE_DPR=2 node tools/measure.mjs https://go.flyconcordefly.com/ 1050x1075 \
+    MEASURE_DPR=1.4285714 node tools/measure.mjs https://go.flyconcordefly.com/ 1470x1505 \
       '(async () => {
          const wait = (ms) => new Promise((r) => setTimeout(r, ms));
          await wait(2500);
