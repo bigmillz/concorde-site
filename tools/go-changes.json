@@ -2,6 +2,18 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "3a10d50",
+   "version": "0.2.5116",
+   "date": "2026-10-10",
+   "summary": "A colour pass over the light, dawn and dusk themes: readable everywhere"
+  },
+  {
+   "commit": "554bfea",
+   "version": "0.2.5113",
+   "date": "2026-10-10",
+   "summary": "Themes: Live (follows the time of day), Auto, Dark and Light"
+  },
+  {
    "commit": "9fb2fb1",
    "version": "0.2.5108",
    "date": "2026-10-10",

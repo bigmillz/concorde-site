@@ -76,17 +76,17 @@
     }
   },
   "concordego": {
-    "ee7d574f16f092c1": {
-      "channel": "live version 0.2.5108, deployed 10 Oct 2026",
+    "f61607c02921cb86": {
+      "channel": "live version 0.2.5116, deployed 10 Oct 2026",
       "source_tags": [
-        "9fb2fb1"
+        "3a10d50"
       ],
       "generated": "2026-10-10",
       "bullets": [
-        "**Redesigned site** — Magic trip, round-trip, one-way and multi-city tabs, a Home dashboard, and results on the same page",
-        "**Ask in a sentence** — name an airport, aircraft or need the flight data can't cover, and the site researches it on the web",
-        "**Lite** — a simpler search: say where you need to be and get three good flights, soonest and cheapest side by side",
-        "**Flight Fixer** — now its own tab; it starts from your flight number and asks one question at a time"
+        "**Redesigned site** — ask in a sentence, search tabs including Magic trip and Multi-city, and Live, Auto, Dark or Light themes",
+        "**Lite** — one short search for where you need to be, with three good flights to get you there now",
+        "**Flight Fixer** — now its own tab; starts from your flight number and asks one question at a time",
+        "**Better grades** — airline ratings by cabin, round-trip fares, award-chart points with a transfer planner, more miles programs"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -415,8 +415,8 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "157b663f41e9e245": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.2.5108, deployed 10 Oct 2026",
+    "362583cae1b4d68c": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.2.5116, deployed 10 Oct 2026",
       "source_tags": [
         "0036bf8",
         "0089f53",
@@ -455,8 +455,8 @@
         "38384b9",
         "393f41e",
         "3a0c792",
+        "3a10d50",
         "3af27c2",
-        "3df7863",
         "406604e",
         "407858d",
         "425f8b3",
@@ -473,6 +473,7 @@
         "500a4ab",
         "50c04f2",
         "52f09fe",
+        "554bfea",
         "56e31e9",
         "5ad7697",
         "5d53dcc",
@@ -526,7 +527,6 @@
         "a2749d3",
         "a5b88a0",
         "a7d973f",
-        "a8fc8d3",
         "ab1996a",
         "ab436dd",
         "ad8ff6c",
@@ -572,7 +572,7 @@
       "generated": "2026-10-10",
       "bullets": [
         "2026-10-10: A redesigned site with a Home dashboard",
-        "2026-10-04: Lite, three good flights from one search",
+        "2026-10-04: Lite, three good flights from one short search",
         "2026-09-24: Round-trip fares"
       ],
       "fold": false,
