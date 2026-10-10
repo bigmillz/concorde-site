@@ -2,6 +2,42 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "6b08f91",
+   "version": "0.2.4942",
+   "date": "2026-10-10",
+   "summary": "Old answers stay closed on new results; a wish's confirmation folds away"
+  },
+  {
+   "commit": "176845b",
+   "version": "0.2.4940",
+   "date": "2026-10-10",
+   "summary": "The ask panel shows one answer at a time; rules become chips; the first card says why it is first"
+  },
+  {
+   "commit": "43ef99f",
+   "version": "0.2.4929",
+   "date": "2026-10-10",
+   "summary": "The advisor asks what the tabs cannot, keeps one answer, and carries the price check"
+  },
+  {
+   "commit": "13c922b",
+   "version": "0.2.4921",
+   "date": "2026-10-10",
+   "summary": "Cleaner phone results: shorter cards, one-row prices, tidy list rows"
+  },
+  {
+   "commit": "7e08ae8",
+   "version": "0.2.4918",
+   "date": "2026-10-10",
+   "summary": "The built page carries version 0.2"
+  },
+  {
+   "commit": "7630af7",
+   "version": "0.2.4918",
+   "date": "2026-10-10",
+   "summary": "Version 0.2: the redesigned ConcordeGo"
+  },
+  {
    "commit": "4bac5e4",
    "version": "0.1.4911",
    "date": "2026-10-09",
