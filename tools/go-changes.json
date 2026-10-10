@@ -2,6 +2,12 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "691f4c5",
+   "version": "0.2.5136",
+   "date": "2026-10-10",
+   "summary": "An account menu and page; readable buttons in every theme; a daytime opening"
+  },
+  {
    "commit": "3a10d50",
    "version": "0.2.5116",
    "date": "2026-10-10",
