@@ -426,74 +426,42 @@ draws the real chrome over it.
 
 ### Retaking `windows/go-capture.png`
 
-The capture is the live app's second step, **What matters to you?**, signed
-out, with the first-visit tour skipped: 1050x1075 CSS px taken at 2x, so
+The capture is the live app's front page, **Home**, signed out, in the
+**dark theme** (to match the rest of this page), with the first-visit tour
+skipped and a trip typed into the Magic trip box in plain words (typed, never
+searched, so it spends no search): 1050x1075 CSS px taken at 2x, so
 2100x2150 px, which is exactly the page area of `go-window.html` (a
 1050x1113 window less its 38px title bar) drawn at the 2x `make-shots.py`
-captures at. Two things set those numbers. **1050 wide:** below about
-1024px the app's stepper no longer fits its header and cuts the last step
-to "Anything els"; 1050 leaves it room. **2x:** a 1x capture is scaled up
-inside the 2x window and reads soft beside the other two, most of all in
-the Enlarge view. The window keeps the old 1000x1060 frame's proportions,
-so `shot-go` still comes out 1458x1532. `measure.mjs` gives a fresh
-browser profile every run, so it is always signed out and always gets the
-tour:
+captures at. The window keeps the old 1000x1060 frame's proportions, so
+`shot-go` comes out 1458x1532. `measure.mjs` gives a fresh browser profile
+every run, so it is always signed out and always gets the tour and the
+default **Live** theme (the visitor's time of day), which is why the
+expression sets `html[data-phase="night"]`, what Settings > Appearance > Dark
+does. The heading is picked at random on every load (any of them will do):
 
-    MEASURE_DPR=2 node tools/measure.mjs https://go.flyconcordefly.com/ 1050x1233 \
+    MEASURE_DPR=2 node tools/measure.mjs https://go.flyconcordefly.com/ 1050x1075 \
       '(async () => {
          const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-         const btn = (t) => [...document.querySelectorAll("button,a")]
-           .find((b) => b.offsetParent !== null && b.innerText.trim() === t);
-         await wait(2000);
-         btn("Skip")?.click();            // the "How it works" tour
-         await wait(600);
-         btn("What matters").click();     // the stepper scrolls to step 2
-         await wait(2000);
-         const steps = document.querySelector(".rsteps");
-         return { signedOut: !!btn("Sign in"),
-                  stepsFit: !!steps && steps.scrollWidth <= steps.clientWidth };
-       })()' /tmp/go-step2.png
-    python3 -c "from PIL import Image; Image.open('/tmp/go-step2.png').convert('RGB').crop((0, 0, 2100, 2150)).save('tools/windows/go-capture.png', optimize=True)"
+         await wait(2500);
+         document.documentElement.dataset.phase = "night";
+         [...document.querySelectorAll("button,a")]
+           .find((b) => b.offsetParent && b.innerText.trim() === "Skip")?.click();   // the tour
+         await wait(800);
+         const q = document.querySelector("#hq"); q.focus();
+         q.value = "Long weekend in Lisbon in March, two of us, nothing before 9am, under $600 each";
+         q.dispatchEvent(new Event("input", {bubbles: true}));
+         await wait(600); q.blur(); await wait(900);
+         return { signedOut: !/@|searches left|Admin/i.test(document.body.innerText) };
+       })()' /tmp/go-home.png
+    python3 -c "from PIL import Image; Image.open('/tmp/go-home.png').convert('RGB').crop((0, 0, 2100, 2150)).save('tools/windows/go-capture.png', optimize=True)"
 
-The viewport is 1233 tall and the shot is cropped to the top 1075 because
-that puts STEP 2 OF 4 just under the app's header and leaves the app's
-floating "Ask or wish" bar, which sits at the bottom of the viewport, out of
-the frame. The expression must print `"signedOut": true` and
-`"stepsFit": true` (if the app has grown its header, widen the capture and
-`go-window.html` together, keeping the window at 1000:1060). Then look at
-the PNG before running `make-shots.py`: the header shows **Sign in** and
-nothing else about an account, the last step reads **Anything else** in
-full, and there is no email address, admin link or searches-left count
-anywhere in it.
-
-### Retaking `windows/lite-capture.png`
-
-The capture is the live Lite page exactly as a first-time visitor opens it,
-signed out and with nothing typed: the one "Where do you need to be?" box,
-the chosen-for-you row (today, one way, economy) and the red button. That
-blank start is the point of the picture, so keep it empty; it also spends
-no search. The output is the same 2100x2150 px as the Go capture, but the
-page is laid out zoomed out: a 1470x1505 CSS px viewport at a device scale of
-1.4285714 (2100/1470), so the search box is about 75% of the width instead of
-filling it (2026-10-05, per Pat: simpler, more airy). `measure.mjs`'s fresh profile has no location permission, so the From
-field stays "Where are you?"; never take it from a browser that has one,
-or your street ends up in it:
-
-    MEASURE_DPR=1.4285714 node tools/measure.mjs https://go.flyconcordefly.com/lite 1470x1505 \
-      '(async () => {
-         await new Promise((r) => setTimeout(r, 2500));
-         document.activeElement && document.activeElement.blur();
-         await new Promise((r) => setTimeout(r, 300));
-         return { from: document.querySelector("#from").value,
-                  to: document.querySelector("#to").value,
-                  signedOut: !/@|left today|Admin/i.test(document.body.innerText) };
-       })()' /tmp/lite.png
-    python3 -c "from PIL import Image; Image.open('/tmp/lite.png').convert('RGB').crop((0, 0, 2100, 2150)).save('tools/windows/lite-capture.png', optimize=True)"
-
-It must print empty `from` and `to` and `"signedOut": true` (the box is
-about 75% of the page); then look at
-the PNG (the option row on one line, nothing typed) before running
-`make-shots.py`.
+It must print `"signedOut": true`. Then look at the PNG before running
+`make-shots.py`: Sign in in the header and nothing else about an account, the
+tour gone, the dark sky, the typed trip in the box, and no email address,
+admin link or searches-left count anywhere in it. If the app has grown its
+header, widen the capture and `go-window.html` together, keeping the window
+at 1000:1060. (The app's earlier look, a stepper whose second step was
+"What matters to you?", is in git history.)
 
 ### Checking a layout
 

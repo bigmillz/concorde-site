@@ -349,6 +349,11 @@ html.hdrmarks .card-head .mark-hdr{position:relative;top:-2.5px}
   padding:13px 0;border-bottom:1px solid var(--line-soft);
 }
 .feats li:last-child{border-bottom:0}
+.feats .soon{
+  font-style:normal;font-weight:500;font-size:9.5px;letter-spacing:.12em;color:var(--faint);
+  border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:8px;
+  vertical-align:1px;white-space:nowrap;
+}
 .feats .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--faint);padding-top:2px}
 .feats b{
   display:block;font-family:var(--mono);font-size:11px;font-weight:600;
@@ -1171,11 +1176,11 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <picture>
                   <source srcset="assets/shot-go.webp" type="image/webp">
                   <img src="assets/shot-go.png" width="1458" height="1532" loading="lazy" decoding="async"
-                       alt="ConcordeGo in a browser, asking what matters to you: price, speed or comfort, and what you want from a flight.">
+                       alt="ConcordeGo in a browser, in its dark theme: a Magic trip box with a trip typed in plain words, Long weekend in Lisbon in March, two of us, nothing before 9am, under $600 each, and tabs for Home, Trips, Friends and Meet.">
                 </picture>
                 <span class="visually-hidden">Enlarge</span>
               </a>
-              <p class="how"><span class="label">In your browser</span>No download, no install.<br>Free to use: 4 searches a day signed out; a free account gives&nbsp;20.</p>
+              <p class="how"><span class="label">In your browser</span>No download, no install.<br>Free to use: 5 searches a day signed out; a free account gives&nbsp;30.</p>
             </div>
           </div>
 
@@ -1191,7 +1196,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 <h3 id="go-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">Go</span></span><video class="mark-hdr" data-mark="go" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
                 <span class="chip label">Beta</span>
               </div>
-              <p class="desc">Every site sells the same flights. ConcordeGo shows which one is worth it.</p>
+              <p class="desc">Tell it the trip in plain words. It finds the flights worth taking, and it is growing into a place to travel with friends.</p>
               <div class="plats label">
                 <span>Any browser</span>
                 <span>Desktop + phone</span>
@@ -1201,19 +1206,19 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             <ul class="feats">
               <li>
                 <span class="n">01</span>
-                <div><b>Graded A+ to F</b><span class="d">Every flight graded on price, speed, comfort, routing and reliability.</span></div>
+                <div><b>Say it in plain words</b><span class="d">Type or say the trip the way you would tell a friend: &ldquo;long weekend in Lisbon, nothing before 9am, under $600&rdquo;. ConcordeGo reads it and finds the flights.</span></div>
               </li>
               <li>
                 <span class="n">02</span>
-                <div><b>Door to door</b><span class="d">The all-in price: your ride to the airport, bags and layovers, not just the fare.</span></div>
+                <div><b>Travel with friends <em class="soon">Coming soon</em></b><span class="d">Plan a trip together, see friends on the move and message them. Being built now.</span></div>
               </li>
               <li>
                 <span class="n">03</span>
-                <div><b>Price, speed or comfort</b><span class="d">Drag one dot to reorder, or type a wish like &ldquo;no red-eyes&rdquo;.</span></div>
+                <div><b>Meet people on the way <em class="soon">Coming soon</em></b><span class="d">Find meet-ups and open groups at the airport you are passing through. Being built now.</span></div>
               </li>
               <li>
                 <span class="n">04</span>
-                <div><b>Points and miles</b><span class="d">Cash or points on every flight, whichever is the better deal.</span></div>
+                <div><b>The real price, graded</b><span class="d">The all-in cost with bags, seat and ride, and a grade from A+ to F with its reasons on every flight.</span></div>
               </li>
             </ul>
 
@@ -1269,7 +1274,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                 </picture>
                 <span class="visually-hidden">Enlarge</span>
               </a>
-              <p class="how"><span class="label">In your browser</span>No download, no install.<br>Free: it shares ConcordeGo&rsquo;s 4 searches a day, or 20 with an&nbsp;account.</p>
+              <p class="how"><span class="label">In your browser</span>No download, no install.<br>Free: it shares ConcordeGo&rsquo;s 5 searches a day, or 30 with an&nbsp;account.</p>
             </div>
           </div>
 
@@ -1421,7 +1426,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             <details><summary>Why use it over other flight search tools?</summary><div class="a"><p>Every flight site sells the same flights. ConcordeGo ranks them by what the trip costs door to door, in dollars: the ticket, bags the fare leaves out, rides to and from the airports, layovers, your time and comfort. Each flight gets a letter grade on six rubrics, with price judged against a fair fare for that route and date. Same search, same data, same order.</p></div></details>
             <details><summary>What&#x27;s the Flight Fixer?</summary><div class="a"><p>It is for a flight that is delayed or canceled. It searches the day&#x27;s other flights and prices each one: the ticket, less any refund you may get, less the time it saves at your hourly rate, plus an estimated hotel night and rides if it leaves tomorrow. It says switch, stay or wait, estimates your odds of flying out today, and lists what you may ask the airline for.</p></div></details>
             <details><summary>How is the all-in cost worked out?</summary><div class="a"><p>All in is what you pay: the ticket with taxes and fees, checked bags the fare doesn&#x27;t include, rides to and from the airports, a hotel night when a layover runs overnight, and extras you ask for, such as a wifi pass. Rides are estimated from your address and the time of day, and lean high; an unpublished bag fee is priced high, never free. Your time and comfort change the order, not the bill.</p></div></details>
-            <details><summary>Is it free? Do I need an account?</summary><div class="a"><p>It&rsquo;s free, in any browser, with nothing to download. Signed out, you get 4 searches a day; a free account raises that to 20. The limits will go up as we adjust for demand.</p></div></details>
+            <details><summary>Is it free? Do I need an account?</summary><div class="a"><p>It&rsquo;s free, in any browser, with nothing to download. Signed out, you get 5 searches a day; a free account raises that to 30. The limits will go up as we adjust for demand.</p></div></details>
             <details><summary>How do points and miles work?</summary><div class="a"><p>Add your balances, and each flight also shows what it costs in points, priced from the airlines&rsquo; published award charts, with a plan for which card&rsquo;s points to transfer and how many. A chart price is what a seat costs if the airline releases one: ConcordeGo can&rsquo;t see award availability, and says so. Programs that publish no chart, such as Delta, United and Flying Blue, are shown as able to book the flight, never with a guessed price.</p></div></details>
           </div>
         </div>
