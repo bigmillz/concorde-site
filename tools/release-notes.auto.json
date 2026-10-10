@@ -76,17 +76,17 @@
     }
   },
   "concordego": {
-    "ca15b6ccc0b76d3d": {
-      "channel": "live version 0.1.4911, deployed 9 Oct 2026",
+    "14a2aa4e4d0a0849": {
+      "channel": "live version 0.2.4942, deployed 10 Oct 2026",
       "source_tags": [
-        "4bac5e4"
+        "6b08f91"
       ],
       "generated": "2026-10-10",
       "bullets": [
-        "**New front page** — ask for a trip in a sentence; results open with an Our pick panel, photo cards and a details panel",
-        "**Lite** — say where you need to be and get three good flights, earliest arrival and cheapest side by side",
-        "**Airline ratings** — rated per cabin and part of each grade; a flight's details add a price history chart and on-time record",
-        "**Points and miles** — priced from airlines' award charts with a transfer planner; LATAM Pass and Copa ConnectMiles added"
+        "**Redesigned site** — ask in a sentence, even about airports, aircraft or things only the web can answer; Our pick panel and photo cards",
+        "**ConcordeGo Lite** — a simpler search that asks where you need to be, then shows the earliest arrival and cheapest side by side",
+        "**Points and miles** — LATAM Pass and Copa ConnectMiles added; each flight shows its points option and what the points are worth",
+        "**Free searches** — five a day without signing in, thirty when signed in"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -415,8 +415,8 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "c501a451920e17ec": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.1.4911, deployed 9 Oct 2026",
+    "f27b6c2e61272c5c": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.2.4942, deployed 10 Oct 2026",
       "source_tags": [
         "0089f53",
         "008b869",
@@ -431,9 +431,11 @@
         "0f3c41d",
         "104b4c6",
         "1207183",
+        "13c922b",
         "15163b5",
         "1574986",
         "170b2ad",
+        "176845b",
         "17ede22",
         "1a5b72c",
         "2362477",
@@ -459,6 +461,7 @@
         "425f8b3",
         "42f50b6",
         "431e094",
+        "43ef99f",
         "4516455",
         "46fd16d",
         "48b1865",
@@ -481,11 +484,13 @@
         "66354ce",
         "682a27a",
         "690ebe4",
+        "6b08f91",
         "6fe77a1",
         "7134ae2",
         "7268f7d",
         "732213c",
         "75fa3a7",
+        "7630af7",
         "766d293",
         "76a442c",
         "78771c7",
@@ -495,12 +500,12 @@
         "7cd0915",
         "7d6aea9",
         "7e01e0e",
+        "7e08ae8",
         "7f4aa94",
         "801130d",
         "804d0a8",
         "828ee2b",
         "84abf94",
-        "84ba834",
         "86ac691",
         "8a1baf3",
         "8dcbfbd",
@@ -510,11 +515,9 @@
         "965e799",
         "98d51b0",
         "99793b7",
-        "99f6efc",
         "9d2bb73",
         "a0c8ff7",
         "a2749d3",
-        "a425274",
         "a5b88a0",
         "a6e0053",
         "a7b343a",
@@ -524,15 +527,12 @@
         "ab1996a",
         "ab436dd",
         "ad8ff6c",
-        "aec4b37",
         "af231e6",
         "b07b1ac",
-        "b180e18",
         "b1bbb27",
         "b459a8f",
         "b587e63",
         "b6d66df",
-        "b6e6369",
         "b7e98ee",
         "b7ee55d",
         "b7fa503",
@@ -571,8 +571,8 @@
       ],
       "generated": "2026-10-10",
       "bullets": [
-        "2026-10-09: A new front page, ask in a sentence",
-        "2026-10-04: Lite, three good flights from one search",
+        "2026-10-09: A redesigned front page and results",
+        "2026-10-04: Lite, three good flights from one short search",
         "2026-09-24: Round-trip fares"
       ],
       "fold": false,
