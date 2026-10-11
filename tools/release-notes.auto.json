@@ -359,20 +359,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "8c7b09406cfe00bc": {
-      "channel": "release vpn 1.2",
-      "source_tags": [
-        "v33"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Steadier connections on bad Wi-Fi",
-        "Automatically picks the nearest exit",
-        "Connections now look like Chrome"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "cedb35eb242d7c36": {
       "channel": "release vpn 1.5 beta 1",
       "source_tags": [
