@@ -17,14 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "c051d304064c1aae": {
-      "channel": "nightly 7.0 nightly b746289",
+    "07892f4e0fb82dfd": {
+      "channel": "nightly 7.0 nightly 76baa35",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-09",
+      "generated": "2026-10-13",
       "bullets": [
-        "**Model loading** — work on how models are loaded and unloaded on the graphics card, including when one spills over"
+        "**Benchmark on this computer** — a stalled model load is stopped and the reason shown, you can skip a model, and a busy machine is flagged",
+        "**Benchmark Stop** — stops right away instead of waiting for memory to settle",
+        "**Sidebar** — Pinned and Recents can be folded up from their headings",
+        "**Waking from sleep** — lights come back white and fans return to 20%, as on a fresh idle"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
