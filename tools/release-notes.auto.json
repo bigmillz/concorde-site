@@ -65,17 +65,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "669422dba3f2fc64": {
-      "channel": "nightly 1.5.2 nightly 684a124",
+    "a60afdb4fcffe6e6": {
+      "channel": "nightly 1.5.3 nightly b7db216",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-14",
       "bullets": [
-        "**Line choice in fast modes** — when speeds are within 5%, a clearly quicker line (30 ms and 20% lower latency) wins",
-        "**Test durations** — Quick takes about 5 minutes, Extended about 25; the menu, hint and Auto messages now say so"
+        "**Bonded mode** — single Hysteria is no longer chosen because it counts as one link; the test results show this and explain why"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
