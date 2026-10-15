@@ -65,17 +65,18 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "3735c7c7a48101b6": {
-      "channel": "nightly 1.5.3 nightly f24eb05",
+    "e8f43fa1d1896fd4": {
+      "channel": "nightly 1.5.3 nightly 33df30b",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-15",
       "bullets": [
-        "**Speed test** — the Brutal setting now uses a share of the plain Hysteria result instead of the raw peak, which could collapse on a sagging line",
-        "**Speed test** — a collapsed result now waits for the line and says so; the quick race measures latency and picks by the full test's rule"
+        "**Speed test** — detects networks that give a burst of speed and then throttle, and reports the throttled speed as your line speed",
+        "**Speed test** — on a throttling network it no longer tries Brutal, and the result explains what the network is doing",
+        "**Speed test progress bar** — no longer jumps backwards during a run"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
