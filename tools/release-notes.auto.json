@@ -164,48 +164,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "df2413d05487f39f": {
-      "channel": "release ai 6.0.2",
-      "source_tags": [
-        "v271"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Clean up now frees space from old models",
-        "A shorter post-update dialog",
-        "Today and tonight follow your home clock"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "aa1e522e434e573d": {
-      "channel": "release ai 6.0.1",
-      "source_tags": [
-        "v270"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Local questions answered in local time",
-        "Venue answers flag closures and unverified hours",
-        "Recommendations always appear after the last question"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "be9671c963282393": {
-      "channel": "release ai 6.0",
-      "source_tags": [
-        "v269"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Local answers on the place's own clock",
-        "Search your past chats",
-        "A second model checks every recommendation"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "92edd353f2603ee0": {
       "channel": "release vpn 1.4",
       "source_tags": [
@@ -315,23 +273,6 @@
         "Server setup on DigitalOcean from first run",
         "Encrypted DNS via Cloudflare without NextDNS",
         "Flush the DNS cache from Settings"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "d1faeadde95423fa": {
-      "channel": "release vpn 1.3 beta",
-      "source_tags": [
-        "v37",
-        "v39",
-        "v40",
-        "v41"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Automatic speed test in Performance mode",
-        "Notifications carry the ConcordeVPN icon",
-        "Quit now actually quits"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
