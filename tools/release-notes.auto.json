@@ -65,14 +65,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "a60afdb4fcffe6e6": {
-      "channel": "nightly 1.5.3 nightly b7db216",
+    "3735c7c7a48101b6": {
+      "channel": "nightly 1.5.3 nightly f24eb05",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-14",
+      "generated": "2026-10-15",
       "bullets": [
-        "**Bonded mode** — single Hysteria is no longer chosen because it counts as one link; the test results show this and explain why"
+        "**Speed test** — the Brutal setting now uses a share of the plain Hysteria result instead of the raw peak, which could collapse on a sagging line",
+        "**Speed test** — a collapsed result now waits for the line and says so; the quick race measures latency and picks by the full test's rule"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
