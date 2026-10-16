@@ -65,15 +65,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "099bbf9215cb6975": {
-      "channel": "nightly 1.5.4 nightly 21add6e",
+    "66a16dcb3c8b7c6c": {
+      "channel": "nightly 1.5.4 nightly 09f2113",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-16",
       "bullets": [
-        "**Auto mode** — judges each network by every run on it, so a couple of noisy samples no longer change its pick",
-        "**Auto mode** — its explanation now says when results scatter both ways and are treated as noise"
+        "**Speed test bottleneck check** — the result now says whether your server, your host's share of it, or this Mac was the limit",
+        "**Auto mode after an Extended test** — picks the best of the freshly measured modes instead of an older result, then rechecks fast modes in 10 minutes"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
