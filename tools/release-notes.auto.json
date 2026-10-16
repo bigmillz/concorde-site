@@ -66,17 +66,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "713224a1ea5f1d35": {
-      "channel": "nightly 1.5.6 nightly 5013597",
+    "464ef0dc2edf6e0d": {
+      "channel": "nightly 1.5.6 nightly e83dfc1",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-16",
       "bullets": [
-        "**Location latency** — DigitalOcean readings were about 50 ms too high and Vultr's about 140 ms; both now measure correctly",
-        "**Vultr pricing** — the price shown is marked as Vultr's list price, with a note that some locations cost more"
+        "**New server measuring** — when a new server is ready, the main window offers to measure it against the one in use so Auto can pick",
+        "**Auto server choice** — new and current servers are measured back to back; within 10% on speed, the one that answers clearly quicker wins"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
