@@ -154,18 +154,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "e1599b3d28475d4a": {
-      "channel": "release ai 6.0.3",
-      "source_tags": [
-        "v272"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Interface polish"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "92edd353f2603ee0": {
       "channel": "release vpn 1.4",
       "source_tags": [
@@ -246,35 +234,6 @@
         "Automatic update checks with an update dialog",
         "Release notes in About",
         "Fixed Apply breaking after removing an exit"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "b9f7c534cd62761c": {
-      "channel": "release vpn 1.3 beta 2",
-      "source_tags": [
-        "v47"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Update channels: stable, beta or nightly",
-        "Redesigned Settings dialog"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "45bae80114c38f6c": {
-      "channel": "release vpn 1.3 beta",
-      "source_tags": [
-        "v43",
-        "v44",
-        "v45"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Server setup on DigitalOcean from first run",
-        "Encrypted DNS via Cloudflare without NextDNS",
-        "Flush the DNS cache from Settings"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
