@@ -65,18 +65,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "e8f43fa1d1896fd4": {
-      "channel": "nightly 1.5.3 nightly 33df30b",
+    "099bbf9215cb6975": {
+      "channel": "nightly 1.5.4 nightly 21add6e",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-15",
+      "generated": "2026-10-16",
       "bullets": [
-        "**Speed test** — detects networks that give a burst of speed and then throttle, and reports the throttled speed as your line speed",
-        "**Speed test** — on a throttling network it no longer tries Brutal, and the result explains what the network is doing",
-        "**Speed test progress bar** — no longer jumps backwards during a run"
+        "**Auto mode** — judges each network by every run on it, so a couple of noisy samples no longer change its pick",
+        "**Auto mode** — its explanation now says when results scatter both ways and are treated as noise"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
