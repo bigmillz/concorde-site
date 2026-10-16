@@ -65,15 +65,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "66a16dcb3c8b7c6c": {
-      "channel": "nightly 1.5.4 nightly 09f2113",
+    "330ca3b4d53d0307": {
+      "channel": "nightly 1.5.4 nightly 172a73e",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-16",
       "bullets": [
-        "**Speed test bottleneck check** — the result now says whether your server, your host's share of it, or this Mac was the limit",
-        "**Auto mode after an Extended test** — picks the best of the freshly measured modes instead of an older result, then rechecks fast modes in 10 minutes"
+        "**DigitalOcean dedicated-CPU sizes** — CPU-Optimized sizes can now be picked, and each size is labelled shared or dedicated",
+        "**Auto mode** — the main window shows the result Auto actually used to judge each mode",
+        "**Server CPU watch fixes** — readings now come back, line up with this Mac's clock, and failures say why"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
