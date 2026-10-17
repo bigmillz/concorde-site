@@ -67,19 +67,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "dcf3d83989d1a19b": {
-      "channel": "nightly 1.5.6 nightly db21b49",
+    "8b76341d00367ad9": {
+      "channel": "nightly 1.5.6 nightly 55c8ed1",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-17",
       "bullets": [
-        "**New line on UDP 3478** — Hysteria on the port calls start on, on by default for new servers; Performance can pin it",
-        "**Steadier picks** — Auto, lines and modes are judged by their slower recent runs rather than peak speed",
-        "**Throttle check** — once throttling is proven, any line far below its rested speed is rested and measured again",
-        "**Lighter and safer** — less background work with windows hidden or effects off; a failed self-update leaves the app intact"
+        "**Speed tests** — a protocol that tests slow right after another one ran fast now gets a second try after a 45-second rest"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
