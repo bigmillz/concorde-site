@@ -186,7 +186,9 @@ while [[ $# -gt 0 ]]; do
     --email)       ACME_EMAIL="$2"; shift 2 ;;
     --obfs)
       OBFS_REQUESTED=1
-      if [[ "${2:-}" == --* || -z "${2:-}" ]]; then shift; else OBFS_PW="$2"; shift 2; fi ;;
+      # any dash word is the next option, not a password: `--obfs -y` once
+      # made '-y' the salamander password and swallowed the -y
+      if [[ "${2:-}" == -* || -z "${2:-}" ]]; then shift; else OBFS_PW="$2"; shift 2; fi ;;
     --no-obfs)     OBFS_REQUESTED=0; OBFS_PW=""; shift ;;
     --down)        CLI_DOWN_MBPS="$2"; shift 2 ;;
     --up)          CLI_UP_MBPS="$2"; shift 2 ;;
@@ -230,11 +232,36 @@ check_plain --domain "${DOMAIN:-}"
 check_plain --masquerade "${MASQ_URL:-}"
 check_plain --obfs "${OBFS_PW:-}"
 check_plain --email "${ACME_EMAIL:-}"
+check_plain --reality-sni "${REALITY_SNI:-}"
+# The numbers go unquoted into the sourced v23.env and straight into the client
+# JSON ("up_mbps": 3O, is not JSON), so they must be plain numbers. No leading
+# zero either: bash arithmetic reads 08 as bad octal.
+check_num() {   # flag, value, lowest, highest
+  [[ "$2" =~ ^[1-9][0-9]{0,5}$ ]] && (( $2 >= $3 && $2 <= $4 )) \
+    || die "$1 must be a whole number from $3 to $4, got '$2'"
+}
+check_num --port "$PORT" 1 65535
+check_num --down "$CLI_DOWN_MBPS" 1 100000
+check_num --up "$CLI_UP_MBPS" 1 100000
+check_num "--hop (start)" "$HOP_START" 1 65535
+check_num "--hop (end)" "$HOP_END" 1 65535
+(( HOP_START <= HOP_END )) || die "--hop A-B needs A no bigger than B, got ${HOP_START}-${HOP_END}"
 [[ "$CC_MODE" == "brutal" || "$CC_MODE" == "bbr" ]] || die "--cc must be 'brutal' or 'bbr'"
 [[ "$TUN_MTU" =~ ^[0-9]+$ ]] && (( TUN_MTU >= 1200 && TUN_MTU <= 1500 )) \
   || die "--mtu must be 1200-1500"
 [[ -n "$DOMAIN" ]] && SNI="$DOMAIN"
 [[ -z "$MASQ_URL" ]] && MASQ_URL="https://${SNI}/"
+
+# v23.env is written early in an install (the generators read it), long before
+# the firewall, key-only SSH, updates and the concordevpn command. An install
+# that died in between (a GitHub hiccup on a download, the REALITY self-test)
+# left a v23.env that every re-run took for a finished server: install refused,
+# pi-setup said "already installed" and went on to a firewall that was never
+# installed. So write_meta records V23_INSTALLED=0 and the very last step
+# turns it to 1. A v23.env with NO such line was written by an older script
+# and still counts as finished, as before: guessing wrong that way only
+# refuses, guessing wrong the other way rotates passwords clients are using.
+install_unfinished() { [[ -r "$META_FILE" ]] && grep -qx 'V23_INSTALLED=0' "$META_FILE"; }
 
 # ---------------------------------------------------------------- uninstall --
 do_uninstall() {
@@ -397,6 +424,18 @@ install_reality() {
 
   id xray >/dev/null 2>&1 || useradd --system --no-create-home --shell /usr/sbin/nologin xray
   mkdir -p /usr/local/etc/xray
+  # `reality --reality-sni X` on a LIVE box: keep the working config until the
+  # new one has carried a request. Without this a dest that failed the
+  # self-test stayed in force - xray accepting only the new name, v23.env
+  # still naming the old one, and every client already set up refused with
+  # "server name mismatch" until the owner undid it by hand. Only the
+  # standalone path rolls back: in an install the old file belongs to the
+  # identity being replaced. cp -p keeps root:xray 0640 (the private key).
+  XR_BAK=""
+  if [[ "$ACTION" == reality && -f /usr/local/etc/xray/config.json ]]; then
+    XR_BAK=/usr/local/etc/xray/config.json.pre-change
+    cp -p /usr/local/etc/xray/config.json "$XR_BAK"
+  fi
   # CONTAINMENT, explained here rather than inside the file: the routing rule
   # below is what stops this exit being an open relay into the VPC, and it has
   # to hold for HOSTNAMES, not just bare IPs.
@@ -539,17 +578,22 @@ XRTEST
     sleep 3
     XR_SEEN="$(curl -s --socks5-hostname 127.0.0.1:10891 --max-time 20 \
       https://api.ipify.org 2>/dev/null || true)"
+    # a second, unrelated endpoint: an ipify outage alone must not fail the
+    # test (and, on a live box, roll back a dest that actually works)
+    [[ -n "$XR_SEEN" ]] || XR_SEEN="$(curl -s --socks5-hostname 127.0.0.1:10891 --max-time 20 \
+      https://1.1.1.1/cdn-cgi/trace 2>/dev/null | sed -n 's/^ip=//p' || true)"
     kill "$XR_TPID" 2>/dev/null || true
     rm -rf "$XR_TDIR"
     if [[ -n "$XR_SEEN" ]]; then
       ok "self-test passed — reality carried traffic, exit ${XR_SEEN}"
+      [[ -z "$XR_BAK" ]] || rm -f "$XR_BAK"
     else
       warn "xray is running but REALITY did not carry a test request."
       warn "Almost always the borrowed site: it must complete a TLS 1.3"
       warn "handshake the way REALITY relays it. Reachable is NOT enough —"
       warn "www.microsoft.com passes a curl and still fails as a dest."
       warn "Known-good: dl.google.com, addons.mozilla.org."
-      die  "re-run with:  ./concordevpn-server.sh reality --reality-sni dl.google.com"
+      xr_restore_or_die "REALITY did not carry a test request with ${REALITY_SNI}"
     fi
     # The uuid and public key only exist once xray has run, long after the
     # first write_meta. Update ONLY those keys — write_meta rebuilds the whole
@@ -558,8 +602,29 @@ XRTEST
     meta_set_reality
   else
     journalctl -u xray.service -n 30 --no-pager || true
-    die "xray failed to start (log above)"
+    xr_restore_or_die "xray failed to start (log above)"
   fi
+}
+
+# The end of a failed install_reality. On a live box (`reality`) the previous
+# config goes back and xray is restarted on it, so clients keep the REALITY
+# they had; in an install there is nothing to go back to, and the way on is
+# the INSTALL again - `reality` would bring xray up but never the firewall,
+# key-only SSH, updates or the concordevpn command, which come after it.
+xr_restore_or_die() {
+  if [[ -n "${XR_BAK:-}" && -f "$XR_BAK" ]]; then
+    mv -f "$XR_BAK" /usr/local/etc/xray/config.json
+    systemctl restart xray.service >/dev/null 2>&1 || true
+    sleep 2
+    if systemctl is-active --quiet xray.service; then
+      die "$1. The previous REALITY settings were put back and are serving again; clients are unaffected. Known-good dests: dl.google.com, addons.mozilla.org."
+    fi
+    die "$1. The previous REALITY settings were put back, but xray did not start on them either - check: journalctl -u xray.service"
+  fi
+  if [[ "$ACTION" == install ]]; then
+    die "$1. The install stopped part-way and no client has its passwords yet: run the same install again (add --reality-sni dl.google.com if the borrowed site was the problem)."
+  fi
+  die "$1. Re-run with:  ./concordevpn-server.sh reality --reality-sni dl.google.com"
 }
 
 # Adding REALITY to a server that is ALREADY RUNNING. This exists because
@@ -570,6 +635,9 @@ XRTEST
 do_reality() {
   [[ $EUID -eq 0 ]] || die "must run as root"
   [[ -r "$META_FILE" ]] || die "no ${META_FILE} — run './concordevpn-server.sh install' first"
+  # on a half-built box this would bring xray up and leave the firewall, SSH
+  # and the concordevpn command missing behind a success message
+  install_unfinished && die "the install on this server stopped part-way. Run the same './concordevpn-server.sh install ...' again: no client has its passwords yet."
   # Reuse what is already provisioned: re-running must not invalidate clients.
   # An UNREADABLE config here is the dangerous case, not the harmless one — a
   # config we cannot parse looks identical to "no config", and falling through
@@ -1058,7 +1126,10 @@ S
     echo " server - Settings > Network > NextDNS, or the first-run screen.)" >&2
     ;;
   status)
-    systemctl status hysteria-server.service --no-pager -l | head -14
+    # `|| true`: systemctl status exits 3 for a stopped or failed unit (and
+    # head can SIGPIPE it), which under pipefail ended the command right
+    # here - no settings, no reality, no sockets, exactly when they matter
+    systemctl status hysteria-server.service --no-pager -l | head -14 || true
     echo
     echo "server     ${V23_SERVER}:${V23_PORT}   sni=${V23_SNI}"
     echo "obfs       $([[ -n "${V23_OBFS_PW}" ]] && echo "salamander (on)" || echo "off")"
@@ -1090,6 +1161,10 @@ S
     # Client-side only; no server restart needed.
     need_root
     [[ $# -eq 3 ]] || { echo "usage: v23 tune <down_mbps> <up_mbps>"; exit 1; }
+    # plain numbers only: they land unquoted in the sourced v23.env and in
+    # the client JSON ("up_mbps": 3O, is not JSON)
+    [[ "$2" =~ ^[1-9][0-9]{0,5}$ && "$3" =~ ^[1-9][0-9]{0,5}$ ]] \
+      || { echo "tune: give two whole numbers of Mbps, e.g. v23 tune 300 30"; exit 1; }
     set_meta V23_DOWN "$2"; set_meta V23_UP "$3"
     "$LIB/genclient.sh"
     echo "targets now $2 down / $3 up Mbps — re-copy the config to your Mac"
@@ -1097,6 +1172,8 @@ S
   mtu)
     need_root
     [[ $# -eq 2 ]] || { echo "usage: v23 mtu <1200-1500>"; exit 1; }
+    [[ "$2" =~ ^1[2-5][0-9][0-9]$ ]] && (( $2 <= 1500 )) \
+      || { echo "mtu: give a number from 1200 to 1500"; exit 1; }
     set_meta V23_MTU "$2"; "$LIB/genclient.sh"
     echo "client MTU now $2 — re-copy the config to your Mac"
     ;;
@@ -1129,10 +1206,18 @@ S
     echo "allowed LAN destinations: ${norm:-none}"
     ;;
   rotate)
+    # The Hysteria 2 password ONLY. The Trojan password lives in sing-box's own
+    # config and the REALITY identity in xray's, and nothing here rewrites
+    # from v23.env - yet the help said "new auth password" and the install
+    # refusal sent a suspected leak here, leaving the leaked Trojan and
+    # REALITY keys working. After a leak, the app's Change passwords does
+    # Trojan, Hysteria 2 and obfs and this Mac in one go; the words now say so.
     need_root
     new="$(head -c 24 /dev/urandom | base64 | tr -d '/+=' | head -c 32)"
     set_meta V23_PASSWORD "$new"; apply_all
-    echo "new password: ${new}"
+    echo "new Hysteria 2 password: ${new}"
+    echo "(Trojan, obfs and REALITY keys are unchanged - to change those too, use"
+    echo " ConcordeVPN > Settings > Servers > this server > Change passwords)"
     ;;
   speedtest)
     # Parallel streams: one TCP flow understates a fast line by 2x or more.
@@ -1164,8 +1249,11 @@ concordevpn <command>
   obfs on|off        toggle salamander obfuscation (both ends must match)
   allow-lan [A:P|none]  show / set the home-LAN addresses clients may reach,
                      e.g. 192.168.1.50:8097 (comma-separated; TCP only)
-  rotate             new auth password
-  apply              regenerate configs from /etc/v23/v23.env and restart
+  rotate             new Hysteria 2 password only (Trojan, obfs and REALITY
+                     keys stay; the app's Change passwords does all of them)
+  apply              regenerate the Hysteria 2 config and client files from
+                     /etc/v23/v23.env and restart Hysteria 2 (sing-box, xray
+                     and the port-hop redirect are NOT rewritten from it)
   restart            restart the server
   speedtest          check the droplet's own line
 H
@@ -1182,6 +1270,7 @@ ln -sfn "${CLI_PATH}" "${CLI_ALIAS}" 2>/dev/null || true
 do_allow_lan() {
   [[ $EUID -eq 0 ]] || die "must run as root"
   [[ -r "$META_FILE" ]] || die "no ${META_FILE} - run './concordevpn-server.sh install' first"
+  install_unfinished && die "the install on this server stopped part-way. Run the same './concordevpn-server.sh install ...' again first (it takes --allow-lan too)."
   (( ALLOW_LAN_SET == 1 )) || die "allow-lan needs a list: ADDRESS:PORT[,ADDRESS:PORT...] or none"
   install -d -m 0755 "$LIB_DIR"
   write_genlan; write_genserver; write_cli
@@ -1214,8 +1303,13 @@ say "Preflight"
 # `install` generates NEW passwords, a new certificate and new Reality keys:
 # on a server that is already set up that locks out every client. Say so
 # instead of doing it by accident (a re-run "to be safe").
-if [[ -r "$META_FILE" && "${ROTATE_EVERYTHING:-0}" != 1 ]]; then
-  die "this server is already installed (${META_FILE}). Running install again would change every password and the certificate, and every Mac already set up would stop connecting. To change passwords on purpose use: v23 rotate. To start over completely: ./concordevpn-server.sh install --rotate-everything"
+# A half-built server (V23_INSTALLED=0, see install_unfinished) is the
+# exception: its passwords were never printed, so no client can hold them and
+# running the install again costs nothing.
+if install_unfinished; then
+  warn "an earlier install on this server stopped part-way; starting it again (no client has its passwords yet)"
+elif [[ -r "$META_FILE" && "${ROTATE_EVERYTHING:-0}" != 1 ]]; then
+  die "this server is already installed (${META_FILE}). Running install again would change every password and the certificate, and every Mac already set up would stop connecting. To change the Trojan, Hysteria 2 and obfs passwords on purpose: ConcordeVPN > Settings > Servers > this server > Change passwords ('concordevpn rotate' here changes the Hysteria 2 password only). To start over completely: ./concordevpn-server.sh install --rotate-everything"
 fi
 [[ -r /etc/os-release ]] || die "cannot read /etc/os-release"
 . /etc/os-release
@@ -1304,14 +1398,19 @@ fs.file-max = 1048576
 SYSCTL
 modprobe tcp_bbr 2>/dev/null || true
 sysctl -q --system >/dev/null 2>&1 || warn "some sysctl keys rejected by this kernel"
-ok "socket buffers raised to 32 MB, fq + bbr active"
+# default_qdisc only shapes qdiscs created LATER: the NIC keeps the root qdisc
+# it booted with (fq_codel on Ubuntu) until the next reboot, so fq is not
+# active yet and this used to claim it was. BBR paces by itself meanwhile.
+ok "socket buffers raised to 32 MB, bbr active (fq from the next reboot)"
 
-# NIC offloads: best-effort, purely a pps win. Never fatal.
+# NIC offloads: best-effort, purely a pps win. Never fatal. Runtime only - a
+# reboot puts the NIC's defaults back (GRO/GSO/TSO are normally on anyway;
+# the queue length returns to 1000), so the line below says so.
 NIC="$(ip -o -4 route show default 2>/dev/null | awk '{print $5; exit}')"
 if [[ -n "$NIC" ]] && command -v ethtool >/dev/null 2>&1; then
   ethtool -K "$NIC" gro on gso on tso on >/dev/null 2>&1 || true
   ip link set "$NIC" txqueuelen 10000 >/dev/null 2>&1 || true
-  ok "offloads enabled on ${NIC}"
+  ok "offloads enabled on ${NIC} (until the next reboot)"
 fi
 
 # ---------------------------------------------------------------- binary    --
@@ -1391,6 +1490,7 @@ V23_SRV_DOWN=${SRV_DOWN_MBPS}
 V23_CC=${CC_MODE}
 V23_MTU=${TUN_MTU}
 V23_ALLOW_LAN=${ALLOW_LAN}
+V23_INSTALLED=0
 META
   chmod 0600 "$META_FILE"
 }
@@ -1821,16 +1921,31 @@ if [[ $HARDEN_SSH -eq 1 ]]; then
   say "Hardening SSH"
   if [[ -s /root/.ssh/authorized_keys ]]; then
     install -d -m 0755 /etc/ssh/sshd_config.d
-    cat > /etc/ssh/sshd_config.d/99-v23.conf <<'SSHD'
+    # 00-, not 99-: sshd keeps the FIRST value it reads and reads drop-ins in
+    # name order, so the old 99-v23.conf lost to the 50-cloud-init.conf a
+    # droplet made with a root password gets (PasswordAuthentication yes)
+    # while this said "key-only". pi-setup.sh's 00-concordevpn.conf sorts
+    # first and is stricter still, so it keeps winning on a Pi. The old file
+    # goes once the new one is accepted, so a re-run leaves one copy.
+    cat > /etc/ssh/sshd_config.d/00-v23.conf <<'SSHD'
 PasswordAuthentication no
 PermitRootLogin prohibit-password
 KbdInteractiveAuthentication no
 SSHD
     if sshd -t 2>/dev/null; then
-      systemctl reload ssh 2>/dev/null || systemctl reload sshd 2>/dev/null || true
-      ok "SSH is key-only"
-    else
       rm -f /etc/ssh/sshd_config.d/99-v23.conf
+      systemctl reload ssh 2>/dev/null || systemctl reload sshd 2>/dev/null || true
+      # say what sshd will actually do, not what was written (sshd -T is the
+      # merged result of every file; captured first, see SSHD_T above)
+      SSHD_NOW="$(sshd -T 2>/dev/null || true)"
+      if grep -qx 'passwordauthentication no' <<<"$SSHD_NOW"; then
+        ok "SSH is key-only"
+      else
+        warn "SSH still accepts passwords: another sshd setting overrides 00-v23.conf"
+        warn "(check: sshd -T | grep -i passwordauthentication, and sshd_config's Include line)"
+      fi
+    else
+      rm -f /etc/ssh/sshd_config.d/00-v23.conf
       warn "sshd rejected the key-only settings - left as it was"
     fi
   else
@@ -1970,6 +2085,10 @@ ok "a kernel crash reboots in 10 s; the VPN services restart every time"
 # ------------------------------------------------------------------ v23 CLI --
 write_cli
 ok "installed ${CLI_PATH}"
+# LAST: everything above is in place, so from here on a re-run of install is
+# refused (it would rotate the passwords about to be printed). See
+# install_unfinished.
+meta_put V23_INSTALLED 1
 echo
 say "Paste this block into ConcordeVPN's first-run screen (again later: concordevpn show)"
 "${CLI_PATH}" show
