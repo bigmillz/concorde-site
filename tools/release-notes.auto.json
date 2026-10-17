@@ -66,14 +66,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "401f4e6d2998e945": {
-      "channel": "nightly 1.5.6 nightly cb675fb",
+    "61d1f500720acfbe": {
+      "channel": "nightly 1.5.6 nightly e89e5c3",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-16",
+      "generated": "2026-10-17",
       "bullets": [
-        "**Make primary** — any server can now be set as the primary and moves to the top, so the old primary can be removed"
+        "**Speed test** — each row shows the path its traffic actually took and how hard the server and this Mac's CPUs worked",
+        "**Raspberry Pi servers** — setup allows SSH from any private home network, so a Pi on a new network still accepts SSH",
+        "**Pi rescue from a Mac** — adds those SSH rules straight onto a Pi's drive and, with consent, repairs a drive unplugged mid-run",
+        "**Fixes** — speed test and Auto ranking, a hang adding a second server in a long-named city, and settings that weren't kept"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
