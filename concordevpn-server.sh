@@ -34,12 +34,6 @@ UNIT_FILE="/etc/systemd/system/hysteria-server.service"
 SYSCTL_FILE="/etc/sysctl.d/99-v23-quic.conf"
 NFT_FILE="${CFG_DIR}/porthop.nft"
 NFT_UNIT="/etc/systemd/system/v23-porthop.service"
-# Hysteria answers on UDP 3478 too - STUN/TURN, where calls start - redirected
-# to its own port, as the hop range is: a network that shapes UDP by port
-# often lets call traffic through (the app races it as "Hysteria 3478")
-ALT_PORT=3478
-ALT_NFT_FILE="${CFG_DIR}/altport.nft"
-ALT_UNIT="/etc/systemd/system/v23-altport.service"
 CLI_PATH="/usr/local/bin/concordevpn"
 # the old name keeps working on servers that learned it
 CLI_ALIAS="/usr/local/bin/v23"
@@ -95,7 +89,6 @@ CC_MODE="bbr"    # BBR adapts to any line (100-500+ Mbps); no per-network tuning
 TUN_MTU=1400
 # A new server is locked down by default; each has an opt-out flag.
 FIREWALL=1       # ufw: nothing in but SSH and the VPN's own ports
-ALT_ENABLED=1    # Hysteria on UDP ALT_PORT too (--no-zoom-port: off)
 HARDEN_SSH=1     # key-only SSH (skipped, never forced, if root has no key)
 FAIL2BAN=1       # only where OpenSSH lacks its own repeat-failure blocking
 AUTO_REBOOT=1    # reboot for security updates at 04:00 in the region's time
@@ -139,9 +132,6 @@ Options:
   --mtu N             Client TUN MTU (default: 1400; v23-mac.sh measures this)
   --hop A-B           UDP port-hop range (default: 20000-45000)
   --no-hop            Disable port hopping
-  --no-zoom-port      Do not answer Hysteria on UDP 3478 (default: answer there
-                      too - the port calls start on, often let through where
-                      443 is shaped)
   --no-firewall       Leave the firewall off (default: on, SSH + VPN ports only)
   --keep-ssh-passwords  Leave SSH password login alone (default: key-only,
                       applied only when root already has an authorized key)
@@ -167,10 +157,6 @@ Options:
 Add REALITY to a server that is already running (touches nothing else):
   ./concordevpn-server.sh reality
 
-Add Hysteria on UDP 3478 to a server that is already set up (touches nothing
-else; 'off' takes it away again):
-  ./concordevpn-server.sh zoom-port          (or: zoom-port off)
-
 Change the allowed LAN list on a server that is already set up (no passwords
 or keys change; only the allow rules in the live configs are edited):
   ./concordevpn-server.sh allow-lan 192.168.1.50:8097     (or: none)
@@ -184,8 +170,6 @@ ACTION="${1:-install}"
 [[ "$ACTION" == "-h" || "$ACTION" == "--help" ]] && { usage; exit 0; }
 case "$ACTION" in
   install|uninstall|reality) shift || true ;;
-  zoom-port)  shift || true
-              if [[ "${1:-}" == off ]]; then ALT_ENABLED=0; shift; fi ;;
   allow-lan)  shift || true
               # the list may follow as a bare word: allow-lan 192.168.1.50:8097
               if [[ -n "${1:-}" && "$1" != -* ]]; then ALLOW_LAN_VALUES+=("$1"); ALLOW_LAN_SET=1; shift; fi ;;
@@ -212,7 +196,6 @@ while [[ $# -gt 0 ]]; do
     --mtu)         TUN_MTU="$2"; shift 2 ;;
     --hop)         HOP_START="${2%%-*}"; HOP_END="${2##*-}"; HOP_ENABLED=1; shift 2 ;;
     --no-hop)      HOP_ENABLED=0; shift ;;
-    --no-zoom-port) ALT_ENABLED=0; shift ;;
     --harden-ssh)  HARDEN_SSH=1; shift ;;          # the default now; kept for old scripts
     --keep-ssh-passwords) HARDEN_SSH=0; shift ;;
     --no-firewall) FIREWALL=0; shift ;;
@@ -293,9 +276,7 @@ do_uninstall() {
   systemctl disable --now xray.service 2>/dev/null || true
   systemctl disable --now v23-porthop.service 2>/dev/null || true
   nft delete table inet v23hop 2>/dev/null || true
-  systemctl disable --now v23-altport.service 2>/dev/null || true
-  nft delete table inet v23alt 2>/dev/null || true
-  rm -f "$UNIT_FILE" "$NFT_UNIT" "$ALT_UNIT" "$SYSCTL_FILE" "$CLI_PATH" "$BIN_PATH"
+  rm -f "$UNIT_FILE" "$NFT_UNIT" "$SYSCTL_FILE" "$CLI_PATH" "$BIN_PATH"
   rm -f /etc/systemd/system/sing-box.service /etc/systemd/system/xray.service
   rm -f /usr/local/bin/sing-box /usr/local/bin/xray
   rm -rf /etc/sing-box /var/lib/sing-box /usr/local/etc/xray /var/log/xray
@@ -313,81 +294,6 @@ do_uninstall() {
   exit 0
 }
 [[ "$ACTION" == "uninstall" ]] && do_uninstall
-
-# ------------------------------------------------- hysteria on UDP 3478 --
-# The redirect lives in its own nft table and unit, apart from the hop
-# range, so either can go without the other. Conntrack sends the replies
-# back from ALT_PORT, so the client sees the port it wrote to (unlike a DO
-# reserved IP, which rewrites the address and breaks QUIC).
-altport_on() {    # $1: the Hysteria port to redirect to
-  cat > "$ALT_NFT_FILE" <<NFT
-#!/usr/sbin/nft -f
-table inet v23alt {}
-delete table inet v23alt
-table inet v23alt {
-  chain prerouting {
-    type nat hook prerouting priority dstnat; policy accept;
-    udp dport ${ALT_PORT} redirect to :$1
-  }
-}
-NFT
-  chmod 0644 "$ALT_NFT_FILE"
-  cat > "$ALT_UNIT" <<UNIT
-[Unit]
-Description=ConcordeVPN — Hysteria on UDP ${ALT_PORT}
-After=network-online.target nftables.service
-Wants=network-online.target
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/sbin/nft -f ${ALT_NFT_FILE}
-ExecStop=/usr/sbin/nft delete table inet v23alt
-
-[Install]
-WantedBy=multi-user.target
-UNIT
-  systemctl daemon-reload
-  # restart, not just enable: a re-run with another Hysteria port reloads it
-  if systemctl enable v23-altport.service >/dev/null 2>&1 \
-      && systemctl restart v23-altport.service >/dev/null 2>&1; then
-    ok "Hysteria answers on UDP ${ALT_PORT} too"
-  else
-    warn "the UDP ${ALT_PORT} redirect failed to load; Hysteria stays on UDP $1 only"
-    return 1
-  fi
-  if command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q "^Status: active"; then
-    ufw allow "${ALT_PORT}/udp" >/dev/null 2>&1 || warn "ufw: could not allow ${ALT_PORT}/udp"
-  fi
-}
-
-altport_off() {
-  systemctl disable --now v23-altport.service >/dev/null 2>&1 || true
-  nft delete table inet v23alt 2>/dev/null || true
-  rm -f "$ALT_UNIT" "$ALT_NFT_FILE"
-  systemctl daemon-reload
-  if command -v ufw >/dev/null 2>&1; then
-    ufw delete allow "${ALT_PORT}/udp" >/dev/null 2>&1 || true
-  fi
-  ok "Hysteria no longer answers on UDP ${ALT_PORT}"
-}
-
-do_zoom_port() {
-  [[ $EUID -eq 0 ]] || die "must run as root (sudo)"
-  [[ -r "$META_FILE" ]] || die "no ${META_FILE} — run './concordevpn-server.sh install' first"
-  local hp
-  hp="$(sed -n 's/^V23_PORT=//p' "$META_FILE" | head -1)"
-  [[ "$hp" =~ ^[0-9]+$ ]] || die "no Hysteria port recorded in ${META_FILE}"
-  [[ "$hp" != "$ALT_PORT" ]] || die "Hysteria already listens on ${ALT_PORT}"
-  if (( ALT_ENABLED )); then
-    say "Hysteria on UDP ${ALT_PORT} -> ${hp}"
-    altport_on "$hp" || exit 1
-  else
-    altport_off
-  fi
-  exit 0
-}
-[[ "$ACTION" == "zoom-port" ]] && do_zoom_port
 
 # ------------------------------------------------- vless + reality (TCP) --
 # The third transport, and the only one that survives ACTIVE probing.
@@ -1945,11 +1851,6 @@ UNIT
   fi
 fi
 
-if [[ $ALT_ENABLED -eq 1 && "$PORT" != "$ALT_PORT" ]]; then
-  say "Hysteria on UDP ${ALT_PORT} -> ${PORT}"
-  altport_on "$PORT" || ALT_ENABLED=0
-fi
-
 # ---------------------------------------------------------------- firewall --
 # A new server takes nothing but SSH and the VPN's own ports: ufw, default
 # deny inbound, IPv4 and IPv6. SSH is allowed on every port sshd really
@@ -1983,7 +1884,6 @@ if [[ $FIREWALL -eq 1 || $FW_ACTIVE -eq 1 ]]; then
   [[ $REALITY_ENABLED -eq 1 ]] && fw_allow "${REALITY_PORT}/tcp"
   [[ $NEED_80 -eq 1 ]] && fw_allow 80/tcp
   [[ $HOP_ENABLED -eq 1 ]] && fw_allow "${HOP_START}:${HOP_END}/udp"
-  [[ $ALT_ENABLED -eq 1 ]] && fw_allow "${ALT_PORT}/udp"
   if [[ $FW_ACTIVE -eq 0 ]]; then
     ufw default deny incoming >/dev/null
     ufw default allow outgoing >/dev/null
@@ -2199,7 +2099,7 @@ cat <<SUMMARY
 ${B}${G}v23 is up.${R}
 
   server        ${B}${SERVER_ADDR}${R}
-  udp port      ${PORT}$([[ $HOP_ENABLED -eq 1 ]] && echo "  (+ hop range ${HOP_START}-${HOP_END})")$([[ $ALT_ENABLED -eq 1 ]] && echo "  (+ ${ALT_PORT})")
+  udp port      ${PORT}$([[ $HOP_ENABLED -eq 1 ]] && echo "  (+ hop range ${HOP_START}-${HOP_END})")
   sni / masq    ${SNI}  (TCP probes get a reverse proxy of ${MASQ_URL})
   password      ${B}${PASSWORD}${R}
   obfuscation   $([[ -n "$OBFS_PW" ]] && echo "${B}salamander ON${R}  pw ${OBFS_PW}" || echo "off — enable later with 'v23 obfs on'")
