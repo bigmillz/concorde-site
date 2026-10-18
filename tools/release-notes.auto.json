@@ -67,14 +67,15 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "8b76341d00367ad9": {
-      "channel": "nightly 1.5.6 nightly 55c8ed1",
+    "75d98f00031d1620": {
+      "channel": "nightly 1.5.6 nightly f58622d",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-17",
+      "generated": "2026-10-18",
       "bullets": [
-        "**Speed tests** — a protocol that tests slow right after another one ran fast now gets a second try after a 45-second rest"
+        "**Auto mode** — when two protocols are about equally fast, it now picks the one that responds clearly quicker over the more private one",
+        "Stealth modes keep their priority in Auto"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
