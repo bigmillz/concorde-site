@@ -34,39 +34,6 @@
     }
   },
   "bigmillz/concordevpn-releases": {
-    "b42cca80cd851544": {
-      "channel": "stable 1.5",
-      "source_tags": [
-        "v54",
-        "v55"
-      ],
-      "generated": "2026-10-04",
-      "bullets": [
-        "**Bonding** — use two connections at once, like Wi-Fi and Ethernet or a phone by USB, for networks that cap each device",
-        "**Metered connections** — phones and data-plan connections are counted and join only when your main line is nearly full",
-        "**Servers** — Auto picks the fastest; change passwords, name or address in the app; QR codes for phone VPN apps",
-        "**A cleaner main window** — Mode and Exit open in place, your ISP under your IP, Quick or Extended speed test in every mode"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
-    "02bb6164cd8428ec": {
-      "channel": "prerelease 1.5.6 beta 1",
-      "source_tags": [
-        "v56",
-        "v57",
-        "v58"
-      ],
-      "generated": "2026-10-17",
-      "bullets": [
-        "**Create a server at Vultr** — choose DigitalOcean or Vultr in the panel, with real plans, location latency and one-click delete",
-        "**Dedicated-CPU servers** — DigitalOcean and Vultr offer dedicated-CPU sizes, labeled shared or dedicated",
-        "**Speed test finds the bottleneck** — it says whether your server, the host's share or this Mac was the limit",
-        "**Mode explainer** — what each mode does and gives up, in plain terms first, linked from the Auto tooltip"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "75d98f00031d1620": {
       "channel": "nightly 1.5.6 nightly f58622d",
       "source_tags": [
@@ -78,6 +45,24 @@
         "Stealth modes keep their priority in Auto"
       ],
       "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "7e696673867a5c48": {
+      "channel": "stable 1.5.6",
+      "source_tags": [
+        "v56",
+        "v57",
+        "v58",
+        "v59"
+      ],
+      "generated": "2026-10-18",
+      "bullets": [
+        "**Vultr servers** — create a server at Vultr as well as DigitalOcean, with every location, the plans each sells, nearest marked",
+        "**DigitalOcean** — every region, dedicated-CPU sizes, and an optional API token saved in the Keychain",
+        "**Make primary** — any server can become the primary, so the old one can be removed; new servers can be measured right away",
+        "**Location menu** — pick Auto or any server from the menu bar, with a warning on one that is down"
+      ],
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
@@ -336,6 +321,20 @@
         "Pi accepts SSH after moving networks",
         "Failed self-updates no longer break the app",
         "Server setup recovers from interrupted installs"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "429ee9996c8d831c": {
+      "channel": "release vpn 1.5.6",
+      "source_tags": [
+        "v59"
+      ],
+      "generated": "2026-10-18",
+      "bullets": [
+        "Create servers at Vultr as well as DigitalOcean",
+        "Any server can become the primary",
+        "Location picker in the menu bar"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
