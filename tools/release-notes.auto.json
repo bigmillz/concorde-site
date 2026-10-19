@@ -126,20 +126,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "40eb891618af5e64": {
-      "channel": "release ai 6.0.4 beta 1",
-      "source_tags": [
-        "v273"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Image generation on your Mac or in the cloud",
-        "Real progress for model downloads",
-        "Choose whether to check for updates automatically"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "92edd353f2603ee0": {
       "channel": "release vpn 1.4",
       "source_tags": [
@@ -206,20 +192,6 @@
         "Speed limits, automatic or set by you",
         "A bypass list you can edit",
         "Exit location no longer assumed New York"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
-    "09045503ca89e3b9": {
-      "channel": "release vpn 1.3",
-      "source_tags": [
-        "v48"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Automatic update checks with an update dialog",
-        "Release notes in About",
-        "Fixed Apply breaking after removing an exit"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
