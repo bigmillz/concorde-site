@@ -52,17 +52,18 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "c9a35030b8f43803": {
-      "channel": "nightly 1.5.7 nightly 8beb30b",
+    "4c65081f28d14c74": {
+      "channel": "nightly 1.5.7 nightly d4ae7bc",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-20",
       "bullets": [
-        "**Cancel speed measuring** — the Test button turns into Cancel while Auto measures and pauses Auto on that network for two hours or until you test",
-        "**New-server banner** — Cancel stops after the current run, records nothing, and offers again in an hour"
+        "**NextDNS on your server** — all DNS lookups go to your NextDNS profile over DNS-over-TLS, and you can turn it off",
+        "Servers the app creates get your own NextDNS ID over SSH, never through the installer or cloud setup",
+        "The setup is checked against NextDNS's test page, and the previous DNS comes back if it fails"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
