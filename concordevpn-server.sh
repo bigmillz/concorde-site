@@ -40,6 +40,12 @@ NFT_UNIT="/etc/systemd/system/v23-porthop.service"
 ALT_PORT=3478
 ALT_NFT_FILE="${CFG_DIR}/altport.nft"
 ALT_UNIT="/etc/systemd/system/v23-altport.service"
+# NextDNS for everything the server looks up on its clients' behalf. The
+# profile ID is NEVER in this script: whoever sets the server up passes their
+# own (the app passes its user's, from their own settings), so a copy of
+# this script carries nobody's subscription.
+NEXTDNS_DROPIN="/etc/systemd/resolved.conf.d/90-concordevpn-nextdns.conf"
+NEXTDNS_ID=""
 CLI_PATH="/usr/local/bin/concordevpn"
 # the old name keeps working on servers that learned it
 CLI_ALIAS="/usr/local/bin/v23"
@@ -139,6 +145,9 @@ Options:
   --mtu N             Client TUN MTU (default: 1400; v23-mac.sh measures this)
   --hop A-B           UDP port-hop range (default: 20000-45000)
   --no-hop            Disable port hopping
+  --nextdns ID        Look names up through YOUR NextDNS profile (ID from
+                      my.nextdns.io), over encrypted DNS: ad and tracker
+                      blocking for every device on the VPN
   --no-zoom-port      Do not answer Hysteria on UDP 3478 (default: answer there
                       too - the port calls start on, often let through where
                       443 is shaped)
@@ -171,6 +180,9 @@ Add Hysteria on UDP 3478 to a server that is already set up (touches nothing
 else; 'off' takes it away again):
   ./concordevpn-server.sh zoom-port          (or: zoom-port off)
 
+Use your NextDNS profile for the server's lookups (or stop: 'nextdns off'):
+  ./concordevpn-server.sh nextdns abc123
+
 Change the allowed LAN list on a server that is already set up (no passwords
 or keys change; only the allow rules in the live configs are edited):
   ./concordevpn-server.sh allow-lan 192.168.1.50:8097     (or: none)
@@ -186,6 +198,8 @@ case "$ACTION" in
   install|uninstall|reality) shift || true ;;
   zoom-port)  shift || true
               if [[ "${1:-}" == off ]]; then ALT_ENABLED=0; shift; fi ;;
+  nextdns)    shift || true
+              NEXTDNS_ID="${1:-}"; [[ $# -gt 0 ]] && shift ;;
   allow-lan)  shift || true
               # the list may follow as a bare word: allow-lan 192.168.1.50:8097
               if [[ -n "${1:-}" && "$1" != -* ]]; then ALLOW_LAN_VALUES+=("$1"); ALLOW_LAN_SET=1; shift; fi ;;
@@ -213,6 +227,7 @@ while [[ $# -gt 0 ]]; do
     --hop)         HOP_START="${2%%-*}"; HOP_END="${2##*-}"; HOP_ENABLED=1; shift 2 ;;
     --no-hop)      HOP_ENABLED=0; shift ;;
     --no-zoom-port) ALT_ENABLED=0; shift ;;
+    --nextdns)     NEXTDNS_ID="${2:-}"; shift 2 ;;
     --harden-ssh)  HARDEN_SSH=1; shift ;;          # the default now; kept for old scripts
     --keep-ssh-passwords) HARDEN_SSH=0; shift ;;
     --no-firewall) FIREWALL=0; shift ;;
@@ -295,6 +310,10 @@ do_uninstall() {
   nft delete table inet v23hop 2>/dev/null || true
   systemctl disable --now v23-altport.service 2>/dev/null || true
   nft delete table inet v23alt 2>/dev/null || true
+  if [[ -f "$NEXTDNS_DROPIN" ]]; then
+    rm -f "$NEXTDNS_DROPIN"
+    systemctl restart systemd-resolved 2>/dev/null || true
+  fi
   rm -f "$UNIT_FILE" "$NFT_UNIT" "$ALT_UNIT" "$SYSCTL_FILE" "$CLI_PATH" "$BIN_PATH"
   rm -f /etc/systemd/system/sing-box.service /etc/systemd/system/xray.service
   rm -f /usr/local/bin/sing-box /usr/local/bin/xray
@@ -388,6 +407,79 @@ do_zoom_port() {
   exit 0
 }
 [[ "$ACTION" == "zoom-port" ]] && do_zoom_port
+
+# ----------------------------------------------------- nextdns (server side)
+# Hysteria, sing-box and Xray have no resolver of their own configured, so
+# every name a client asks for is looked up by systemd-resolved: pointed at
+# NextDNS over DNS-over-TLS, the profile's blocking applies to every device
+# on the VPN - a phone whose VPN app sends names to the server included,
+# which its own DNS setting never sees. The answers come from where the
+# traffic exits, which is also what CDNs should see.
+check_nextdns_id() {
+  [[ "$1" =~ ^[a-z0-9]{4,16}$ ]] || die "a NextDNS ID is letters and digits, like abc123 (got '$1')"
+}
+
+nextdns_on() {    # $1: the profile ID
+  systemctl is-active --quiet systemd-resolved \
+    || die "systemd-resolved is not running here; NextDNS needs it (nothing changed)"
+  local old=""
+  [[ -f "$NEXTDNS_DROPIN" ]] && old="$(cat "$NEXTDNS_DROPIN")"
+  mkdir -p "$(dirname "$NEXTDNS_DROPIN")"
+  cat > "$NEXTDNS_DROPIN" <<RES
+# ConcordeVPN: this server's lookups go through NextDNS (concordevpn-server.sh nextdns)
+[Resolve]
+DNS=45.90.28.0#$1.dns.nextdns.io
+DNS=2a07:a8c0::#$1.dns.nextdns.io
+DNS=45.90.30.0#$1.dns.nextdns.io
+DNS=2a07:a8c1::#$1.dns.nextdns.io
+DNSOverTLS=yes
+Domains=~.
+RES
+  chmod 0644 "$NEXTDNS_DROPIN"
+  systemctl restart systemd-resolved
+  resolvectl flush-caches 2>/dev/null || true
+  # proved, not assumed: NextDNS's own test page says whether the lookup
+  # reached the profile. A network that blocks DNS-over-TLS (853) would
+  # leave the server unable to look anything up - so then it goes back.
+  local st="" i
+  for i in 1 2 3 4 5; do
+    sleep 2
+    st="$(curl -fsS -m 8 https://test.nextdns.io 2>/dev/null | tr -d ' \t\n' \
+          | sed -n 's/.*"status":"\([a-z]*\)".*/\1/p')"
+    [[ "$st" == ok ]] && break
+  done
+  if [[ "$st" != ok ]]; then
+    if [[ -n "$old" ]]; then printf '%s\n' "$old" > "$NEXTDNS_DROPIN"; else rm -f "$NEXTDNS_DROPIN"; fi
+    systemctl restart systemd-resolved
+    warn "NextDNS did not answer (status: ${st:-none}); the server's DNS is back as it was"
+    return 1
+  fi
+  ok "this server looks names up through NextDNS (profile $1)"
+}
+
+nextdns_off() {
+  if [[ -f "$NEXTDNS_DROPIN" ]]; then
+    rm -f "$NEXTDNS_DROPIN"
+    systemctl restart systemd-resolved
+    resolvectl flush-caches 2>/dev/null || true
+  fi
+  ok "this server looks names up with its own provider's DNS again"
+}
+
+do_nextdns() {
+  [[ $EUID -eq 0 ]] || die "must run as root (sudo)"
+  [[ -n "$NEXTDNS_ID" ]] || die "usage: concordevpn-server.sh nextdns ID   (or: nextdns off)"
+  if [[ "$NEXTDNS_ID" == off ]]; then
+    nextdns_off
+  else
+    check_nextdns_id "$NEXTDNS_ID"
+    say "NextDNS for this server's lookups"
+    nextdns_on "$NEXTDNS_ID" || exit 1
+  fi
+  exit 0
+}
+[[ "$ACTION" == "nextdns" ]] && do_nextdns
+[[ -z "$NEXTDNS_ID" ]] || check_nextdns_id "$NEXTDNS_ID"
 
 # ------------------------------------------------- vless + reality (TCP) --
 # The third transport, and the only one that survives ACTIVE probing.
@@ -1948,6 +2040,10 @@ fi
 if [[ $ALT_ENABLED -eq 1 && "$PORT" != "$ALT_PORT" ]]; then
   say "Hysteria on UDP ${ALT_PORT} -> ${PORT}"
   altport_on "$PORT" || ALT_ENABLED=0
+fi
+if [[ -n "$NEXTDNS_ID" ]]; then
+  say "NextDNS for this server's lookups"
+  nextdns_on "$NEXTDNS_ID" || true    # not fatal: the VPN works without it
 fi
 
 # ---------------------------------------------------------------- firewall --
