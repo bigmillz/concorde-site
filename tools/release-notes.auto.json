@@ -52,17 +52,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "fc5c8607e7a96a7d": {
-      "channel": "nightly 1.5.7 nightly 4d9b25a",
+    "c9a35030b8f43803": {
+      "channel": "nightly 1.5.7 nightly 8beb30b",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-18",
+      "generated": "2026-10-20",
       "bullets": [
-        "**Lower energy use** — background video clips pause while the window is hidden instead of using part of a CPU core all day",
-        "**Network watch** — reacts to system network changes instead of checking about once a second, so the app sits idler in the background"
+        "**Cancel speed measuring** — the Test button turns into Cancel while Auto measures and pauses Auto on that network for two hours or until you test",
+        "**New-server banner** — Cancel stops after the current run, records nothing, and offers again in an hour"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
