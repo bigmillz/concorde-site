@@ -17,17 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "07892f4e0fb82dfd": {
-      "channel": "nightly 7.0 nightly 76baa35",
+    "bbd7db337c020947": {
+      "channel": "nightly 7.0 nightly ed14a76",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-13",
+      "generated": "2026-10-21",
       "bullets": [
-        "**Benchmark on this computer** — a stalled model load is stopped and the reason shown, you can skip a model, and a busy machine is flagged",
-        "**Benchmark Stop** — stops right away instead of waiting for memory to settle",
-        "**Sidebar** — Pinned and Recents can be folded up from their headings",
-        "**Waking from sleep** — lights come back white and fans return to 20%, as on a fresh idle"
+        "**OpenAI-style gateway** — tools like OMP can connect to ConcordeAI using API keys",
+        "**Longer context** — Ollama's default context rises from 8K to 32K for tools that use the OpenAI API",
+        "**NVIDIA GPU meter** — the app shows the card's load, and setup records the card's memory",
+        "**Fixes** — LAN access holds when the cable is out, a dropped drive no longer blocks sleep, the spinner turns again"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
