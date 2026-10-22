@@ -52,18 +52,19 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "4c65081f28d14c74": {
-      "channel": "nightly 1.5.7 nightly d4ae7bc",
+    "d6a19b787d603d40": {
+      "channel": "nightly 1.5.7 nightly 57be1ab",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-20",
+      "generated": "2026-10-22",
       "bullets": [
-        "**NextDNS on your server** — all DNS lookups go to your NextDNS profile over DNS-over-TLS, and you can turn it off",
-        "Servers the app creates get your own NextDNS ID over SSH, never through the installer or cloud setup",
-        "The setup is checked against NextDNS's test page, and the previous DNS comes back if it fails"
+        "**Auto exit choice** — a distant server now wins when it tests at twice the speed of nearby ones, with more leeway on slow lines",
+        "**NextDNS on the server** — now takes effect on servers whose images set their own DNS, such as Vultr's",
+        "**NextDNS** — original DNS settings are put back on failure, when turned off, or on uninstall",
+        "**NextDNS** — the setup check no longer undoes a working setup by mistake"
       ],
-      "fold": true,
+      "fold": false,
       "model": "claude-opus-5-5"
     }
   },
