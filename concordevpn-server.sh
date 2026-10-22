@@ -45,6 +45,13 @@ ALT_UNIT="/etc/systemd/system/v23-altport.service"
 # own (the app passes its user's, from their own settings), so a copy of
 # this script carries nobody's subscription.
 NEXTDNS_DROPIN="/etc/systemd/resolved.conf.d/90-concordevpn-nextdns.conf"
+# Vultr's images ship /etc/resolv.conf as a plain file naming Vultr's own DNS
+# (resolved in "foreign" mode), so programs never asked systemd-resolved and
+# the drop-in changed nothing (Miami, 2026-10-20: status "unconfigured").
+# NextDNS points it at resolved's stub, keeping the original to put back.
+RESOLV_CONF="/etc/resolv.conf"
+RESOLV_STUB="/run/systemd/resolve/stub-resolv.conf"
+RESOLV_ORIG="/etc/resolv.conf.concordevpn-orig"
 NEXTDNS_ID=""
 CLI_PATH="/usr/local/bin/concordevpn"
 # the old name keeps working on servers that learned it
@@ -310,8 +317,11 @@ do_uninstall() {
   nft delete table inet v23hop 2>/dev/null || true
   systemctl disable --now v23-altport.service 2>/dev/null || true
   nft delete table inet v23alt 2>/dev/null || true
-  if [[ -f "$NEXTDNS_DROPIN" ]]; then
+  if [[ -f "$NEXTDNS_DROPIN" || -e "$RESOLV_ORIG" || -L "$RESOLV_ORIG" ]]; then
     rm -f "$NEXTDNS_DROPIN"
+    if [[ -e "$RESOLV_ORIG" || -L "$RESOLV_ORIG" ]]; then
+      rm -f "$RESOLV_CONF" && cp -P "$RESOLV_ORIG" "$RESOLV_CONF" && rm -f "$RESOLV_ORIG"
+    fi
     systemctl restart systemd-resolved 2>/dev/null || true
   fi
   rm -f "$UNIT_FILE" "$NFT_UNIT" "$ALT_UNIT" "$SYSCTL_FILE" "$CLI_PATH" "$BIN_PATH"
@@ -436,7 +446,21 @@ DNSOverTLS=yes
 Domains=~.
 RES
   chmod 0644 "$NEXTDNS_DROPIN"
+  systemctl daemon-reload 2>/dev/null || true
   systemctl restart systemd-resolved
+  # programs must ask resolved: a resolv.conf naming other servers bypasses it
+  local swapped=0
+  if ! grep -q '^nameserver 127\.0\.0\.53' "$RESOLV_CONF" 2>/dev/null; then
+    if [[ ! -e "$RESOLV_STUB" ]]; then
+      if [[ -n "$old" ]]; then printf '%s\n' "$old" > "$NEXTDNS_DROPIN"; else rm -f "$NEXTDNS_DROPIN"; fi
+      systemctl restart systemd-resolved
+      warn "systemd-resolved has no local stub here ($RESOLV_STUB); nothing changed"
+      return 1
+    fi
+    [[ -e "$RESOLV_ORIG" || -L "$RESOLV_ORIG" ]] || cp -P "$RESOLV_CONF" "$RESOLV_ORIG"
+    ln -sfn "$RESOLV_STUB" "$RESOLV_CONF"
+    swapped=1
+  fi
   resolvectl flush-caches 2>/dev/null || true
   # proved, not assumed: NextDNS's own test page says whether the lookup
   # reached the profile. A network that blocks DNS-over-TLS (853) would
@@ -444,12 +468,15 @@ RES
   local st="" i
   for i in 1 2 3 4 5; do
     sleep 2
-    st="$(curl -fsS -m 8 https://test.nextdns.io 2>/dev/null | tr -d ' \t\n' \
+    # -L: the page answers with a redirect to a one-off subdomain, whose
+    # lookup is the one it judges (without it: an empty 302, every time)
+    st="$(curl -fsSL -m 8 https://test.nextdns.io 2>/dev/null | tr -d ' \t\n' \
           | sed -n 's/.*"status":"\([a-z]*\)".*/\1/p')"
     [[ "$st" == ok ]] && break
   done
   if [[ "$st" != ok ]]; then
     if [[ -n "$old" ]]; then printf '%s\n' "$old" > "$NEXTDNS_DROPIN"; else rm -f "$NEXTDNS_DROPIN"; fi
+    (( swapped )) && resolv_restore
     systemctl restart systemd-resolved
     warn "NextDNS did not answer (status: ${st:-none}); the server's DNS is back as it was"
     return 1
@@ -457,9 +484,16 @@ RES
   ok "this server looks names up through NextDNS (profile $1)"
 }
 
+resolv_restore() {   # the resolv.conf the server had before NextDNS
+  if [[ -e "$RESOLV_ORIG" || -L "$RESOLV_ORIG" ]]; then
+    rm -f "$RESOLV_CONF" && cp -P "$RESOLV_ORIG" "$RESOLV_CONF" && rm -f "$RESOLV_ORIG"
+  fi
+}
+
 nextdns_off() {
-  if [[ -f "$NEXTDNS_DROPIN" ]]; then
+  if [[ -f "$NEXTDNS_DROPIN" || -e "$RESOLV_ORIG" || -L "$RESOLV_ORIG" ]]; then
     rm -f "$NEXTDNS_DROPIN"
+    resolv_restore
     systemctl restart systemd-resolved
     resolvectl flush-caches 2>/dev/null || true
   fi
