@@ -411,6 +411,11 @@ do_zoom_port() {
   if (( ALT_ENABLED )); then
     say "Hysteria on UDP ${ALT_PORT} -> ${hp}"
     altport_on "$hp" || exit 1
+    # this box's own firewall is open now; one in front of it is not (the
+    # app's DigitalOcean firewall gained the rule only with a new server:
+    # an older exit read "no answer on 3478" after this said ok)
+    warn "a cloud firewall in front of this server must allow UDP ${ALT_PORT} too;"
+    warn "for DigitalOcean's, connect DigitalOcean in the app (Settings > Servers > Create a server)."
   else
     altport_off
   fi
@@ -430,8 +435,14 @@ check_nextdns_id() {
 }
 
 nextdns_on() {    # $1: the profile ID
-  systemctl is-active --quiet systemd-resolved \
-    || die "systemd-resolved is not running here; NextDNS needs it (nothing changed)"
+  # warn and return, never die: install's `nextdns_on ... || true` cannot
+  # catch an exit, and a Pi or Debian box without resolved stopped the
+  # install before its firewall and SSH hardening (review, 2026-10-23).
+  # The `nextdns` action still fails hard (do_nextdns: || exit 1).
+  if ! systemctl is-active --quiet systemd-resolved; then
+    warn "systemd-resolved is not running here; NextDNS needs it (the DNS is left as it was)"
+    return 1
+  fi
   local old=""
   [[ -f "$NEXTDNS_DROPIN" ]] && old="$(cat "$NEXTDNS_DROPIN")"
   mkdir -p "$(dirname "$NEXTDNS_DROPIN")"
