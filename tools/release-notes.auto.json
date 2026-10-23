@@ -17,16 +17,16 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "416f8a6679b6d085": {
-      "channel": "nightly 7.0 nightly 5d8f47f",
+    "9d8fc69645f3e7c5": {
+      "channel": "nightly 7.0 nightly a99681a",
       "source_tags": [
         "nightly"
       ],
       "generated": "2026-10-23",
       "bullets": [
-        "**Mac fix** — closing the window no longer crashes the app"
+        "**Mac model engine** — the MLX engine is pinned to a matching version, and existing installs left on the older one are updated"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
