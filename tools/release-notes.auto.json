@@ -17,17 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "bbd7db337c020947": {
-      "channel": "nightly 7.0 nightly ed14a76",
+    "a0c0dd556296fecf": {
+      "channel": "nightly 7.0 nightly 85daed8",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-21",
+      "generated": "2026-10-23",
       "bullets": [
-        "**OpenAI-style gateway** — tools like OMP can connect to ConcordeAI using API keys",
-        "**Longer context** — Ollama's default context rises from 8K to 32K for tools that use the OpenAI API",
-        "**NVIDIA GPU meter** — the app shows the card's load, and setup records the card's memory",
-        "**Fixes** — LAN access holds when the cable is out, a dropped drive no longer blocks sleep, the spinner turns again"
+        "**Fan calibration** — set quiet and heavy working levels from the admin panel, based on measured temperatures",
+        "**Admin panel** — new network gauge and charts, and GPU gauges now read NVIDIA cards",
+        "**NVIDIA cards** — setup's GPU check accepts them, and updates skip a component those cards don't need",
+        "**Remote access** — optional SSH through the Cloudflare Tunnel behind Access and keys; abandoned remote desktop sessions end"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -52,19 +52,19 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "d6a19b787d603d40": {
-      "channel": "nightly 1.5.7 nightly 57be1ab",
+    "b19b5640e9866064": {
+      "channel": "nightly 1.5.7 nightly ac36bdb",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-22",
+      "generated": "2026-10-23",
       "bullets": [
-        "**Auto exit choice** — a distant server now wins when it tests at twice the speed of nearby ones, with more leeway on slow lines",
-        "**NextDNS on the server** — now takes effect on servers whose images set their own DNS, such as Vultr's",
-        "**NextDNS** — original DNS settings are put back on failure, when turned off, or on uninstall",
-        "**NextDNS** — the setup check no longer undoes a working setup by mistake"
+        "**NextDNS** — a server's details now show NextDNS and Home devices rows",
+        "**Server setup** — a NextDNS step that fails no longer reports done; Servers says why and how to retry. Pi and Debian installs continue",
+        "**DigitalOcean** — connecting the account repairs the cloud firewall for older exits that dropped UDP 3478",
+        "**Network changes** — joining or leaving the bond is picked up within 5 seconds instead of up to a minute"
       ],
-      "fold": false,
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
