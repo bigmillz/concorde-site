@@ -17,14 +17,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "9d8fc69645f3e7c5": {
-      "channel": "nightly 7.0 nightly a99681a",
+    "b3fff34e2aa63c30": {
+      "channel": "nightly 7.0 nightly 672d6f1",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-23",
+      "generated": "2026-10-25",
       "bullets": [
-        "**Mac model engine** — the MLX engine is pinned to a matching version, and existing installs left on the older one are updated"
+        "**Answer quality** — fewer invented specifics, with answers that favor primary sources and the newest of several dated pages",
+        "**Web search** — skipped for plain arithmetic, and an outdated source no longer overrides the draft answer",
+        "**Follow-ups** — follow-up answers stay grounded, corrections stick, and answers no longer just point elsewhere",
+        "**Reliability** — if drafting an answer gets stuck in a loop, the reviewing step takes over the draft"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
