@@ -100,20 +100,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "41131bf8657d5638": {
-      "channel": "release ai 6.1 beta 1",
-      "source_tags": [
-        "v275"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Windows support",
-        "Video clips rendered on your Mac",
-        "Export to twenty file formats"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "92edd353f2603ee0": {
       "channel": "release vpn 1.4",
       "source_tags": [
