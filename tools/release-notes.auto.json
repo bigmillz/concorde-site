@@ -100,20 +100,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "92edd353f2603ee0": {
-      "channel": "release vpn 1.4",
-      "source_tags": [
-        "v53"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "A kill switch",
-        "Auto optimize picks the mode per network",
-        "Performance and Ultra lock onto the fastest protocol"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "cedb35eb242d7c36": {
       "channel": "release vpn 1.5 beta 1",
       "source_tags": [
