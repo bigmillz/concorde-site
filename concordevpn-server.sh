@@ -32,6 +32,7 @@ META_FILE="${V23_DIR}/v23.env"
 LIB_DIR="/usr/local/lib/v23"
 UNIT_FILE="/etc/systemd/system/hysteria-server.service"
 SYSCTL_FILE="/etc/sysctl.d/99-v23-quic.conf"
+MEMINFO="/proc/meminfo"     # udp_mem is sized from this box's RAM
 NFT_FILE="${CFG_DIR}/porthop.nft"
 NFT_UNIT="/etc/systemd/system/v23-porthop.service"
 # Hysteria answers on UDP 3478 too - STUN/TURN, where calls start - redirected
@@ -187,6 +188,10 @@ Add Hysteria on UDP 3478 to a server that is already set up (touches nothing
 else; 'off' takes it away again):
   ./concordevpn-server.sh zoom-port          (or: zoom-port off)
 
+Bring an existing server's UDP buffer settings up to this version's (the
+kernel file 99-v23-quic.conf only; nothing restarts, no key changes):
+  ./concordevpn-server.sh tune-net
+
 Use your NextDNS profile for the server's lookups (or stop: 'nextdns off'):
   ./concordevpn-server.sh nextdns abc123
 
@@ -205,6 +210,7 @@ case "$ACTION" in
   install|uninstall|reality) shift || true ;;
   zoom-port)  shift || true
               if [[ "${1:-}" == off ]]; then ALT_ENABLED=0; shift; fi ;;
+  tune-net)   shift || true ;;
   nextdns)    shift || true
               NEXTDNS_ID="${1:-}"; [[ $# -gt 0 ]] && shift ;;
   allow-lan)  shift || true
@@ -422,6 +428,106 @@ do_zoom_port() {
   exit 0
 }
 [[ "$ACTION" == "zoom-port" ]] && do_zoom_port
+
+# ------------------------------------------------- kernel: UDP buffers --
+# QUIC runs in userspace, so throughput is gated by UDP socket buffers and how
+# fast the kernel can hand packets up. Stock buffers (~208 KB) are a hard wall.
+#
+# What the senders ask for (2026-10-24): quic-go - Hysteria's QUIC - sets 7 MB
+# on its socket in each direction (protocol.DesiredReceiveBufferSize and
+# DesiredSendBufferSize; Salamander's wrapper passes the calls through to the
+# UDP socket, extras/obfs/conn.go) and its wiki asks for rmem_max/wmem_max of
+# at least 7500000; Hysteria's own Performance page says 16 MB. Without
+# CAP_NET_ADMIN (the units grant only CAP_NET_BIND_SERVICE) it gets no more
+# than the max allows, so 32 MB already leaves room over both. Every hop port
+# and 3478 are redirected to the ONE listening socket, so that one buffer
+# takes all clients: 7 MB is about 55 ms of a 1 Gbps line. rmem_default and
+# wmem_default are for sockets that ask for nothing - the relays carrying
+# clients' own UDP (calls, QUIC to sites) - where 208 KB is 3 ms at 500 Mbps.
+#
+# udp_mem is the ceiling on ALL UDP queues together, in PAGES (the kernel's
+# ip-sysctl.rst). It read "786432 1048576 26777216" until 2026-10-24 - numbers
+# far too big for a pages field: pressure at 4 GB and the limit at ~102 GB, on
+# a 1 GB droplet. A UDP backlog was never trimmed and could grow until the
+# box ran out of memory. Now it is the kernel's own boot-time formula (min
+# 3/32, pressure 1/8, max 3/16 of the memory it can buffer in - net/ipv4/
+# udp.c) taken from this box's RAM and doubled: pressure at a quarter of RAM,
+# three-eighths at most. Room for the listening socket's 14 MB (the kernel
+# counts twice the 7 MB) many times over, and never the memory the three
+# servers themselves run in.
+quic_udp_mem() {    # "min pressure max" pages for this box (MEMINFO, page size)
+  local kb pg p
+  kb="$(awk '/^MemTotal:/ {print $2; exit}' "$MEMINFO" 2>/dev/null)"
+  pg="$(getconf PAGESIZE 2>/dev/null || echo 4096)"
+  [[ "$kb" =~ ^[0-9]+$ && "$pg" =~ ^[0-9]+$ && $pg -gt 0 ]] || return 1
+  p=$(( kb * 1024 / pg ))
+  (( p >= 4096 )) || return 1          # under 16 MB of RAM: not a reading
+  echo "$(( p * 3 / 16 )) $(( p / 4 )) $(( p * 3 / 8 ))"
+}
+
+quic_sysctl_conf() {    # the file's text; $1: udp_mem ("": the kernel's own)
+  cat <<SYSCTL
+# v23 — QUIC / Hysteria 2 tuning (concordevpn-server.sh tune-net rewrites it)
+net.core.rmem_max = 33554432
+net.core.wmem_max = 33554432
+net.core.rmem_default = 4194304
+net.core.wmem_default = 4194304
+net.core.netdev_max_backlog = 32768
+net.core.somaxconn = 32768
+net.core.default_qdisc = fq
+net.ipv4.udp_rmem_min = 16384
+net.ipv4.udp_wmem_min = 16384
+${1:+net.ipv4.udp_mem = $1
+}net.ipv4.tcp_congestion_control = bbr
+net.ipv4.tcp_mtu_probing = 1
+net.ipv4.tcp_fastopen = 3
+net.ipv4.tcp_slow_start_after_idle = 0
+net.ipv4.ip_forward = 1
+net.ipv6.conf.all.forwarding = 1
+net.ipv4.ip_local_port_range = 10240 65000
+fs.file-max = 1048576
+SYSCTL
+}
+
+# Writes SYSCTL_FILE; 0 = it changed, 2 = it already said this, 1 = it could
+# not be written (read-only /etc, a full disk, an immutable file). Called
+# after `||`, so set -e is off in here: the write's own status is the
+# answer, or tune-net said "set" over the old ~102 GB (review, 2026-10-24).
+# With no RAM reading udp_mem is left out (the kernel's default, sane)
+# rather than the buffers going unraised. Loading it is the caller's: the
+# install loads every file, tune-net only this one.
+write_quic_sysctl() {
+  local um new
+  um="$(quic_udp_mem)" || um=""
+  new="$(quic_sysctl_conf "$um")"
+  if [[ -r "$SYSCTL_FILE" && "$(cat "$SYSCTL_FILE")" == "$new" ]]; then
+    return 2
+  fi
+  printf '%s\n' "$new" > "$SYSCTL_FILE" || return 1
+  chmod 0644 "$SYSCTL_FILE" || return 1
+}
+
+do_tune_net() {
+  [[ $EUID -eq 0 ]] || die "must run as root (sudo)"
+  [[ -r "$META_FILE" ]] || die "no ${META_FILE} — run './concordevpn-server.sh install' first"
+  local was um rc=0
+  was="$(sysctl -n net.ipv4.udp_mem 2>/dev/null | tr -s ' \t' ' ')"
+  um="$(quic_udp_mem)" || um=""
+  write_quic_sysctl || rc=$?
+  (( rc != 1 )) || die "could not write ${SYSCTL_FILE}: nothing changed (udp_mem ${was:-unknown})"
+  [[ -n "$um" ]] || warn "could not read this server's memory from ${MEMINFO}: udp_mem not set"
+  # this file alone: --system would load every other file in sysctl.d again
+  sysctl -q -p "$SYSCTL_FILE" >/dev/null 2>&1 || warn "some sysctl keys rejected by this kernel"
+  if (( rc == 2 )); then
+    ok "UDP buffers already set${um:+ (udp_mem $um pages)}"
+  else
+    ok "UDP buffers set: socket buffers 32 MB${um:+, udp_mem ${was:-unknown} -> $um pages}"
+  fi
+  # takes effect at once: the limits are read per packet, and Hysteria's
+  # socket already holds the 7 MB it asked for (the max did not change)
+  exit 0
+}
+[[ "$ACTION" == "tune-net" ]] && do_tune_net
 
 # ----------------------------------------------------- nextdns (server side)
 # Hysteria, sing-box and Xray have no resolver of their own configured, so
@@ -1338,7 +1444,9 @@ apply_all() {
 case "${1:-status}" in
   show)
     # the six lines ConcordeVPN's first-run screen asks for, in the names it
-    # uses, plus the REALITY line — paste the whole block into the app
+    # uses, plus the REALITY line — paste the whole block into the app. The
+    # hop range too, or "off" (--no-hop, a home server): the app's Hysteria
+    # hopping line dials it, and a server without it would read "no answer"
     cat <<S
 # --- paste this into ConcordeVPN's first-run screen ---
 V23_SERVER=${V23_SERVER}
@@ -1352,6 +1460,7 @@ V23_REALITY_PBK=${V23_REALITY_PBK}
 V23_REALITY_SID=${V23_REALITY_SID}
 V23_REALITY_SNI=${V23_REALITY_SNI}
 V23_REALITY_PORT=${V23_REALITY_PORT}
+V23_HOP_PORTS=$([[ "${V23_HOP:-0}" == "1" ]] && echo "${V23_HOP_START}-${V23_HOP_END}" || echo off)
 S
     echo "(V23_NEXTDNS_ID stays empty here: NextDNS is set once in the app, for every" >&2
     echo " server - Settings > Network > NextDNS, or the first-run screen.)" >&2
@@ -1603,30 +1712,9 @@ apt-get install -y -qq --no-install-recommends \
 ok "curl, openssl, nftables, ethtool"
 
 # ---------------------------------------------------------------- kernel    --
-# QUIC runs in userspace, so throughput is gated by UDP socket buffers and how
-# fast the kernel can hand packets up. Stock buffers (~208 KB) are a hard wall.
+# the values and why: see quic_udp_mem above (tune-net writes the same file)
 say "Tuning kernel for high-rate QUIC"
-cat > "$SYSCTL_FILE" <<'SYSCTL'
-# v23 — QUIC / Hysteria 2 tuning
-net.core.rmem_max = 33554432
-net.core.wmem_max = 33554432
-net.core.rmem_default = 4194304
-net.core.wmem_default = 4194304
-net.core.netdev_max_backlog = 32768
-net.core.somaxconn = 32768
-net.core.default_qdisc = fq
-net.ipv4.udp_rmem_min = 16384
-net.ipv4.udp_wmem_min = 16384
-net.ipv4.udp_mem = 786432 1048576 26777216
-net.ipv4.tcp_congestion_control = bbr
-net.ipv4.tcp_mtu_probing = 1
-net.ipv4.tcp_fastopen = 3
-net.ipv4.tcp_slow_start_after_idle = 0
-net.ipv4.ip_forward = 1
-net.ipv6.conf.all.forwarding = 1
-net.ipv4.ip_local_port_range = 10240 65000
-fs.file-max = 1048576
-SYSCTL
+write_quic_sysctl || (( $? == 2 )) || die "could not write ${SYSCTL_FILE}"
 modprobe tcp_bbr 2>/dev/null || true
 sysctl -q --system >/dev/null 2>&1 || warn "some sysctl keys rejected by this kernel"
 # default_qdisc only shapes qdiscs created LATER: the NIC keeps the root qdisc
