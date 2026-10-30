@@ -52,17 +52,17 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "b19b5640e9866064": {
-      "channel": "nightly 1.5.7 nightly ac36bdb",
+    "ac8314882c8223a1": {
+      "channel": "nightly 1.5.7 nightly 25c0f05",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-23",
+      "generated": "2026-10-30",
       "bullets": [
-        "**NextDNS** — a server's details now show NextDNS and Home devices rows",
-        "**Server setup** — a NextDNS step that fails no longer reports done; Servers says why and how to retry. Pi and Debian installs continue",
-        "**DigitalOcean** — connecting the account repairs the cloud firewall for older exits that dropped UDP 3478",
-        "**Network changes** — joining or leaving the bond is picked up within 5 seconds instead of up to a minute"
+        "**Auto speed tests** — now measure the Direct line too, so \"the VPN costs N%\" compares against a fresh run, not a stale stand-in",
+        "**Direct results** — a failed Direct run is replaced by the last one measured on this Mac instead of shown beside it",
+        "**Hysteria** — port hopping and Hysteria x8 now work together, with both lines available everywhere",
+        "**Spray relay** — drops malformed traffic and caps sessions instead of crashing"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
