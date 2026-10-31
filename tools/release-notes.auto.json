@@ -100,20 +100,6 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "cedb35eb242d7c36": {
-      "channel": "release vpn 1.5 beta 1",
-      "source_tags": [
-        "v54"
-      ],
-      "generated": "2026-09-30",
-      "bullets": [
-        "Bonding two connections at once",
-        "Metered connections kept in reserve",
-        "Auto picks the fastest server"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "bb1c7fc4edacdef6": {
       "channel": "release vpn 1.5",
       "source_tags": [
