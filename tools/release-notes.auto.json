@@ -86,20 +86,6 @@
     }
   },
   "news": {
-    "4371f212bfa22f9d": {
-      "channel": "release ai 6.1 RC 1",
-      "source_tags": [
-        "v276"
-      ],
-      "generated": "2026-09-29",
-      "bullets": [
-        "Chats saved as you go, no limit",
-        "Backdrops that change scene hourly",
-        "App answers only its own window"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "bb1c7fc4edacdef6": {
       "channel": "release vpn 1.5",
       "source_tags": [
