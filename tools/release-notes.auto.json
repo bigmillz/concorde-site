@@ -86,20 +86,6 @@
     }
   },
   "news": {
-    "bb1c7fc4edacdef6": {
-      "channel": "release vpn 1.5",
-      "source_tags": [
-        "v55"
-      ],
-      "generated": "2026-10-04",
-      "bullets": [
-        "Bonding of two connections at once",
-        "Auto picks the fastest server",
-        "Metered connections kept in reserve"
-      ],
-      "fold": false,
-      "model": "claude-opus-5-5"
-    },
     "3ca49622bf79d494": {
       "channel": "release vpn 1.5.2 beta 1",
       "source_tags": [
