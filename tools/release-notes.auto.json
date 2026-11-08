@@ -17,17 +17,14 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "b3fff34e2aa63c30": {
-      "channel": "nightly 7.0 nightly 672d6f1",
+    "dc0a49c29880f0ee": {
+      "channel": "nightly 7.0 nightly a8cc6e9",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-10-25",
+      "generated": "2026-11-08",
       "bullets": [
-        "**Answer quality** — fewer invented specifics, with answers that favor primary sources and the newest of several dated pages",
-        "**Web search** — skipped for plain arithmetic, and an outdated source no longer overrides the draft answer",
-        "**Follow-ups** — follow-up answers stay grounded, corrections stick, and answers no longer just point elsewhere",
-        "**Reliability** — if drafting an answer gets stuck in a loop, the reviewing step takes over the draft"
+        "**Typing fix** — removed a hidden easter egg whose key combo swallowed typed letters"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
