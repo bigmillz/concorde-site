@@ -17,20 +17,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "0c3bd24a202da567": {
-      "channel": "nightly 7.0 nightly 3acf24c",
-      "source_tags": [
-        "nightly"
-      ],
-      "generated": "2026-11-08",
-      "bullets": [
-        "**Vera Rubin** — now runs only on your computer and never uses a cloud model to write, even with cloud models turned on",
-        "**Vera Rubin** — its rounds now use a critic, and an improved answer never shows a lower score than the one before",
-        "**Vera Rubin** — a fact-check can no longer strip out the answer it was checking"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "aa89a69022f26e3e": {
       "channel": "prerelease 7.0 beta 1",
       "source_tags": [
@@ -45,6 +31,18 @@
         "**Modes and dictation** — Fast, Thinking, Pro, Max and Deep with an effort slider; dictation writes as you speak"
       ],
       "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "b2c332250a4a4dd5": {
+      "channel": "nightly 7.0 nightly 38f247b",
+      "source_tags": [
+        "nightly"
+      ],
+      "generated": "2026-11-09",
+      "bullets": [
+        "**Updates** — if you haven't picked an update channel, the app follows the build you installed, so beta and RC builds stay on beta"
+      ],
+      "fold": true,
       "model": "claude-opus-5-5"
     }
   },
