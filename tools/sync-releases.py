@@ -956,8 +956,8 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
     # ConcordeAI's builds are not notarized yet: a beta says how to open it, in one line
     # (Pat, 2026-11-09). The Gatekeeper FAQ has the longer version.
     if repo == "bigmillz/concordeai" and name == "Prerelease":
-        lines.append('              <p class="chan-note">First open: System Settings &rsaquo; Privacy &amp; '
-                     'Security &rsaquo; Open Anyway.</p>')
+        lines.append('              <p class="chan-note">First open on a Mac: System Settings &rsaquo; Privacy &amp; '
+                     'Security &rsaquo; Open Anyway. On Windows: More info &rsaquo; Run anyway.</p>')
     # The line key is only meaningful for a channel that STANDS FOR a line
     # (stable, prerelease). A nightly is one build and speaks for itself —
     # without this it would inherit the line summary of whatever version it

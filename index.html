@@ -530,79 +530,6 @@ details.sum[open] > summary::before{content:"–";content:"–" / ""}
 .dl.switched > .chan:not(.on) .sum-body{display:none}
 .dl.switched .chan-name{display:none}   /* the switch names the channel */
 
-/* ---------- ConcordeAI 7.0 preview ----------
-   A banner above the product cards for the 7.0 design preview: a demo of
-   the new app's interface with sample answers, from its own repo, not a
-   release of ConcordeAI. So it lives outside the releases:* regions and
-   uses no .chan or .chan-name (sync-releases.py refuses a channel block
-   outside them), and it is an aside, not an article.card, so the window
-   fit script leaves it alone. The card's box and 6:5 split: the name and
-   what it is on the left, the action box on the right; stacked under
-   1180px, the action box opening out into the banner on phones as the
-   cards' does. */
-.pv{
-  display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);align-items:center;
-  margin-bottom:22px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-}
-.pv-text{padding:24px 26px;min-width:0}
-.pv-row{display:flex;align-items:center;gap:11px;flex-wrap:wrap;row-gap:10px}
-.pv-row .wing{width:22px;height:18px;flex:0 0 auto}
-.pv-row .wing line{stroke-width:2.4}
-.pv-row .lockup{font-size:15px;display:flex;align-items:baseline;gap:11px}
-.pv-row .lockup .mark-txt{position:relative;top:-1px}
-.pv-row .ver{font-family:var(--mono);font-size:15px;font-weight:500;letter-spacing:.02em;text-transform:none}
-.pv-row .chip{
-  border:1px solid var(--line);border-radius:999px;
-  padding:3px 10px 3px 11px;color:var(--dim);line-height:1.5;margin:-4px 0;
-}
-.pv-desc{margin-top:14px;color:var(--dim);font-size:14.5px;max-width:56ch;text-wrap:pretty}
-.pv-desc + .pv-desc{margin-top:6px}
-.pv-desc b{color:var(--text);font-weight:600}
-.pv-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 18px}
-.pv-meta a{color:var(--dim);text-decoration:underline;text-underline-offset:2px}
-.pv-meta a:hover{color:var(--text)}
-.pv-act{
-  margin:22px 26px 22px 0;min-width:0;
-  border:1px solid var(--line);border-radius:var(--radius);
-  background:var(--bg);padding:16px;
-}
-.pv-try{
-  display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:3px 0;
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--dim);text-decoration:none;border-bottom:1px solid var(--line);
-}
-.pv-try:hover{color:var(--text);border-bottom-color:var(--dim)}
-.pv-act details.sum{margin-top:8px}
-.pv-steps{margin:0;padding-left:20px;font-size:13px;line-height:1.5;color:var(--dim)}
-.pv-steps li{margin:3px 0;padding-left:2px}
-.pv-steps li::marker{font-family:var(--mono);font-size:11px;color:var(--faint)}
-.pv-steps b{color:var(--text);font-weight:600}
-.pv-why{margin:0 0 6px;font-size:13px;line-height:1.5;color:var(--faint)}
-@media (max-width:1179px){
-  .pv{grid-template-columns:minmax(0,1fr)}
-  .pv-act{margin:0 26px 24px}
-}
-@media (max-width:720px){
-  .pv-text{padding:22px 20px 20px}
-  .pv-act{margin:0 20px 22px}
-}
-@media (max-width:560px){
-  .pv-act{margin:0;border:0;border-top:1px solid var(--line-soft);border-radius:0;background:none;padding:18px 20px 22px}
-  .pv-act .btn.open{background:linear-gradient(var(--bg),var(--bg)) padding-box,var(--silver) border-box}
-  .pv-act .btn.open:hover{background:linear-gradient(#1c1d21,#1c1d21) padding-box,var(--silver) border-box}
-}
-/* too narrow for name, version and chip on one row: the chip takes the
-   line under the name, as the cards' BETA chips do */
-.pv-brk{display:none}
-@media (max-width:440px){
-  .pv-row{row-gap:5px}   /* the empty break line takes one of the two gaps */
-  .pv-brk{display:block;flex:0 0 100%;height:0}
-  .pv-row .chip{margin:0 0 0 33px}   /* under the name: the wing's 22px and the row's 11px gap */
-}
-@media (max-width:380px){
-  .pv-text,.pv-act{padding-left:16px;padding-right:16px}
-}
-
 /* ---------- a window, larger ---------- */
 dialog.zoom{
   padding:0;border:0;background:transparent;overflow:visible;
@@ -990,50 +917,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         <h2 id="prod-h">Products</h2>
       </div>
 
-      <!-- ============ CONCORDEAI 7.0 PREVIEW ============
-           Hand-written: a design preview from its own repo, not a release,
-           so not a channel (see the .pv styles). Shown beside the stable
-           download, never in place of it. -->
-      <aside class="pv reveal" id="preview" aria-labelledby="pv-h">
-        <div class="pv-text">
-          <div class="pv-row">
-            <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
-              <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
-              <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
-              <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
-              <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
-              <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
-            <h3 id="pv-h" class="lockup"><span class="mark-txt">Concorde<span class="tld">AI</span></span> <span class="ver">7.0</span><span class="visually-hidden"> preview</span></h3>
-            <span class="pv-brk" aria-hidden="true"></span>
-            <span class="chip label" aria-hidden="true">Preview</span>
-          </div>
-          <p class="pv-desc">A first look at ConcordeAI&nbsp;7. A demo of the new design, for&nbsp;Mac.</p>
-          <p class="pv-desc">It&rsquo;s a <b>design preview</b>: the answers are samples and no models run. For the working app, use the ConcordeAI downloads&nbsp;below.</p>
-          <p class="pv-meta label"><span>Updates itself when online</span><span>Works offline</span><a href="https://github.com/bigmillz/concordeai-preview/releases/tag/preview-1">Release page</a></p>
-        </div>
-        <div class="pv-act">
-          <div class="btns">
-            <a class="btn open" href="https://github.com/bigmillz/concordeai-preview/releases/download/preview-1/ConcordeAI-Preview.dmg">
-              <span class="os">Download for Mac</span>
-              <span class="file">Apple silicon and Intel &middot; 14&nbsp;MB</span>
-              <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-          <a class="pv-try" href="https://bigmillz.github.io/concordeai-preview/beta/" target="_blank" rel="noopener">Try it in your browser<svg width="9" height="9" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9 9.5 2.5M4 2.5h5.5V8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-          <details class="sum">
-            <summary>First open</summary>
-            <div class="sum-body">
-              <p class="pv-why">The preview isn&rsquo;t signed with a Developer ID yet, so macOS stops it the first time.</p>
-              <ol class="pv-steps">
-                <li>Drag it to <b>Applications</b>.</li>
-                <li>Open it once, and click <b>Done</b> when macOS warns you.</li>
-                <li>In <b>System Settings &rsaquo; Privacy &amp; Security</b>, click <b>Open Anyway</b>.</li>
-              </ol>
-            </div>
-          </details>
-        </div>
-      </aside>
-
       <!-- RELEASE DATA — everything between the releases:* markers below is
            written by tools/sync-releases.py from GitHub Releases. Run it after
            every release (--check tells you when the page is behind); don't
@@ -1155,8 +1038,13 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   <span class="file">ConcordeAI-7.0.0-Windows.zip</span>
                   <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v278/ConcordeAI-7.0.0-x64.msi">
+                  <span class="os">Win msi</span>
+                  <span class="file">ConcordeAI-7.0.0-x64.msi</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
               </div>
-              <p class="chan-note">First open: System Settings &rsaquo; Privacy &amp; Security &rsaquo; Open Anyway.</p>
+              <p class="chan-note">First open on a Mac: System Settings &rsaquo; Privacy &amp; Security &rsaquo; Open Anyway. On Windows: More info &rsaquo; Run anyway.</p>
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
@@ -1169,8 +1057,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <div class="chan-top">
                 <span class="chan-name">Nightly</span>
                 <span class="chan-ver">7.0</span>
-                <span class="chan-commit" data-nightly-commit="ai" data-nightly-ver="7.0" data-commit-base="https://github.com/bigmillz/concordeai/commit/">build <a href="https://github.com/bigmillz/concordeai/commit/3acf24c">3acf24c</a></span>
-                <span class="chan-date">Built <time datetime="2026-11-08" data-nightly-date="ai">8 Nov 2026</time></span>
+                <span class="chan-commit" data-nightly-commit="ai" data-nightly-ver="7.0" data-commit-base="https://github.com/bigmillz/concordeai/commit/">build <a href="https://github.com/bigmillz/concordeai/commit/38f247b">38f247b</a></span>
+                <span class="chan-date">Built <time datetime="2026-11-09" data-nightly-date="ai">9 Nov 2026</time></span>
               </div>
               <div class="btns">
                 <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/nightly/ConcordeAI-7.0.0.dmg">
@@ -1187,7 +1075,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
               <details class="sum notes">
                 <summary>Release notes</summary>
                 <div class="sum-body">
-<ul><li><b>Vera Rubin</b> — now runs only on your computer and never uses a cloud model to write, even with cloud models turned on</li><li><b>Vera Rubin</b> — its rounds now use a critic, and an improved answer never shows a lower score than the one before</li><li><b>Vera Rubin</b> — a fact-check can no longer strip out the answer it was checking</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
+<ul><li>Updates: with nothing chosen, the channel follows the build (a beta or RC build stays on beta)</li><li>beta-1 gauntlet: the MLX engine's boot-order pin follows 6b546's PDF reader thread beside it</li><li>X-Models names whole models, up to 2,000 characters (run h)</li><li>Merge the benchmark and cloud-mode re-pins (run g) into beta-1</li><li class="more">Plus one smaller fix &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
                 </div>
               </details>
             </div>
