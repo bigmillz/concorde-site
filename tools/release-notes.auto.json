@@ -30,6 +30,22 @@
       ],
       "fold": true,
       "model": "claude-opus-5-5"
+    },
+    "aa89a69022f26e3e": {
+      "channel": "prerelease 7.0 beta 1",
+      "source_tags": [
+        "v278"
+      ],
+      "generated": "2026-11-09",
+      "bullets": [
+        "**Native Mac app** — one universal app for Apple silicon and Intel Macs, with a window that opens in a fraction of a second",
+        "**Horizon** — a new home under a live night sky, a calmer chat and sidebar, and an Effects setting to adjust motion",
+        "**Import chats** — drop a ChatGPT, Claude or Gemini export on the window; it is read on your computer",
+        "**Your own material** — answers can cite your notes and past chats, and attached PDFs are read on your computer",
+        "**Modes and dictation** — Fast, Thinking, Pro, Max and Deep with an effort slider; dictation writes as you speak"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
     }
   },
   "bigmillz/concordevpn-releases": {
@@ -154,6 +170,20 @@
         "Create servers at Vultr as well as DigitalOcean",
         "Any server can become the primary",
         "Location picker in the menu bar"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "53c773e1cb554891": {
+      "channel": "release ai 7.0 beta 1",
+      "source_tags": [
+        "v278"
+      ],
+      "generated": "2026-11-09",
+      "bullets": [
+        "A native Mac app for Apple silicon and Intel",
+        "Horizon, a redesigned home and chat",
+        "Answers that cite your own notes and chats"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
