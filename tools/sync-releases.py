@@ -909,7 +909,12 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
 
     lines = ['            <div class="chan">',
              '              <div class="chan-top">',
-             '                <span class="chan-name">%s</span>' % name,
+             # ConcordeAI's beta SAYS Beta (Pat, 2026-11-09: "clearly label it Beta"); the channel
+             # stays "Prerelease" everywhere else (the notes' kind, the summarizer); an RC and the
+             # other products read Prerelease as before
+             '                <span class="chan-name">%s</span>' % (
+                 "Beta" if repo == "bigmillz/concordeai" and name == "Prerelease" and tag.startswith("beta")
+                 else name),
              '                <span class="chan-ver">%s</span>' % html.escape(display_version(version))]
     if tag:                                                  # "beta 1" / "RC 1", after the version
         lines.append('                <span class="chan-commit">%s</span>' % tag)
@@ -948,6 +953,11 @@ def channel_html(name, rel, buttons, repo, tag="", notes_rels=None):
                   '                  ' + ARROW,
                   '                </a>']
     lines.append('              </div>')
+    # ConcordeAI's builds are not notarized yet: a beta says how to open it, in one line
+    # (Pat, 2026-11-09). The Gatekeeper FAQ has the longer version.
+    if repo == "bigmillz/concordeai" and name == "Prerelease":
+        lines.append('              <p class="chan-note">First open: System Settings &rsaquo; Privacy &amp; '
+                     'Security &rsaquo; Open Anyway.</p>')
     # The line key is only meaningful for a channel that STANDS FOR a line
     # (stable, prerelease). A nightly is one build and speaks for itself —
     # without this it would inherit the line summary of whatever version it
