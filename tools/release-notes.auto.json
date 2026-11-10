@@ -17,18 +17,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "b2c332250a4a4dd5": {
-      "channel": "nightly 7.0 nightly 38f247b",
-      "source_tags": [
-        "nightly"
-      ],
-      "generated": "2026-11-09",
-      "bullets": [
-        "**Updates** — if you haven't picked an update channel, the app follows the build you installed, so beta and RC builds stay on beta"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "5316a991aaafdb28": {
       "channel": "prerelease 7.0 beta 2",
       "source_tags": [
@@ -41,6 +29,20 @@
         "**Bring your chats** — drop a ChatGPT, Claude or Gemini export on the window; it is read on your computer",
         "**Your own material** — ask about your notes and past chats with cited answers; PDFs are read on your computer",
         "**Horizon** — redesigned home, chat and settings; modes from Fast to Deep with an effort slider from Low to Ultra"
+      ],
+      "fold": true,
+      "model": "claude-opus-5-5"
+    },
+    "d950dad2576cd482": {
+      "channel": "nightly 7.0 nightly a5e9d79",
+      "source_tags": [
+        "nightly"
+      ],
+      "generated": "2026-11-10",
+      "bullets": [
+        "**Ultra** — switching to Ultra lands with a light rush, an edge flash and a star burst, and the slider knob stays put",
+        "**Send button** — calmer, with no rings or hover glows and a crisp press",
+        "**Backdrop** — the video fades through its loop without a visible seam, at the same pace on 60 Hz and 120 Hz displays"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
