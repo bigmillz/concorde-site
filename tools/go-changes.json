@@ -2,112 +2,1204 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
-   "commit": "f67749e",
-   "version": "0.1.4848",
-   "date": "2026-10-05",
-   "summary": "Lite's tab icon is inverted: a black wing on a white square"
+   "commit": "fc0fdf5",
+   "version": "0.5.8352",
+   "date": "2026-11-10",
+   "summary": "Smoother tabs with one sliding pill, and the corner banner only on Home"
   },
   {
-   "commit": "170b2ad",
-   "version": "0.1.4762",
-   "date": "2026-10-05",
-   "summary": "Lite gets quicker: book the earliest, home and recent places, the rest of the trip, firmer prices"
+   "commit": "a50a762",
+   "version": "0.5.8350",
+   "date": "2026-11-10",
+   "summary": "One glass style across Home, a search bar that glows as you type, buttons that press in, and places with accents like Reykjavík now search"
   },
   {
-   "commit": "f330e15",
-   "version": "0.1.4686",
-   "date": "2026-10-04",
-   "summary": "Lite's wait creeps steadily, and requests can name an aircraft or a need the data cannot check"
+   "commit": "392d3f9",
+   "version": "0.5.8346",
+   "date": "2026-11-09",
+   "summary": "Home's map now fills the screen edge to edge"
   },
   {
-   "commit": "75fa3a7",
-   "version": "0.1.4658",
-   "date": "2026-10-04",
-   "summary": "Lite keeps airports out of the trip when asked, and shows a wing and progress bar while it works"
+   "commit": "93a9b72",
+   "version": "0.5.8344",
+   "date": "2026-11-09",
+   "summary": "The corner banner takes the colour of the time of day, without the plane"
   },
   {
-   "commit": "f103401",
-   "version": "0.1.4626",
-   "date": "2026-10-04",
-   "summary": "Lite's flights open a \"More details\" panel with the aircraft, on-time record and more"
+   "commit": "4998eff",
+   "version": "0.5.8341",
+   "date": "2026-11-09",
+   "summary": "The corner banner keeps to two colours: lavender on dark skies, indigo on light ones"
   },
   {
-   "commit": "a7d973f",
-   "version": "0.1.4620",
-   "date": "2026-10-04",
-   "summary": "Lite centres the example chips under the \"Anything else?\" box"
+   "commit": "923ac86",
+   "version": "0.5.8339",
+   "date": "2026-11-09",
+   "summary": "Faster searches that ask every flight source at once, and a lighter page to download"
   },
   {
-   "commit": "ad8ff6c",
-   "version": "0.1.4619",
-   "date": "2026-10-04",
-   "summary": "Lite's option headings sit on the same line as their choices"
+   "commit": "099c57c",
+   "version": "0.5.8332",
+   "date": "2026-11-09",
+   "summary": "Flights land into place when results arrive, and the logo's plane sits clear of its stripes"
   },
   {
-   "commit": "4bc1e6c",
-   "version": "0.1.4615",
-   "date": "2026-10-04",
-   "summary": "Lite's options read Trip, Leaving, Cabin, Travellers, Bags, with bold headings"
+   "commit": "3d49909",
+   "version": "0.5.8329",
+   "date": "2026-11-09",
+   "summary": "The striped corner banner is back on Home, wider, with the plane tucked against it"
   },
   {
-   "commit": "86ac691",
-   "version": "0.1.4606",
-   "date": "2026-10-04",
-   "summary": "Lite keeps every option label, and Leaving matches the others' size in bold"
+   "commit": "f729f0d",
+   "version": "0.5.8320",
+   "date": "2026-11-09",
+   "summary": "The logo's lavender stripes are back, shooting in like speed lines as the page opens"
   },
   {
-   "commit": "15163b5",
-   "version": "0.1.4600",
-   "date": "2026-10-04",
-   "summary": "Lite's options sit on one centred line under the box, with bullets between"
+   "commit": "83ebafb",
+   "version": "0.5.8317",
+   "date": "2026-11-09",
+   "summary": "On phones, Where to? sits right under today's flight"
   },
   {
-   "commit": "370a2d5",
-   "version": "0.1.4591",
-   "date": "2026-10-04",
-   "summary": "Lite puts Leaving in the centre, in bold, with Today, Tomorrow or a date"
+   "commit": "0ef3b85",
+   "version": "0.5.8294",
+   "date": "2026-11-09",
+   "summary": "Home balances the map and your cards to fill the window, the Concorde mark sits in the corner"
   },
   {
-   "commit": "7f4aa94",
-   "version": "0.1.4572",
-   "date": "2026-10-04",
-   "summary": "Lite shows earliest arrival and cheapest side by side, and opens a flight in place"
+   "commit": "7c3a6c4",
+   "version": "0.5.8309",
+   "date": "2026-11-09",
+   "summary": "The demo's Plan to meet opens the made-up friend's chat with the first line written"
   },
   {
-   "commit": "b860d36",
-   "version": "0.1.4548",
-   "date": "2026-10-04",
-   "summary": "Lite asks \"Anything else?\" as it searches, and the options sit on one line"
+   "commit": "3af61a3",
+   "version": "0.5.8306",
+   "date": "2026-11-09",
+   "summary": "The hero's recent searches keep to one short line; airline tiles stand off the glass"
   },
   {
-   "commit": "e57b88e",
-   "version": "0.1.4498",
-   "date": "2026-10-04",
-   "summary": "ConcordeGo Lite asks one thing: where you need to be, and gets you there now"
+   "commit": "d5c6df2",
+   "version": "0.5.8301",
+   "date": "2026-11-09",
+   "summary": "Plan to meet a friend straight from the top pick, and the results, trips, Friends and Meet in the hero's light"
   },
   {
-   "commit": "a2749d3",
-   "version": "0.1.4425",
-   "date": "2026-10-04",
-   "summary": "Lite centres the date on a one-way trip, and four layout sketches at /lite/mock"
+   "commit": "6527d2b",
+   "version": "0.5.8297",
+   "date": "2026-11-09",
+   "summary": "Type a place on Home and press Enter to see flights; recent searches one tap under the bar"
   },
   {
-   "commit": "09671a6",
-   "version": "0.1.4416",
-   "date": "2026-10-04",
-   "summary": "ConcordeGo Lite opens on a round trip, with the options on top and each date under its place"
+   "commit": "3ca386c",
+   "version": "0.5.8287",
+   "date": "2026-11-09",
+   "summary": "Front page test follows friends on the map"
   },
   {
-   "commit": "f3b8562",
-   "version": "0.1.4403",
-   "date": "2026-10-04",
-   "summary": "ConcordeGo Lite is lighter and simpler: big fields, the options tucked below"
+   "commit": "42006ac",
+   "version": "0.5.8286",
+   "date": "2026-11-09",
+   "summary": "Places to go on the map beside your next trip, one tap to flights"
   },
   {
-   "commit": "a5b88a0",
-   "version": "0.1.4372",
-   "date": "2026-10-04",
-   "summary": "ConcordeGo Lite: three good flights from one short search, at /lite"
+   "commit": "f903af4",
+   "version": "0.5.8282",
+   "date": "2026-11-09",
+   "summary": "A bolder Home: the full map behind, the destination lit in chrome with a passing glint, and glass that glows"
+  },
+  {
+   "commit": "7206912",
+   "version": "0.5.8281",
+   "date": "2026-11-09",
+   "summary": "A simpler trip page, one clear timeline with each step a single line, and Home's cards always the full width"
+  },
+  {
+   "commit": "86449ae",
+   "version": "0.5.8275",
+   "date": "2026-11-09",
+   "summary": "Your trips now spans the same width as the map above it"
+  },
+  {
+   "commit": "41e55ca",
+   "version": "0.5.8274",
+   "date": "2026-11-09",
+   "summary": "A simpler Home with only your trips and what's new by default, and tabs that slide"
+  },
+  {
+   "commit": "1ed6984",
+   "version": "0.5.8265",
+   "date": "2026-11-08",
+   "summary": "Tap a place to search it right away, a more beautiful heading, and simpler search defaults"
+  },
+  {
+   "commit": "cb42098",
+   "version": "0.5.8254",
+   "date": "2026-11-08",
+   "summary": "A cleaner Home: the search and two clear tiles, find a flight and find your friends, with the page centred and empty cards gone"
+  },
+  {
+   "commit": "9ef8728",
+   "version": "0.5.8243",
+   "date": "2026-11-08",
+   "summary": "Cleaner pages: one left edge on every tab, quieter page buttons, tidier empty cards and results header"
+  },
+  {
+   "commit": "329a210",
+   "version": "0.5.8238",
+   "date": "2026-11-08",
+   "summary": "A simpler, centred front page with the search up front, and Settings now shows only what works"
+  },
+  {
+   "commit": "5786c98",
+   "version": "0.5.8228",
+   "date": "2026-11-08",
+   "summary": "Fixes across Home and the social tabs: Back moves between tabs, side panels no longer freeze the page, friend chips on the map open, and removing a trip asks first"
+  },
+  {
+   "commit": "5c20ef1",
+   "version": "0.5.8214",
+   "date": "2026-11-08",
+   "summary": "Smoother tabs, cards that lift under the pointer, and leaner result rows with one footer"
+  },
+  {
+   "commit": "c6ea353",
+   "version": "0.5.8209",
+   "date": "2026-11-08",
+   "summary": "Trip ideas on an empty map, tidier Home cards, a simpler passport card, Back that works, and the 2nd and 3rd picks back in the results list"
+  },
+  {
+   "commit": "67392e9",
+   "version": "0.5.8159",
+   "date": "2026-11-08",
+   "summary": "Version 0.5: a calmer welcome, smoother moves between screens, a route card with a plane while flights load, and Cash or Points no longer reshuffles the results"
+  },
+  {
+   "commit": "83997fd",
+   "version": "0.2.8130",
+   "date": "2026-11-08",
+   "summary": "Type just a city to search: the Magic trip box suggests places as you type, fills in where you fly from, and the opening plays every visit"
+  },
+  {
+   "commit": "e3e72e7",
+   "version": "0.2.8104",
+   "date": "2026-11-08",
+   "summary": "Search results now show which friends are around each flight: in the city you land in, at your connection, and the meet-ups at your airports"
+  },
+  {
+   "commit": "c657cb6",
+   "version": "0.2.8088",
+   "date": "2026-10-23",
+   "summary": "The new desktop design is now everyone's: a live map of your trip and your friends, with today's gate, boarding and seat up top"
+  },
+  {
+   "commit": "6c9f2df",
+   "version": "0.2.8080",
+   "date": "2026-10-23",
+   "summary": "Keep your boarding pass in your trip: add a screenshot, photo or PDF, and it fills in your seat and shows full-screen at the gate, even with no signal"
+  },
+  {
+   "commit": "4a5f173",
+   "version": "0.2.8064",
+   "date": "2026-10-23",
+   "summary": "New members get a \"Your first week\" card: five quick steps that tick themselves off as you go"
+  },
+  {
+   "commit": "1bf39ff",
+   "version": "0.2.8053",
+   "date": "2026-10-23",
+   "summary": "ConcordeGo works with no signal: your trip, gate and seat open in airplane mode, with a line saying how old they are"
+  },
+  {
+   "commit": "b5a5f49",
+   "version": "0.2.8045",
+   "date": "2026-10-23",
+   "summary": "The page loads faster: about a quarter less to download and read on every visit"
+  },
+  {
+   "commit": "eeec460",
+   "version": "0.2.8040",
+   "date": "2026-10-23",
+   "summary": "A new desktop Home built around a live map of your trip and your friends, in testing; results now lead with \"Top pick\""
+  },
+  {
+   "commit": "37159f4",
+   "version": "0.2.7967",
+   "date": "2026-10-23",
+   "summary": "Phone fixes: Settings and your trips without an account, Open trip that works signed out, and a status bar in the sky's colour"
+  },
+  {
+   "commit": "6c84ae3",
+   "version": "0.2.7930",
+   "date": "2026-10-23",
+   "summary": "A simpler phone app: your gate, terminal, boarding time and seat on Home, one typeface, four tabs and a round trip drawn as two journeys"
+  },
+  {
+   "commit": "739bacf",
+   "version": "0.2.7847",
+   "date": "2026-10-21",
+   "summary": "Adding a trip asks where you're leaving from, and Settings keeps the place you usually leave from"
+  },
+  {
+   "commit": "7146009",
+   "version": "0.2.7784",
+   "date": "2026-10-19",
+   "summary": "Trips know where you leave from: set a place and the leave time counts the real ride to the airport at that hour"
+  },
+  {
+   "commit": "9197b6c",
+   "version": "0.2.7751",
+   "date": "2026-10-19",
+   "summary": "Light skies: the journey bar's flight times and the trip's countdown over its photo are readable again"
+  },
+  {
+   "commit": "118f622",
+   "version": "0.2.7749",
+   "date": "2026-10-19",
+   "summary": "The open trip reads as the journey: each flight, the layover and the arrival in matching boxes with their meet-ups, lounges, hotels and entry rules; Uruguay's entry rules; the logo shrinks into the corner as you scroll"
+  },
+  {
+   "commit": "82afcab",
+   "version": "0.2.7714",
+   "date": "2026-10-18",
+   "summary": "On a scrolled page the band behind the top tabs stays solid past them, so nothing shows through"
+  },
+  {
+   "commit": "a7e1612",
+   "version": "0.2.7712",
+   "date": "2026-10-18",
+   "summary": "Meet-ups: pick a lounge or restaurant at the airport, browse any airport's open meet-ups, a heads-up when one opens on your trip, an \"Open on your trips\" card; plus dozens of small fixes"
+  },
+  {
+   "commit": "e773f7a",
+   "version": "0.2.7462",
+   "date": "2026-10-18",
+   "summary": "Test runs start headless Chrome without asking the Mac's keychain, and always close it"
+  },
+  {
+   "commit": "be94258",
+   "version": "0.2.7450",
+   "date": "2026-10-18",
+   "summary": "A re-forwarded trip says it's already in your trips; Settings confirms when your choices are saved to your account"
+  },
+  {
+   "commit": "7d54c49",
+   "version": "0.2.7439",
+   "date": "2026-10-18",
+   "summary": "Signed in, your Home cards, their order and your settings and theme follow you to any browser"
+  },
+  {
+   "commit": "2499e70",
+   "version": "0.2.7432",
+   "date": "2026-10-18",
+   "summary": "Resend an invitation from the invited person's page; three more hotel price checks a day"
+  },
+  {
+   "commit": "49c93ce",
+   "version": "0.2.7424",
+   "date": "2026-10-18",
+   "summary": "Pages also carry their last-changed date, so a repeat visit can skip the download"
+  },
+  {
+   "commit": "d3c47bb",
+   "version": "0.2.7420",
+   "date": "2026-10-17",
+   "summary": "Cache tags compared correctly whatever form the browser sends back"
+  },
+  {
+   "commit": "644c258",
+   "version": "0.2.7419",
+   "date": "2026-10-17",
+   "summary": "The page's cache tag now survives Cloudflare, so a repeat visit doesn't download the page again"
+  },
+  {
+   "commit": "469964a",
+   "version": "0.2.7417",
+   "date": "2026-10-17",
+   "summary": "Forty-one fixes: fairer limits, steadier nightly jobs, rides timed right, smarter Magic trip and wish box, trips that stay deleted, a lighter page that caches, and working text size, reduced motion and keyboard focus"
+  },
+  {
+   "commit": "ebbe87d",
+   "version": "0.2.7206",
+   "date": "2026-10-17",
+   "summary": "Plainer wording when a fare can't be watched"
+  },
+  {
+   "commit": "ab1a493",
+   "version": "0.2.7204",
+   "date": "2026-10-17",
+   "summary": "Eight fixes: group searches graded per traveller, each flight's own wifi on its grade, Magic trip asks for a date instead of guessing, connecting trips saved flight by flight, delayed flights stay on Home, no skipped chat messages, steadier price watches, and simultaneous searches no longer fail"
+  },
+  {
+   "commit": "8e907c9",
+   "version": "0.2.7115",
+   "date": "2026-10-16",
+   "summary": "While a search runs, the search options no longer show behind its progress"
+  },
+  {
+   "commit": "9e1abd4",
+   "version": "0.2.7114",
+   "date": "2026-10-16",
+   "summary": "Passport & entry for UK, Canadian, Australian and EU passports, and what you need to change planes at 30 hubs"
+  },
+  {
+   "commit": "9cf26d2",
+   "version": "0.2.7006",
+   "date": "2026-10-16",
+   "summary": "The profile picture's ring is no longer cut off on wide screens"
+  },
+  {
+   "commit": "ec92e8c",
+   "version": "0.2.7005",
+   "date": "2026-10-16",
+   "summary": "Confirm before adding a friend or joining a group from a link; an optional person check on sign-in and searches; group addresses for hosts only"
+  },
+  {
+   "commit": "a150195",
+   "version": "0.2.6966",
+   "date": "2026-10-16",
+   "summary": "Phones in Safari: the trip forms open full width, no zoom on text boxes, dates fit, a larger logo with a readable slogan, and the first flight shows on the first screen"
+  },
+  {
+   "commit": "76ea794",
+   "version": "0.2.6962",
+   "date": "2026-10-16",
+   "summary": "Flight details name the seats with no window on five airlines' usual layouts, and count open window seats where the layout is known"
+  },
+  {
+   "commit": "c5dabd2",
+   "version": "0.2.6935",
+   "date": "2026-10-16",
+   "summary": "Tighter security: stricter sign-in checks, privacy settings honoured everywhere, firmer daily limits"
+  },
+  {
+   "commit": "e62143b",
+   "version": "0.2.6875",
+   "date": "2026-10-16",
+   "summary": "Phones: the logo and slogan sit in the middle of the top strip"
+  },
+  {
+   "commit": "5d84b41",
+   "version": "0.2.6872",
+   "date": "2026-10-14",
+   "summary": "Phones get the desktop's look on every screen: the sky behind, the glass cards, one gutter, a bottom sheet, a smaller footer"
+  },
+  {
+   "commit": "13fdf7f",
+   "version": "0.2.6788",
+   "date": "2026-10-14",
+   "summary": "Phones: the map band blends into the sky with no hard edges; one chip per recent search"
+  },
+  {
+   "commit": "db69288",
+   "version": "0.2.6785",
+   "date": "2026-10-13",
+   "summary": "On the results the footer sits at the foot, not under the account"
+  },
+  {
+   "commit": "0473c6e",
+   "version": "0.2.6784",
+   "date": "2026-10-13",
+   "summary": "Narrower windows: the tabs centred between the logo and the account, the left column from 1100px, the search clear of the cards, one chip per recent search"
+  },
+  {
+   "commit": "91e3000",
+   "version": "0.2.6775",
+   "date": "2026-10-13",
+   "summary": "A soft band fades in behind the top tabs and the account once the page scrolls"
+  },
+  {
+   "commit": "50311dc",
+   "version": "0.2.6773",
+   "date": "2026-10-13",
+   "summary": "The map Home is the default Home; the logo's stripes fade smoothly; the points box in the violet glass; a small footer bottom-right on every screen"
+  },
+  {
+   "commit": "4a1e7c7",
+   "version": "0.2.6767",
+   "date": "2026-10-13",
+   "summary": "The logo and the Home tab go back to Home from the results; the chats button for every signed-in person; the picture's ring in the theme's colour; no empty bar in the verdict; Add a trip stays in view"
+  },
+  {
+   "commit": "99cccd6",
+   "version": "0.2.6755",
+   "date": "2026-10-13",
+   "summary": "Map Home: both card columns start right under the flight bar"
+  },
+  {
+   "commit": "6e9aac7",
+   "version": "0.2.6753",
+   "date": "2026-10-13",
+   "summary": "Trips, Friends, Meet and Settings in the map look; the top tabs clear the logo on narrower windows"
+  },
+  {
+   "commit": "666675f",
+   "version": "0.2.6751",
+   "date": "2026-10-13",
+   "summary": "Map Home: a search form widens the dock and the map steps back behind it"
+  },
+  {
+   "commit": "7003083",
+   "version": "0.2.6750",
+   "date": "2026-10-13",
+   "summary": "Phones: the corner logo heads every screen, the top bar floats over it"
+  },
+  {
+   "commit": "fd9406d",
+   "version": "0.2.6745",
+   "date": "2026-10-13",
+   "summary": "The search results in the map look: the verdict as the flight bar, the sort strip, glass picks and rows, every theme"
+  },
+  {
+   "commit": "414e587",
+   "version": "0.2.6743",
+   "date": "2026-10-13",
+   "summary": "One frame on every screen: the corner logo, the top tabs and the map's sky behind the results, Trips, Friends, Meet and Settings"
+  },
+  {
+   "commit": "ec0266c",
+   "version": "0.2.6732",
+   "date": "2026-10-13",
+   "summary": "The map Home's corner logo in every theme; Classic stays the default Home for now"
+  },
+  {
+   "commit": "3ac7ff2",
+   "version": "0.2.6730",
+   "date": "2026-10-13",
+   "summary": "Map Home: cards down the left or the right, picked in Look or dragged across"
+  },
+  {
+   "commit": "49bf968",
+   "version": "0.2.6716",
+   "date": "2026-10-13",
+   "summary": "The map Home, first build: the flight bar, the map with friends and meet-ups, the corner logo, the dock, UV and Navy"
+  },
+  {
+   "commit": "2a97650",
+   "version": "0.2.6680",
+   "date": "2026-10-13",
+   "summary": "Map home mockup: the starfield drifts slowly in three depths, behind the land"
+  },
+  {
+   "commit": "580298e",
+   "version": "0.2.6664",
+   "date": "2026-10-13",
+   "summary": "Map home mockup: the animation a little quicker, and the starry skies' cross-shaped glints are back"
+  },
+  {
+   "commit": "83a28cc",
+   "version": "0.2.6655",
+   "date": "2026-10-13",
+   "summary": "Corner logo finalists: D, G2, G3 and three outlined, mono-slogan hybrids"
+  },
+  {
+   "commit": "fbf692b",
+   "version": "0.2.6648",
+   "date": "2026-10-13",
+   "summary": "Map home mockup: an Animated background, slow and calm: the plane on the route, friend pulses, still stars that twinkle"
+  },
+  {
+   "commit": "4f0a8ba",
+   "version": "0.2.6636",
+   "date": "2026-10-13",
+   "summary": "Corner logo, round five: five more takes on the breakout name, and an HDR switch"
+  },
+  {
+   "commit": "ad2cfa5",
+   "version": "0.2.6610",
+   "date": "2026-10-13",
+   "summary": "Corner logo, round four: seven takes on the fading sash, the name breaking out of it"
+  },
+  {
+   "commit": "b471d11",
+   "version": "0.2.6595",
+   "date": "2026-10-13",
+   "summary": "Corner logo, round three: the name and slogan on the purple sash, along it or level"
+  },
+  {
+   "commit": "3fb99ac",
+   "version": "0.2.6573",
+   "date": "2026-10-13",
+   "summary": "Theme mockups: Live, Auto, Light, Dark, UV and Navy; the daytime map's dots show everywhere"
+  },
+  {
+   "commit": "4404713",
+   "version": "0.2.6559",
+   "date": "2026-10-13",
+   "summary": "Corner logo, round two: bands behind the flight bar, wider purples, a number picker"
+  },
+  {
+   "commit": "0d80396",
+   "version": "0.2.6546",
+   "date": "2026-10-13",
+   "summary": "Theme mockups for the map home: light, live through the day, grayscale, UV and midnight navy"
+  },
+  {
+   "commit": "0c08c1f",
+   "version": "0.2.6545",
+   "date": "2026-10-13",
+   "summary": "Six ways to fold the logo into the map home's corner"
+  },
+  {
+   "commit": "9e0eda6",
+   "version": "0.2.6535",
+   "date": "2026-10-13",
+   "summary": "The map homes at a calmer scale, like a zoomed-out browser"
+  },
+  {
+   "commit": "1764f32",
+   "version": "0.2.6534",
+   "date": "2026-10-13",
+   "summary": "The merged Home: the flight bar across the top, friends and meet-ups on the map, What's new on the right"
+  },
+  {
+   "commit": "8cf9d42",
+   "version": "0.2.6500",
+   "date": "2026-10-13",
+   "summary": "Four polished night-map homes: quiet, search first, flight first, map as canvas"
+  },
+  {
+   "commit": "0235d8f",
+   "version": "0.2.6499",
+   "date": "2026-10-13",
+   "summary": "Four polished mono homes: poster, rails, two columns, ledger"
+  },
+  {
+   "commit": "e338665",
+   "version": "0.2.6498",
+   "date": "2026-10-13",
+   "summary": "The data download answers as a link"
+  },
+  {
+   "commit": "2632cdd",
+   "version": "0.2.6496",
+   "date": "2026-10-13",
+   "summary": "Download my data: a file with everything your account holds"
+  },
+  {
+   "commit": "ab8a43f",
+   "version": "0.2.6491",
+   "date": "2026-10-13",
+   "summary": "The admin page shows when each nightly job last ran and what it did"
+  },
+  {
+   "commit": "db4685c",
+   "version": "0.2.6479",
+   "date": "2026-10-13",
+   "summary": "Chats, groups and meet-ups are no longer \"coming soon\" in the tour and the tabs"
+  },
+  {
+   "commit": "4c735bb",
+   "version": "0.2.6475",
+   "date": "2026-10-13",
+   "summary": "The Friends switch stays centred with its red dot; the contrast audit reads every CSS colour"
+  },
+  {
+   "commit": "0f0033d",
+   "version": "0.2.6473",
+   "date": "2026-10-13",
+   "summary": "Two calmer mono homepages: the reading column with empty middle, and the broadsheet with one right rail"
+  },
+  {
+   "commit": "38ae5f6",
+   "version": "0.2.6467",
+   "date": "2026-10-13",
+   "summary": "The map mockups lose the \"Five friends are on the map this week\" line"
+  },
+  {
+   "commit": "ffdb058",
+   "version": "0.2.6464",
+   "date": "2026-10-13",
+   "summary": "Four full-page versions of the minimal mono homepage: broadsheet, two halves, dashboard, reading column"
+  },
+  {
+   "commit": "7ca04b0",
+   "version": "0.2.6463",
+   "date": "2026-10-13",
+   "summary": "The night map with widget rails down both sides and the site's footer in the corner"
+  },
+  {
+   "commit": "b3581ce",
+   "version": "0.2.6447",
+   "date": "2026-10-13",
+   "summary": "The mono homepage preview at a calmer size, and the map preview in the night palette"
+  },
+  {
+   "commit": "6b0b5e6",
+   "version": "0.2.6445",
+   "date": "2026-10-13",
+   "summary": "Connect Google Contacts: one tap finds the friends already here and invites the rest"
+  },
+  {
+   "commit": "515274a",
+   "version": "0.2.6436",
+   "date": "2026-10-13",
+   "summary": "The mono homepage keeps its measure on a wide window"
+  },
+  {
+   "commit": "97c8376",
+   "version": "0.2.6435",
+   "date": "2026-10-13",
+   "summary": "The night-palette map screens can show the desktop view alone, at the window's size"
+  },
+  {
+   "commit": "ae35950",
+   "version": "0.2.6430",
+   "date": "2026-10-13",
+   "summary": "The map-first direction in blues, and the desktop views at native size"
+  },
+  {
+   "commit": "e4db64e",
+   "version": "0.2.6417",
+   "date": "2026-10-13",
+   "summary": "The homepage directions' desktop view fills the browser window"
+  },
+  {
+   "commit": "9ce12c5",
+   "version": "0.2.6415",
+   "date": "2026-10-13",
+   "summary": "The four homepage directions can show the desktop screen alone"
+  },
+  {
+   "commit": "c2ea306",
+   "version": "0.2.6413",
+   "date": "2026-10-13",
+   "summary": "The nearby-days mutant and its guard anchor on their own line"
+  },
+  {
+   "commit": "8b4234e",
+   "version": "0.2.6411",
+   "date": "2026-10-13",
+   "summary": "Business fares with one tap for people who fly business on long flights"
+  },
+  {
+   "commit": "1fcdf94",
+   "version": "0.2.6407",
+   "date": "2026-10-13",
+   "summary": "The door-open email on the emails mockup page"
+  },
+  {
+   "commit": "a0eca43",
+   "version": "0.2.6406",
+   "date": "2026-10-13",
+   "summary": "When the beta's door opens, everyone on the waitlist gets one email"
+  },
+  {
+   "commit": "49a80e0",
+   "version": "0.2.6396",
+   "date": "2026-10-13",
+   "summary": "The map-first front page in the site's own night palette: signed in, day and night, your city first"
+  },
+  {
+   "commit": "61121fb",
+   "version": "0.2.6395",
+   "date": "2026-10-13",
+   "summary": "An open trip's photo reaches the card's edge"
+  },
+  {
+   "commit": "7ad6fe2",
+   "version": "0.2.6393",
+   "date": "2026-10-13",
+   "summary": "Four signed-out versions of the map-first front page: world map, a turning globe, day and night, your city first"
+  },
+  {
+   "commit": "f6250fc",
+   "version": "0.2.6392",
+   "date": "2026-10-13",
+   "summary": "A shorter footnote under the passport block, with the year"
+  },
+  {
+   "commit": "d7fb6fa",
+   "version": "0.2.6391",
+   "date": "2026-10-13",
+   "summary": "The passport block asks for its own airports"
+  },
+  {
+   "commit": "42ad785",
+   "version": "0.2.6390",
+   "date": "2026-10-13",
+   "summary": "The passport block fills in once the airports are known"
+  },
+  {
+   "commit": "ede5ba7",
+   "version": "0.2.6388",
+   "date": "2026-10-13",
+   "summary": "Passport & entry: what a US passport needs in 32 countries, and whether yours lasts the trip"
+  },
+  {
+   "commit": "6504b25",
+   "version": "0.2.6371",
+   "date": "2026-10-13",
+   "summary": "A little less air between the tile and the name"
+  },
+  {
+   "commit": "4c70b85",
+   "version": "0.2.6370",
+   "date": "2026-10-13",
+   "summary": "Four homepages from scratch, out of curiosity: paper, boarding pass, map first, minimal mono"
+  },
+  {
+   "commit": "74bb392",
+   "version": "0.2.6369",
+   "date": "2026-10-13",
+   "summary": "The front page's tagline on one line; the sneak-peek line is gone"
+  },
+  {
+   "commit": "69fd0f6",
+   "version": "0.2.6365",
+   "date": "2026-10-13",
+   "summary": "The front page's tile a touch larger and lower"
+  },
+  {
+   "commit": "0eb2ff7",
+   "version": "0.2.6364",
+   "date": "2026-10-13",
+   "summary": "\"beta\" sits small under the wordmark everywhere; the version number stays in the footer"
+  },
+  {
+   "commit": "49f55d0",
+   "version": "0.2.6363",
+   "date": "2026-10-13",
+   "summary": "The front page opens on the tile, the name and \"Fly happy again. Fly with friends.\""
+  },
+  {
+   "commit": "6cac5be",
+   "version": "0.2.6358",
+   "date": "2026-10-13",
+   "summary": "A sketch of the front page with the tile and the card's type, two ways"
+  },
+  {
+   "commit": "7bd15c3",
+   "version": "0.2.6357",
+   "date": "2026-10-13",
+   "summary": "A flight's details link the plane's seat layout and count the seats by the wall still open"
+  },
+  {
+   "commit": "b92b224",
+   "version": "0.2.6351",
+   "date": "2026-10-13",
+   "summary": "The waitlist says you can keep searching as a guest"
+  },
+  {
+   "commit": "740bb83",
+   "version": "0.2.6348",
+   "date": "2026-10-13",
+   "summary": "Deals from your airport: a Home card with the fares well under the fair fare, checked each night from the flight feed"
+  },
+  {
+   "commit": "df1013e",
+   "version": "0.2.6339",
+   "date": "2026-10-13",
+   "summary": "One motion for every panel and dialog; the sign-in dialog knows when the beta is invitation-only"
+  },
+  {
+   "commit": "f5a3dd3",
+   "version": "0.2.6334",
+   "date": "2026-10-13",
+   "summary": "An invitation-only switch for the beta, with a waitlist, on the admin page"
+  },
+  {
+   "commit": "744e2f4",
+   "version": "0.2.6324",
+   "date": "2026-10-13",
+   "summary": "From the first real-phone look: an open trip's footer stays dark on its pale panel, and the demo badge never blocks a tap"
+  },
+  {
+   "commit": "0ed7a92",
+   "version": "0.2.6322",
+   "date": "2026-10-13",
+   "summary": "The built page, with everything from today"
+  },
+  {
+   "commit": "c55ce20",
+   "version": "0.2.6322",
+   "date": "2026-10-13",
+   "summary": "Meet-up emails and reminders: when one is planned for you, someone joins yours, or it's cancelled, and before it starts; both switchable"
+  },
+  {
+   "commit": "a6818e3",
+   "version": "0.2.6301",
+   "date": "2026-10-13",
+   "summary": "AI learning, step two: a \"For you\" sort that adds what it learned as named lines, with the reasons on each card"
+  },
+  {
+   "commit": "474278f",
+   "version": "0.2.6289",
+   "date": "2026-10-13",
+   "summary": "Real meet-ups: plan one for your friends, a group or anyone at the airport; join, chat, report; on the Meet tab, your trips and Home"
+  },
+  {
+   "commit": "331493c",
+   "version": "0.2.6264",
+   "date": "2026-10-13",
+   "summary": "\"Your taste\" is now \"AI learning\""
+  },
+  {
+   "commit": "330076a",
+   "version": "0.2.6259",
+   "date": "2026-10-13",
+   "summary": "Your taste, step one: the flights you pick are remembered, and your account shows what that says about how you fly"
+  },
+  {
+   "commit": "8858c6d",
+   "version": "0.2.6246",
+   "date": "2026-10-13",
+   "summary": "Share a trip as a picture: a boarding-pass card drawn in the browser, with your friend code on the stub"
+  },
+  {
+   "commit": "3c2c064",
+   "version": "0.2.6241",
+   "date": "2026-10-13",
+   "summary": "Two quiet errors on the demo page: the wish box's count shared an id with the trip countdown, and a photo beat could land between searches"
+  },
+  {
+   "commit": "87ac621",
+   "version": "0.2.6238",
+   "date": "2026-10-13",
+   "summary": "Price watch: watch a flight's fare or a route's cheapest ticket, checked every night, with an email when it drops"
+  },
+  {
+   "commit": "038c0db",
+   "version": "0.2.6218",
+   "date": "2026-10-13",
+   "summary": "Results toolbar: the search as one sentence you can tap, then one row of Sort and Filters"
+  },
+  {
+   "commit": "7aa00f5",
+   "version": "0.2.6213",
+   "date": "2026-10-13",
+   "summary": "Where to stay on an open trip: the typical hotel price near where you land, with links to search"
+  },
+  {
+   "commit": "3520698",
+   "version": "0.2.6210",
+   "date": "2026-10-13",
+   "summary": "Recent searches under Magic trip: tap one to search it again, × to forget it"
+  },
+  {
+   "commit": "5830335",
+   "version": "0.2.6201",
+   "date": "2026-10-13",
+   "summary": "A highlighted row in Friends, Groups and What's new now reaches the edges of its box"
+  },
+  {
+   "commit": "ad395b0",
+   "version": "0.2.6200",
+   "date": "2026-10-13",
+   "summary": "Sketches of eight ideas to come, two options each"
+  },
+  {
+   "commit": "15296e7",
+   "version": "0.2.6199",
+   "date": "2026-10-13",
+   "summary": "Tabs fade in when you switch between them; a first sketch of learning how you like to fly"
+  },
+  {
+   "commit": "502abf7",
+   "version": "0.2.6195",
+   "date": "2026-10-13",
+   "summary": "Light skies: cards get a visible edge; phones keep the top bar on one row and long city pairs in the plain type"
+  },
+  {
+   "commit": "57f0dd0",
+   "version": "0.2.6191",
+   "date": "2026-10-13",
+   "summary": "The site's own drawn icons in place of the last emoji on Home and the welcome"
+  },
+  {
+   "commit": "2395a1c",
+   "version": "0.2.6186",
+   "date": "2026-10-13",
+   "summary": "Admin: adjust one person's invitations, everyone's at once, or make someone unlimited; owners are unlimited"
+  },
+  {
+   "commit": "ed69400",
+   "version": "0.2.6166",
+   "date": "2026-10-13",
+   "summary": "Friends and Groups redesigned as one place: two lists, one row style, and a page for every friend and group"
+  },
+  {
+   "commit": "03e6de8",
+   "version": "0.2.6121",
+   "date": "2026-10-13",
+   "summary": "Plan to meet: one tap from a friend's crossing opens the chat with the first line written; \"Fly happy again.\""
+  },
+  {
+   "commit": "c2df2fd",
+   "version": "0.2.6111",
+   "date": "2026-10-13",
+   "summary": "Group trips: plan a trip inside a group, members ask to come, the host lets them in; \"Fly happy. Fly with friends.\""
+  },
+  {
+   "commit": "dc548a2",
+   "version": "0.2.6099",
+   "date": "2026-10-13",
+   "summary": "An email when a message waits unread for an hour, at most every few hours; a switch in Notifications"
+  },
+  {
+   "commit": "4c293bb",
+   "version": "0.2.6091",
+   "date": "2026-10-13",
+   "summary": "Link previews: a card with the icon when a ConcordeGo link is shared, naming who invited you"
+  },
+  {
+   "commit": "4d9d1ae",
+   "version": "0.2.6085",
+   "date": "2026-10-13",
+   "summary": "Block and report people and groups, with a reason; accounts can be paused after a report"
+  },
+  {
+   "commit": "a9118f1",
+   "version": "0.2.6066",
+   "date": "2026-10-13",
+   "summary": "Friends: Message, Remove and Block as round icons (envelope, X, no-entry), one line on any phone"
+  },
+  {
+   "commit": "1161f0d",
+   "version": "0.2.6063",
+   "date": "2026-10-13",
+   "summary": "Friends tab: Groups spaced like Friends, and a person's buttons fit on a phone"
+  },
+  {
+   "commit": "8e31ef6",
+   "version": "0.2.6061",
+   "date": "2026-10-13",
+   "summary": "Groups fold like trips, with members and Add a friend inside; \"beta\" and the version beside the name"
+  },
+  {
+   "commit": "2b0da76",
+   "version": "0.2.6045",
+   "date": "2026-10-13",
+   "summary": "Footer: the Privacy, Terms and Report a bug links in the footer's own grey"
+  },
+  {
+   "commit": "c4d0e5b",
+   "version": "0.2.6044",
+   "date": "2026-10-13",
+   "summary": "Footer: the photo and flight-status credits sit small under the version number"
+  },
+  {
+   "commit": "13e1aeb",
+   "version": "0.2.6040",
+   "date": "2026-10-13",
+   "summary": "Groups: more icons (skydiving, photography, safari, camping, shopping), and any country's flag by typing its name"
+  },
+  {
+   "commit": "310b6af",
+   "version": "0.2.6035",
+   "date": "2026-10-12",
+   "summary": "Know when someone joins: an email, and a pop-up on the page"
+  },
+  {
+   "commit": "fba85ec",
+   "version": "0.2.6020",
+   "date": "2026-10-12",
+   "summary": "Groups: sixteen icons to pick from, and a group's buttons sit under its name on phones"
+  },
+  {
+   "commit": "2b39874",
+   "version": "0.2.6018",
+   "date": "2026-10-12",
+   "summary": "Meet is meet-ups only: landing crews become proposed meet-ups, and groups plan trips"
+  },
+  {
+   "commit": "5ae8530",
+   "version": "0.2.6006",
+   "date": "2026-10-12",
+   "summary": "The emails, designed: a boarding-pass invitation, a welcome on first sign-in, and new sign-in and trip emails"
+  },
+  {
+   "commit": "8ed12f2",
+   "version": "0.2.5992",
+   "date": "2026-10-12",
+   "summary": "Invitations in a ladder (3, then 2, then 1), and Report a bug on every page"
+  },
+  {
+   "commit": "39c0583",
+   "version": "0.2.5967",
+   "date": "2026-10-12",
+   "summary": "Email designs: mockups for the invitation, welcome, sign-in and trip emails"
+  },
+  {
+   "commit": "03526c4",
+   "version": "0.2.5966",
+   "date": "2026-10-12",
+   "summary": "Invite friends by email: a few invitations each, a personal note, and you're friends when they join"
+  },
+  {
+   "commit": "c7b00ff",
+   "version": "0.2.5944",
+   "date": "2026-10-12",
+   "summary": "Installed-app icon: drop the Android-shaped icon so Chrome on a Mac shows the family tile"
+  },
+  {
+   "commit": "0e9eaa0",
+   "version": "0.2.5937",
+   "date": "2026-10-12",
+   "summary": "Home-screen icon: remove the old wing embedded in the page, which iPhones preferred"
+  },
+  {
+   "commit": "7eb5f33",
+   "version": "0.2.5936",
+   "date": "2026-10-12",
+   "summary": "App icons under new file names, so phones fetch the plane instead of the cached wing"
+  },
+  {
+   "commit": "bf91d2c",
+   "version": "0.2.5921",
+   "date": "2026-10-12",
+   "summary": "A new app icon: the Concorde family's tile with a plane, matching ConcordeAI and ConcordeVPN"
+  },
+  {
+   "commit": "3343c78",
+   "version": "0.2.5909",
+   "date": "2026-10-12",
+   "summary": "Sign-in: no password option; the emailed code and Google cover it"
+  },
+  {
+   "commit": "a9d8000",
+   "version": "0.2.5908",
+   "date": "2026-10-12",
+   "summary": "Find friends from your contacts: import a contacts file, pick from your phone, or invite by text"
+  },
+  {
+   "commit": "c67fad7",
+   "version": "0.2.5885",
+   "date": "2026-10-12",
+   "summary": "Settings regrouped with icons; each airline's own check-in times; footers on every tab"
+  },
+  {
+   "commit": "c768d61",
+   "version": "0.2.5840",
+   "date": "2026-10-12",
+   "summary": "Messages: real chats with your friends and your groups"
+  },
+  {
+   "commit": "8614299",
+   "version": "0.2.5795",
+   "date": "2026-10-12",
+   "summary": "Fix: signed-in people showed as signed out; and a check-in reminder for your trips"
+  },
+  {
+   "commit": "10079a1",
+   "version": "0.2.5783",
+   "date": "2026-10-12",
+   "summary": "You: the profile shows what you saved after a refresh; a clearer heading; tidier Trips"
+  },
+  {
+   "commit": "5f54720",
+   "version": "0.2.5776",
+   "date": "2026-10-12",
+   "summary": "Home: a new account starts with four cards, What's new, Messages, Friends on the move and Meet-ups"
+  },
+  {
+   "commit": "e487707",
+   "version": "0.2.5772",
+   "date": "2026-10-12",
+   "summary": "Home: every card on for a new account with the social ones first; Clocks shows the next three places; switches move to Look"
+  },
+  {
+   "commit": "0bd5b0f",
+   "version": "0.2.5760",
+   "date": "2026-10-12",
+   "summary": "Home: the weather card picks your trip, shows now big, and the first days you're there under it"
+  },
+  {
+   "commit": "798f9e1",
+   "version": "0.2.5758",
+   "date": "2026-10-12",
+   "summary": "Home: seven new cards, a Groups card, rows that always fill, and a Customize Home link"
+  },
+  {
+   "commit": "f35ddf3",
+   "version": "0.2.5742",
+   "date": "2026-10-12",
+   "summary": "ConcordeGo on your home screen: an app icon, full-screen launch, and an Add to Home Screen offer"
+  },
+  {
+   "commit": "f793df3",
+   "version": "0.2.5731",
+   "date": "2026-10-12",
+   "summary": "Settings: the Home cards' switches are one boxed group; the Background note says \"your computer or phone\""
+  },
+  {
+   "commit": "c122b0d",
+   "version": "0.2.5728",
+   "date": "2026-10-12",
+   "summary": "Home: switch each card on or off, drag them into your order, and an Upcoming trips card; Background: Animated, Static or Off"
+  },
+  {
+   "commit": "fbabbb6",
+   "version": "0.2.5709",
+   "date": "2026-10-12",
+   "summary": "Trips: the calendar chooser is four names with proper marks, and one footnote"
+  },
+  {
+   "commit": "80c3edf",
+   "version": "0.2.5705",
+   "date": "2026-10-12",
+   "summary": "Trips: Add to calendar offers Apple, Google, Outlook or the file; a real shadow under the open trip's photo"
+  },
+  {
+   "commit": "134fad1",
+   "version": "0.2.5699",
+   "date": "2026-10-12",
+   "summary": "Trips: add a trip to your calendar with leave-by alarms, and a leave-by reminder on travel day"
+  },
+  {
+   "commit": "01f05a7",
+   "version": "0.2.5692",
+   "date": "2026-10-12",
+   "summary": "Trips: live flight status on travel day, graded from a quiet note to the Flight Fixer"
+  },
+  {
+   "commit": "495de26",
+   "version": "0.2.5676",
+   "date": "2026-10-12",
+   "summary": "One rhythm across Trips, Friends, You and Add a trip; the open trip's photo spans the row"
+  },
+  {
+   "commit": "acabe1a",
+   "version": "0.2.5653",
+   "date": "2026-10-12",
+   "summary": "Trips: each row is a stub in the airline's colour with the days to go, and an open trip shows its photo and the day's strip"
+  },
+  {
+   "commit": "b9e9a8c",
+   "version": "0.2.5638",
+   "date": "2026-10-12",
+   "summary": "Mockups: the You profile card keeps its button in view"
+  },
+  {
+   "commit": "2cb99df",
+   "version": "0.2.5636",
+   "date": "2026-10-12",
+   "summary": "Mockups: the trip card as a hero (three versions) and one rhythm across Trips, Friends, You and Add a trip"
+  },
+  {
+   "commit": "2866268",
+   "version": "0.2.5634",
+   "date": "2026-10-12",
+   "summary": "Trips: each trip is one line until you open it"
+  },
+  {
+   "commit": "8803ab6",
+   "version": "0.2.5629",
+   "date": "2026-10-12",
+   "summary": "Trips: a receipt that gives only the journey's times is read anyway, each flight timed by look-up or estimate"
+  },
+  {
+   "commit": "c692012",
+   "version": "0.2.5611",
+   "date": "2026-10-12",
+   "summary": "Trips: the journey bar on every trip, airport time to arrival, connections coloured by comfort"
+  },
+  {
+   "commit": "000f69b",
+   "version": "0.2.5606",
+   "date": "2026-10-12",
+   "summary": "Trips: the aircraft and arrival terminal fill in by themselves, and the gate on the day"
   }
  ]
 }
