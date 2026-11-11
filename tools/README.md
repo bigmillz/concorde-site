@@ -306,7 +306,7 @@ whatever happened to be on screen. They are HTML so they stay crisp at any
 size and can be restaged without re-shooting. The AI window is the Horizon home as ConcordeAI 7.0
 draws it, a 2x capture of the app's real page (see "Retaking
 `windows/ai-capture.png`"): the greeting under the near-black sky, the message
-box with a question typed in, the Fast mode and the effort slider. The VPN
+box with a question typed in, Max mode and the effort slider at Ultra. The VPN
 window is the main window as ConcordeVPN 1.5 draws it, 460x590: connected
 through New York, Balanced, with the speed card and the Mode and Exit rows. It
 is a capture of the app's real page (see "Retaking `windows/vpn-capture.png`").
@@ -393,17 +393,19 @@ then, with `measure.mjs` (its `MEASURE_COOKIE`, `MEASURE_INIT` and
 `MEASURE_MOTION` exist for this: the app wants its cookie, `millen.fxlevel`
 set to `full` before it loads, and motion left on):
 
-    MEASURE_COOKIE="millen_key_9931=<key>" MEASURE_MOTION=1 MEASURE_DPR=2 \
+    MEASURE_COOKIE="millen_key_9931=<key>" MEASURE_MOTION=1 MEASURE_DPR=2.5106383 \
     MEASURE_INIT='localStorage.setItem("millen.fxlevel","full")' \
-    node tools/measure.mjs http://127.0.0.1:9931/ 1180x1240 \
-      '(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms));
-         await w(15000);                       // the intro first
-         const t = document.querySelector("#input"); t.focus();
-         t.value = "Explain how a heat pump works, then compare three models under $4,000";
-         t.dispatchEvent(new Event("input", {bubbles: true}));
-         await w(900); t.blur(); await w(1200); return document.title; })()' /tmp/ai.png
+    node tools/measure.mjs http://127.0.0.1:9931/ 940x988 '<expression>' /tmp/ai.png
 
-Save the PNG as `tools/windows/ai-capture.png` (2360x2480), run `make-shots.py`,
+940x988 at 2.51x is near the app's smallest window, so the interface reads large
+(the PNG is 2360x2481; crop it to 2360x2480). The expression waits 15 s for the
+intro, opens the mode menu (`button.hz-pick`) and picks **Max**, types "Explain
+how a heat pump works, then compare three models under $4,000" into `#input`
+(never sends it), pushes the effort `input[type=range]` to its max (**Ultra**:
+the ice-violet slider, the glowing composer and the sparkles), then for about
+4 s removes the "window didn't finish starting" toast a window-less dev copy
+shows, and blurs the box. (2026-11-11, per Pat: the site did not make the
+product look as good as it is; the plain Medium/Fast home was dull.) Save the PNG as `tools/windows/ai-capture.png` (2360x2480), run `make-shots.py`,
 look at it, then stop the dev copy (`kill $(lsof -tnP -iTCP:9931 -sTCP:LISTEN)`).
 Never open a visible app window or add `?hz=gpu=1` (a dev badge); the app's
 Apple aerial footage never goes on the site (the capture is the app's own
