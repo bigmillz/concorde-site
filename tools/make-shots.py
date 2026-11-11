@@ -33,7 +33,18 @@ import tempfile
 
 from PIL import Image, ImageChops, ImageDraw
 
-CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+def _find_chrome():
+    """Playwright's bundled Chromium first (Pat's rule for headless runs), then
+    Chrome; CHROME=/path overrides. The launch below passes --use-mock-keychain."""
+    import glob
+    if os.environ.get("CHROME"):
+        return os.environ["CHROME"]
+    pw = sorted(glob.glob(os.path.expanduser(
+        "~/Library/Caches/ms-playwright/chromium-*/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing")))
+    return pw[-1] if pw else "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+
+CHROME = _find_chrome()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.normpath(os.path.join(HERE, "..", "assets"))
 
@@ -50,7 +61,7 @@ OPAQUE = 250     # alpha at or above this is window; below is shadow or air
 # the window plus MARGIN/k of shadow on every side, where k = WIN_H / the
 # window's 2x pixel height; the script refuses a capture that is too small.
 SOURCES = {
-    "ai":  ("ai-window.html",  (1400, 1520)),
+    "ai":  ("ai-window.html",  (1520, 1600)),
     "vpn": ("vpn-window.html", (780, 960)),
     "go":  ("go-window.html",  (1470, 1600)),   # a browser frame round go-capture.png
     "lite": ("lite-window.html", (1470, 1600)),  # the same frame round lite-capture.png

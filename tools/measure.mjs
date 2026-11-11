@@ -32,7 +32,22 @@ import { mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync } from "no
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+// Playwright's bundled Chromium first (Pat's rule for headless runs), then Chrome;
+// CHROME=/path overrides. --use-mock-keychain below keeps it off the login keychain.
+import { readdirSync } from "node:fs";
+import { homedir } from "node:os";
+function findChrome() {
+  if (process.env.CHROME) return process.env.CHROME;
+  const root = join(homedir(), "Library/Caches/ms-playwright");
+  try {
+    for (const d of readdirSync(root).filter((x) => x.startsWith("chromium-")).sort().reverse()) {
+      const p = join(root, d, "chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing");
+      if (existsSync(p)) return p;
+    }
+  } catch {}
+  return "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+}
+const CHROME = findChrome();
 const [url, size, expr, shot] = process.argv.slice(2);
 if (!url || !size || !expr) {
   console.error("usage: measure.mjs <url> <WxH> '<expression>' [screenshot.png]");
@@ -43,7 +58,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const profile = mkdtempSync(join(tmpdir(), "measure-"));
 const chrome = spawn(CHROME, [
-  "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
+  "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run", "--use-mock-keychain",
   `--user-data-dir=${profile}`, "--remote-debugging-port=0", "about:blank",
 ], { stdio: "ignore", detached: true });   // own process group: see the kill below
 
@@ -92,7 +107,15 @@ try {
   }
   const dpr = Number(process.env.MEASURE_DPR) || 1;
   await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: dpr, mobile: width < 768 });
-  await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+  // MEASURE_MOTION=1 leaves motion on (an app whose sky only draws with it);
+  // MEASURE_INIT='js' runs before the page's own scripts (localStorage and the like).
+  if (!process.env.MEASURE_MOTION) await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+  if (process.env.MEASURE_COOKIE) {            // "name=value", set for the page's own origin (an app's launch key)
+    const [cn, ...cv] = process.env.MEASURE_COOKIE.split("=");
+    await send("Network.enable");
+    await send("Network.setCookie", { name: cn, value: cv.join("="), url: new URL(url).origin + "/" });
+  }
+  if (process.env.MEASURE_INIT) await send("Page.addScriptToEvaluateOnNewDocument", { source: process.env.MEASURE_INIT });
 
   const nav = await send("Page.navigate", { url });
   if (nav.errorText) throw new Error(`navigation failed: ${nav.errorText} (${url})`);

@@ -303,11 +303,10 @@ Each product card shows one window: `windows/ai-window.html`,
 the apps' own UIs, rebuilt as static HTML from each app's real page (its
 markup and its own CSS rules, with fake data) rather than screenshots of
 whatever happened to be on screen. They are HTML so they stay crisp at any
-size and can be restaged without re-shooting. The AI window is the opening
-screen of a new chat (greeting, starter chips, message box) with visual
-effects on: the sidebar and message box are the app's frosted glass over a
-backdrop: a still of a night skyline, `windows/backdrop.jpg` (swap that file
-for any other photo and re-run `make-shots.py`). The VPN
+size and can be restaged without re-shooting. The AI window is the Horizon home as ConcordeAI 7.0
+draws it, a 2x capture of the app's real page (see "Retaking
+`windows/ai-capture.png`"): the greeting under the near-black sky, the message
+box with a question typed in, the Fast mode and the effort slider. The VPN
 window is the main window as ConcordeVPN 1.5 draws it, 460x590: connected
 through New York, Balanced, with the speed card and the Mode and Exit rows. It
 is a capture of the app's real page (see "Retaking `windows/vpn-capture.png`").
@@ -377,6 +376,38 @@ back to system faces — the render looks subtly wrong and nothing warns you.
 
 `--default-background-color=00000000` is what keeps the page transparent, which
 is what lets the site's starfield show around the window instead of a flat box.
+
+### Retaking `windows/ai-capture.png`
+
+The app serves its own page, so the capture is the real thing, with a fresh,
+empty data folder (no chats, accounts or servers). From the ConcordeAI repo
+(use a copy of the tree, e.g. `git archive <branch> | tar -x -C <scratch>`, so
+nothing in the working tree changes), with the app's own Python:
+
+    VENV="$HOME/Library/Application Support/MillenAI/venv/bin/python3"
+    MILLENAI_DEV=1 MILLENAI_HOME=<empty scratch dir> MILLENAI_NOWINDOW=1 \
+      MILLENAI_PORT=9931 "$VENV" millenai.py &
+    # wait for <home>/run/instance.json; its "key" is the launch cookie
+
+then, with `measure.mjs` (its `MEASURE_COOKIE`, `MEASURE_INIT` and
+`MEASURE_MOTION` exist for this: the app wants its cookie, `millen.fxlevel`
+set to `full` before it loads, and motion left on):
+
+    MEASURE_COOKIE="millen_key_9931=<key>" MEASURE_MOTION=1 MEASURE_DPR=2 \
+    MEASURE_INIT='localStorage.setItem("millen.fxlevel","full")' \
+    node tools/measure.mjs http://127.0.0.1:9931/ 1180x1240 \
+      '(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms));
+         await w(15000);                       // the intro first
+         const t = document.querySelector("#input"); t.focus();
+         t.value = "Explain how a heat pump works, then compare three models under $4,000";
+         t.dispatchEvent(new Event("input", {bubbles: true}));
+         await w(900); t.blur(); await w(1200); return document.title; })()' /tmp/ai.png
+
+Save the PNG as `tools/windows/ai-capture.png` (2360x2480), run `make-shots.py`,
+look at it, then stop the dev copy (`kill $(lsof -tnP -iTCP:9931 -sTCP:LISTEN)`).
+Never open a visible app window or add `?hz=gpu=1` (a dev badge); the app's
+Apple aerial footage never goes on the site (the capture is the app's own
+near-black sky). Retake it when the home screen changes.
 
 ### Retaking `windows/vpn-capture.png`
 
