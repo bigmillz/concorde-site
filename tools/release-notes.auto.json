@@ -17,22 +17,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "5316a991aaafdb28": {
-      "channel": "prerelease 7.0 beta 2",
-      "source_tags": [
-        "v278",
-        "v279"
-      ],
-      "generated": "2026-11-10",
-      "bullets": [
-        "**Native Mac app** — one universal app for Apple silicon and Intel; opens faster and restarts its engine if it crashes",
-        "**Bring your chats** — drop a ChatGPT, Claude or Gemini export on the window; it is read on your computer",
-        "**Your own material** — ask about your notes and past chats with cited answers; PDFs are read on your computer",
-        "**Horizon** — redesigned home, chat and settings; modes from Fast to Deep with an effort slider from Low to Ultra"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "d950dad2576cd482": {
       "channel": "nightly 7.0 nightly a5e9d79",
       "source_tags": [
@@ -43,6 +27,23 @@
         "**Ultra** — switching to Ultra lands with a light rush, an edge flash and a star burst, and the slider knob stays put",
         "**Send button** — calmer, with no rings or hover glows and a crisp press",
         "**Backdrop** — the video fades through its loop without a visible seam, at the same pace on 60 Hz and 120 Hz displays"
+      ],
+      "fold": true,
+      "model": "claude-opus-5-5"
+    },
+    "f6f845114f358b55": {
+      "channel": "prerelease 7.0 beta 3",
+      "source_tags": [
+        "v278",
+        "v279",
+        "v280"
+      ],
+      "generated": "2026-11-11",
+      "bullets": [
+        "**Native Mac app** — one universal app for Apple silicon and Intel, up in a fraction of a second, signed by Apple",
+        "**Bring your chats** — drop a ChatGPT, Claude or Gemini export on the window; it's read on your computer",
+        "**Your own stuff** — ask about your notes and past chats with cited answers, and attach PDFs; all read on your computer",
+        "**Horizon** — a redesign under a live night sky, with modes from Fast to Deep and an effort slider from Low to Ultra"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -198,6 +199,20 @@
         "Redesigned effort slider with animated Ultra",
         "Faster Mac launch with engine auto-restart",
         "Settings redesigned to match the new look"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "5742ac5173305d30": {
+      "channel": "release ai 7.0 beta 3",
+      "source_tags": [
+        "v280"
+      ],
+      "generated": "2026-11-11",
+      "bullets": [
+        "Redesigned home with a darker, starry sky",
+        "Chat, Code and Funnels in one switch",
+        "Answers no longer end in a send error"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
