@@ -2,6 +2,12 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "2256ede",
+   "version": "0.5.8370",
+   "date": "2026-11-11",
+   "summary": "Each flight named for the airline you fly, grades you can read by day, whole airline names on phones, and many more cities found at once"
+  },
+  {
    "commit": "fc0fdf5",
    "version": "0.5.8352",
    "date": "2026-11-10",

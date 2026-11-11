@@ -85,17 +85,17 @@
     }
   },
   "concordego": {
-    "7fae1b52e16b0a02": {
-      "channel": "live version 0.5.8352, deployed 10 Nov 2026",
+    "ab125bb053808b6e": {
+      "channel": "live version 0.5.8370, deployed 11 Nov 2026",
       "source_tags": [
-        "fc0fdf5"
+        "2256ede"
       ],
       "generated": "2026-11-11",
       "bullets": [
-        "**Map Home** — a live map of your trip and friends with today's gate and seat; faster searches, lighter page",
-        "**Meet-ups** — plan one at a lounge or restaurant with friends or anyone at the airport; results show friends nearby",
-        "**Boarding pass in your trip** — add a screenshot, photo or PDF; trip, gate and seat open with no signal",
-        "**Price watch** — nightly fare checks with an email when it drops; passport and entry rules for more passports"
+        "**Meet-ups** — plan one with friends, a group or anyone at the airport; results show which friends are around each flight",
+        "**New Home** — a live map of your trip and friends, today's gate, boarding and seat up top; type just a city to search",
+        "**Boarding pass in your trip** — add a screenshot, photo or PDF; your trip, gate and seat open even with no signal",
+        "**Price watch** — follow a fare or route, checked nightly, with an email when it drops; searches are faster"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -186,8 +186,8 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "d4d1a80de46799e6": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.5.8352, deployed 10 Nov 2026",
+    "32776ec43d808153": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.5.8370, deployed 11 Nov 2026",
       "source_tags": [
         "0235d8f",
         "038c0db",
@@ -206,6 +206,7 @@
         "1bf39ff",
         "1ed6984",
         "1fcdf94",
+        "2256ede",
         "2499e70",
         "2632cdd",
         "2a97650",
@@ -239,7 +240,6 @@
         "4c70b85",
         "4c735bb",
         "4f0a8ba",
-        "502abf7",
         "50311dc",
         "515274a",
         "5786c98",
@@ -342,9 +342,9 @@
       ],
       "generated": "2026-11-11",
       "bullets": [
-        "2026-10-23: A live map of your trip and friends",
-        "2026-11-08: Friends shown around each flight",
-        "2026-10-23: Boarding passes that work offline"
+        "2026-10-13: Price watch with emails when fares drop",
+        "2026-10-23: A new Home built around a live trip map",
+        "2026-10-23: Boarding passes kept in your trip, offline"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
