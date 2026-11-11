@@ -549,7 +549,7 @@ def cached_notes(repo, kind, items, link=True):
 # card's notes are a fixed "Coming soon" line, and only changes that name Lite
 # go into the store, the summaries and What's new: nothing about the rest is
 # written into this public repo. Turn it off to bring the full card's notes back.
-GO_COMING_SOON = True
+GO_COMING_SOON = False   # the full card came back on 2026-11-11 (per Pat)
 GO_SOON_NOTES = '<ul><li class="more">Coming soon</li></ul>'
 GO_LITE_CHANGE = re.compile(r"\blite\b", re.I)
 

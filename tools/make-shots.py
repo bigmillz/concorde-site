@@ -52,6 +52,7 @@ OPAQUE = 250     # alpha at or above this is window; below is shadow or air
 SOURCES = {
     "ai":  ("ai-window.html",  (1400, 1520)),
     "vpn": ("vpn-window.html", (780, 960)),
+    "go":  ("go-window.html",  (1470, 1600)),   # a browser frame round go-capture.png
     "lite": ("lite-window.html", (1470, 1600)),  # the same frame round lite-capture.png
 }
 
@@ -61,6 +62,7 @@ def capture(html, size, out):
     # without it the window silently renders in a fallback face.
     r = subprocess.run([
         CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
+        "--use-mock-keychain", "--user-data-dir=%s" % os.path.join(os.path.dirname(out), "profile"),
         "--force-device-scale-factor=2", "--default-background-color=00000000",
         "--virtual-time-budget=9000", "--screenshot=%s" % out,
         "--window-size=%d,%d" % size, "file://%s" % html,

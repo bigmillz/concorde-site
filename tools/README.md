@@ -298,8 +298,8 @@ label is out of date.
 ## The product windows
 
 Each product card shows one window: `windows/ai-window.html`,
-`windows/vpn-window.html` and `windows/lite-window.html` (ConcordeGo's own
-window is retired while it is coming soon, below). The first two are
+`windows/vpn-window.html`, `windows/go-window.html` and
+`windows/lite-window.html`. The first two are
 the apps' own UIs, rebuilt as static HTML from each app's real page (its
 markup and its own CSS rules, with fake data) rather than screenshots of
 whatever happened to be on screen. They are HTML so they stay crisp at any
@@ -312,9 +312,8 @@ window is the main window as ConcordeVPN 1.5 draws it, 460x590: connected
 through New York, Balanced, with the speed card and the Mode and Exit rows. It
 is a capture of the app's real page (see "Retaking `windows/vpn-capture.png`").
 ConcordeGo is a website, so its window is a plain browser frame round a
-capture of the live app. ConcordeGo Lite's (the address bar reads
-go.flyconcordefly.com/lite) is `windows/lite-capture.png`; the full ConcordeGo's
-is retired for now (below).
+capture of the live app. ConcordeGo's is `windows/go-capture.png` and ConcordeGo Lite's (the address
+bar reads go.flyconcordefly.com/lite) is `windows/lite-capture.png`.
 
 Three rules they exist to enforce:
 
@@ -424,21 +423,27 @@ and in `SOURCES` (the capture window, 960). Then crop the screenshot to
 The page's top 32px is the app's own empty titlebar strip; the window file
 draws the real chrome over it.
 
-### The ConcordeGo card is "coming soon" (2026-10-10)
+### Retaking `windows/go-capture.png`
 
-The full ConcordeGo is hidden on purpose (Pat: blur and gray it so nobody can
-lift the idea; ConcordeGo Lite stays available). `assets/shot-go.png/.webp`
-is now a window image with a heavy gray blur baked into the pixels, made once
-from the last real capture and **no longer generated**: `make-shots.py` has no
-`go` entry, and the readable capture and window file are out of the tree (they
-remain in git history; the repository is public). The card in `index.html` has
-no real copy (empty bars, a fixed "Coming soon" notes line), and
-`sync-releases.py` keeps it that way while `GO_COMING_SOON` is set: the Go
-notes are the fixed line, and only changes that mention Lite are stored,
-summarized or shown in What's new. To bring the full card back: restore the
-card from git history (the commit before "ConcordeGo, coming soon"), set
-`GO_COMING_SOON = False`, re-take a capture (the recipe is in that commit's
-README) and put the `go` entry back in `SOURCES`.
+The full ConcordeGo card was "coming soon" from 2026-10-10 (blurred, grayed,
+no real copy) and came back on 2026-11-11 (per Pat: "push this to our
+website"); `GO_COMING_SOON` in `sync-releases.py` is now False and is the
+switch to hide it again. The capture is the live Home, signed out, in the
+**dark theme**, with the opening animation and the welcome skipped and a trip
+typed into the search box (typed, never searched, so it spends nothing). It is
+a 1240x1270 CSS px viewport at a device scale of 1.6935484, so the PNG is
+2100x2150 px, exactly the page area of `go-window.html` at 2x. Set these in
+the fresh browser profile before the page loads (Chrome DevTools
+`Page.addScriptToEvaluateOnNewDocument`), then type into `#bhq`:
+
+    localStorage.setItem('concordego.theme', 'dark');
+    sessionStorage.setItem('concordego.splashed', '1');
+    sessionStorage.setItem('concordego.welcome', '1');
+    localStorage.setItem('concordego.welcome', '1');
+
+Crop to 2100x2150 into `tools/windows/go-capture.png` and run
+`make-shots.py`. Look at it first: Sign in at the top right and nothing about
+an account, no email, admin link or searches count anywhere.
 
 ### Checking a layout
 
