@@ -17,33 +17,33 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "f6f845114f358b55": {
-      "channel": "prerelease 7.0 beta 3",
+    "2a2b86da6552350d": {
+      "channel": "prerelease 7.0 beta 4",
       "source_tags": [
         "v278",
         "v279",
-        "v280"
+        "v280",
+        "v281"
       ],
-      "generated": "2026-11-11",
+      "generated": "2026-11-12",
       "bullets": [
-        "**Native Mac app** — one universal app for Apple silicon and Intel, up in a fraction of a second, signed by Apple",
-        "**Bring your chats** — drop a ChatGPT, Claude or Gemini export on the window; it's read on your computer",
-        "**Your own stuff** — ask about your notes and past chats with cited answers, and attach PDFs; all read on your computer",
-        "**Horizon** — a redesign under a live night sky, with modes from Fast to Deep and an effort slider from Low to Ultra"
+        "**Bring your chats** — drop a ChatGPT, Claude or Gemini export on the window; it is read on your computer",
+        "**Your own stuff** — ask about your notes and past chats with cited answers; attached PDFs are read on your computer",
+        "**Native Mac app** — lighter and quicker, signed by Apple, with a new home under a night sky and a calmer Settings",
+        "**Code and dictation** — Code lists each command and asks before changing your server; dictation stops when you pause"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "4e458e1036ba4187": {
-      "channel": "nightly 7.0 nightly 0196896",
+    "66c31c174e043017": {
+      "channel": "nightly 7.0 nightly 479b058",
       "source_tags": [
         "nightly"
       ],
-      "generated": "2026-11-11",
+      "generated": "2026-11-12",
       "bullets": [
-        "**Answers** — no more cut-off replies, no dead ends after picking a server model, and one quiet working line",
-        "**Header** — fits in one row at any window width, with a Settings gear on every screen and an Update ready pill",
-        "**Removed** — the recent-chat rows under the composer on the home screen"
+        "**Funnels** — fixes from testing: dates display correctly on Windows, and a funnel's home opens fresh",
+        "**Settings and Usage** — the Settings sidebar no longer runs into the close button in narrow windows; Usage fits its column"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -345,6 +345,20 @@
         "2026-10-13: Price watch with emails when fares drop",
         "2026-10-23: A new Home built around a live trip map",
         "2026-10-23: Boarding passes kept in your trip, offline"
+      ],
+      "fold": false,
+      "model": "claude-opus-5-5"
+    },
+    "552b6efbf7a2da04": {
+      "channel": "release ai 7.0 beta 4",
+      "source_tags": [
+        "v281"
+      ],
+      "generated": "2026-11-12",
+      "bullets": [
+        "A new, lighter Mac window",
+        "A redesigned home screen and Settings",
+        "Hands-free dictation with ⌘D or Ctrl+D"
       ],
       "fold": false,
       "model": "claude-opus-5-5"
