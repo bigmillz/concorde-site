@@ -17,19 +17,6 @@
       "fold": true,
       "model": "claude-opus-5-5"
     },
-    "66c31c174e043017": {
-      "channel": "nightly 7.0 nightly 479b058",
-      "source_tags": [
-        "nightly"
-      ],
-      "generated": "2026-11-12",
-      "bullets": [
-        "**Funnels** — fixes from testing: dates display correctly on Windows, and a funnel's home opens fresh",
-        "**Settings and Usage** — the Settings sidebar no longer runs into the close button in narrow windows; Usage fits its column"
-      ],
-      "fold": true,
-      "model": "claude-opus-5-5"
-    },
     "ba4392df936d12db": {
       "channel": "prerelease 7.0 beta 5",
       "source_tags": [
@@ -45,6 +32,21 @@
         "**Your own stuff** — ask about your notes and past chats with cited answers, and attach PDFs read locally",
         "**Native Mac app** — lighter and quicker, signed and notarized by Apple, with your chats and settings carried over",
         "**Horizon redesign** — a night-sky home, Chat, Code and Funnels in one switch, modes from Fast to Deep, simpler Settings"
+      ],
+      "fold": true,
+      "model": "claude-opus-5-5"
+    },
+    "5f0bc1f9f208ee6b": {
+      "channel": "nightly 7.0 nightly 25c5fc4",
+      "source_tags": [
+        "nightly"
+      ],
+      "generated": "2026-11-13",
+      "bullets": [
+        "**Answers in a serif typeface** — replies now display in Source Serif 4, with Inter in the rest of the app",
+        "**Dialogs redesigned** — small dialogs share one look, with plain titles and a single row of buttons",
+        "**Settings redesigned** — chunkier controls in a tighter layout",
+        "**Usage at half a screen** — the header wraps, and the chart and menus fit the column"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
