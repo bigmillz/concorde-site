@@ -88,17 +88,17 @@
     }
   },
   "concordego": {
-    "4339aca83d3c9ee1": {
-      "channel": "live version 0.5.8371, deployed 19 Nov 2026",
+    "dff285e907219999": {
+      "channel": "live version 0.5.8439, deployed 25 Nov 2026",
       "source_tags": [
-        "4418554"
+        "ebe5970"
       ],
-      "generated": "2026-11-19",
+      "generated": "2026-11-25",
       "bullets": [
-        "**Live map on Home** — your trip and your friends on one map, with today's gate, boarding time and seat up top",
-        "**Boarding pass in your trip** — add a screenshot, photo or PDF; it fills in your seat and opens full-screen at the gate",
-        "**Works with no signal** — your trip, gate, seat and boarding pass open in airplane mode, marked with how old they are",
-        "**Friends on your route** — results show friends where you land and connect; plan to meet one from the top pick"
+        "**Find friends at the airport** — a pass on Home shows travelers at your airport today, with a group chat and Add friend",
+        "**Friends in results** — see which friends are near each flight, where you land or connect, and plan to meet them",
+        "**Faster, simpler search** — type just a city for suggestions; every flight source is asked at once, and the page is lighter",
+        "**Redesigned Home** — a full-screen map with places to go, a simpler trip timeline, and Back that works"
       ],
       "fold": true,
       "model": "claude-opus-5-5"
@@ -175,16 +175,14 @@
       "fold": false,
       "model": "claude-opus-5-5"
     },
-    "5c9951efd4fc0838": {
-      "channel": "go-news ConcordeGo, 30 days to version 0.5.8371, deployed 19 Nov 2026",
+    "d5357a339b363f8c": {
+      "channel": "go-news ConcordeGo, 30 days to version 0.5.8439, deployed 25 Nov 2026",
       "source_tags": [
         "099c57c",
         "0ef3b85",
-        "1bf39ff",
         "1ed6984",
         "2256ede",
         "329a210",
-        "37159f4",
         "392d3f9",
         "3af61a3",
         "3ca386c",
@@ -193,15 +191,11 @@
         "42006ac",
         "4418554",
         "4998eff",
-        "4a5f173",
         "5786c98",
         "5c20ef1",
         "6527d2b",
         "67392e9",
-        "6c84ae3",
-        "6c9f2df",
         "7206912",
-        "739bacf",
         "7c3a6c4",
         "83997fd",
         "83ebafb",
@@ -210,22 +204,20 @@
         "93a9b72",
         "9ef8728",
         "a50a762",
-        "b5a5f49",
-        "c657cb6",
         "c6ea353",
         "cb42098",
         "d5c6df2",
         "e3e72e7",
-        "eeec460",
+        "ebe5970",
         "f729f0d",
         "f903af4",
         "fc0fdf5"
       ],
-      "generated": "2026-11-19",
+      "generated": "2026-11-25",
       "bullets": [
-        "2026-11-08: Search results show friends near each flight",
-        "2026-10-23: A desktop Home with a live trip map",
-        "2026-10-23: Boarding passes and trips that work offline"
+        "2026-11-25: Find friends at your airport today",
+        "2026-11-08: See which friends are around each flight",
+        "2026-11-09: A redesigned Home with a full-screen map"
       ],
       "fold": false,
       "model": "claude-opus-5-5"

@@ -2,6 +2,12 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "ebe5970",
+   "version": "0.5.8439",
+   "date": "2026-11-25",
+   "summary": "Find friends at the airport: a pass on Home shows the travelers at your airport today, with a group chat and Add friend"
+  },
+  {
    "commit": "4418554",
    "version": "0.5.8371",
    "date": "2026-11-19",
@@ -198,60 +204,6 @@
    "version": "0.2.8104",
    "date": "2026-11-08",
    "summary": "Search results now show which friends are around each flight: in the city you land in, at your connection, and the meet-ups at your airports"
-  },
-  {
-   "commit": "c657cb6",
-   "version": "0.2.8088",
-   "date": "2026-10-23",
-   "summary": "The new desktop design is now everyone's: a live map of your trip and your friends, with today's gate, boarding and seat up top"
-  },
-  {
-   "commit": "6c9f2df",
-   "version": "0.2.8080",
-   "date": "2026-10-23",
-   "summary": "Keep your boarding pass in your trip: add a screenshot, photo or PDF, and it fills in your seat and shows full-screen at the gate, even with no signal"
-  },
-  {
-   "commit": "4a5f173",
-   "version": "0.2.8064",
-   "date": "2026-10-23",
-   "summary": "New members get a \"Your first week\" card: five quick steps that tick themselves off as you go"
-  },
-  {
-   "commit": "1bf39ff",
-   "version": "0.2.8053",
-   "date": "2026-10-23",
-   "summary": "ConcordeGo works with no signal: your trip, gate and seat open in airplane mode, with a line saying how old they are"
-  },
-  {
-   "commit": "b5a5f49",
-   "version": "0.2.8045",
-   "date": "2026-10-23",
-   "summary": "The page loads faster: about a quarter less to download and read on every visit"
-  },
-  {
-   "commit": "eeec460",
-   "version": "0.2.8040",
-   "date": "2026-10-23",
-   "summary": "A new desktop Home built around a live map of your trip and your friends, in testing; results now lead with \"Top pick\""
-  },
-  {
-   "commit": "37159f4",
-   "version": "0.2.7967",
-   "date": "2026-10-23",
-   "summary": "Phone fixes: Settings and your trips without an account, Open trip that works signed out, and a status bar in the sky's colour"
-  },
-  {
-   "commit": "6c84ae3",
-   "version": "0.2.7930",
-   "date": "2026-10-23",
-   "summary": "A simpler phone app: your gate, terminal, boarding time and seat on Home, one typeface, four tabs and a round trip drawn as two journeys"
-  },
-  {
-   "commit": "739bacf",
-   "version": "0.2.7847",
-   "date": "2026-10-21",
-   "summary": "Adding a trip asks where you're leaving from, and Settings keeps the place you usually leave from"
   }
  ]
 }
