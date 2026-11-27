@@ -2,6 +2,12 @@
  "_": "ConcordeGo's changes as go.flyconcordefly.com/changes listed them, newest first. Written by tools/sync-releases.py in the Sync releases Action; the Release notes summarize the last 30 days of it.",
  "changes": [
   {
+   "commit": "74344ea",
+   "version": "0.5.8454",
+   "date": "2026-11-27",
+   "summary": "A cleaner Home on computers: the friends card and your cards side by side, level and in one style"
+  },
+  {
    "commit": "ebe5970",
    "version": "0.5.8439",
    "date": "2026-11-25",
