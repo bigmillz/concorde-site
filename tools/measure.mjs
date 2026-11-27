@@ -106,7 +106,7 @@ try {
     await send("Fetch.enable", { patterns: [{ urlPattern: `*${process.env.MEASURE_HOLD}*`, requestStage }] });
   }
   const dpr = Number(process.env.MEASURE_DPR) || 1;
-  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: dpr, mobile: width < 768 });
+  await send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: dpr, mobile: process.env.MEASURE_DESKTOP ? false : width < 768 });
   // MEASURE_MOTION=1 leaves motion on (an app whose sky only draws with it);
   // MEASURE_INIT='js' runs before the page's own scripts (localStorage and the like).
   if (!process.env.MEASURE_MOTION) await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
