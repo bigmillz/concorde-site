@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Concorde: ConcordeAI, ConcordeVPN and ConcordeGo Lite</title>
-<meta name="description" content="ConcordeAI: an AI chat app on your own Mac or PC. ConcordeVPN: a menu-bar VPN for your own server. ConcordeGo Lite: the fastest way to a flight, in any browser.">
+<title>Concorde: Zoar Video, ConcordeVPN and ConcordeGo</title>
+<meta name="description" content="Zoar Video: describe a film and your own machines make it. ConcordeVPN: a menu-bar VPN for your own server. ConcordeGo: flights, and friends where you fly.">
 <link rel="canonical" href="https://flyconcordefly.com/">
 <!-- ?v= is the cache-buster: browsers keep favicons in a separate store they
      never refetch on reload, so a changed icon needs a changed URL. -->
@@ -20,8 +20,8 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://flyconcordefly.com/">
 <meta property="og:site_name" content="Concorde">
-<meta property="og:title" content="Concorde: ConcordeAI, ConcordeVPN and ConcordeGo Lite">
-<meta property="og:description" content="ConcordeAI: an AI chat app on your own Mac or PC. ConcordeVPN: a menu-bar VPN for your own server. ConcordeGo Lite: the fastest way to a flight, in any browser.">
+<meta property="og:title" content="Concorde: Zoar Video, ConcordeVPN and ConcordeGo">
+<meta property="og:description" content="Zoar Video: describe a film and your own machines make it. ConcordeVPN: a menu-bar VPN for your own server. ConcordeGo: flights, and friends where you fly.">
 <meta property="og:image" content="https://flyconcordefly.com/og.png?v=2">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
@@ -34,6 +34,7 @@
 {"@context":"https://schema.org","@graph":[
  {"@type":"WebSite","@id":"https://flyconcordefly.com/#site","url":"https://flyconcordefly.com/","name":"Concorde","alternateName":["Fly Concorde Fly","flyconcordefly"],"description":"Concorde makes ConcordeAI, ConcordeVPN and ConcordeGo.","publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"Organization","@id":"https://flyconcordefly.com/#org","name":"Concorde","url":"https://flyconcordefly.com/","logo":"https://flyconcordefly.com/apple-touch-icon.png","slogan":"Fly Concorde, Fly."},
+ {"@type":"WebApplication","name":"Zoar Video","url":"https://zoarvideo.com/","applicationCategory":"MultimediaApplication","operatingSystem":"Any browser","description":"Describe a film and your own machines make it: story, cast, voices, score and sound. Invite-only beta.","publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"SoftwareApplication","name":"ConcordeAI","url":"https://flyconcordefly.com/#concordeai","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS, Windows","description":"An AI chat app that runs on your own Mac or PC.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"SoftwareApplication","name":"ConcordeVPN","url":"https://flyconcordefly.com/#concordevpn","applicationCategory":"SecurityApplication","operatingSystem":"macOS","description":"A menu-bar VPN client for your own exit node.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"WebApplication","name":"ConcordeGo","url":"https://go.flyconcordefly.com/","applicationCategory":"TravelApplication","operatingSystem":"Any browser","description":"Flight search that ranks flights by what the trip really costs, with friends and meet-ups along the way.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://flyconcordefly.com/#org"}},
@@ -395,6 +396,8 @@ html.hdrmarks .card-head .mark-hdr{position:relative;top:-2.5px}
   padding:12px 24px;border:1px solid var(--line);border-radius:999px;
   background:rgba(16,16,19,.82);color:var(--text);font-size:12px;letter-spacing:.32em;
 }
+/* Zoar Video's name: its own word mark, not the Concorde lockup */
+.card-head .zoar-name{font-family:var(--sans);font-weight:600;font-size:19px;letter-spacing:-.01em;color:#fff;line-height:1}
 .feats .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--faint);padding-top:2px}
 .feats b{
   display:block;font-family:var(--mono);font-size:11px;font-weight:600;
@@ -934,19 +937,28 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                           build and date current -->
       <div class="prods">
 
-        <!-- ============ CARD: CONCORDEAI ============ -->
-        <article class="card reveal" id="concordeai" aria-labelledby="ai-name">
+        <!-- ============ CARD: ZOAR VIDEO ============
+             Zoar Video, a member of the Concorde family (2026-11-27, per Pat:
+             it leads the page now). A web app at zoarvideo.com, invite-only:
+             Google sign-in, then the owner lets each person in. Hand-written,
+             no generated regions. The picture is three stills from sample films
+             made with it (tools/windows/zoar-window.html), never Zoar's own
+             screens, which hold the owner's projects. Keep the claims to what
+             is true of the films: they are made on the owner's own machines
+             with an NVIDIA GPU; no 4K/HDR, render times, costs or model names
+             (the ConcordeAI session's rules, 2026-11-22). -->
+        <article class="card reveal" id="zoarvideo" aria-labelledby="zoar-name">
           <div class="stage">
             <div class="stage-in">
-              <a class="shot" href="assets/shot-ai.png">
+              <a class="shot" href="assets/shot-zoar.png">
                 <picture>
-                  <source srcset="assets/shot-ai.webp" type="image/webp">
-                  <img src="assets/shot-ai.png" width="1469" height="1532" loading="lazy" decoding="async"
-                       alt="ConcordeAI 7.0 as it opens: a glowing greeting under a near-black sky, and a message box with a question typed in, set to Max mode with the effort slider at Ultra, ringed by a violet glow and sparkles.">
+                  <source srcset="assets/shot-zoar.webp" type="image/webp">
+                  <img src="assets/shot-zoar.png" width="1521" height="1532" loading="lazy" decoding="async"
+                       alt="Stills from three sample films made with Zoar Video: Loop, a sci-fi film; Bull Run, a comedy; and Somewhere Up There, a music video. Every face is a fictional character.">
                 </picture>
                 <span class="visually-hidden">Enlarge</span>
               </a>
-              <p class="how"><span class="label">Downloads</span>macOS (7.0 is signed and notarized) and Windows.<br>Installed copies update themselves.</p>
+              <p class="how"><span class="label">Watch the samples</span><a href="https://youtu.be/WkCibxCnui0" target="_blank" rel="noopener">Loop</a> &middot; <a href="https://youtu.be/CKb5Fz61tOI" target="_blank" rel="noopener">Bull Run</a> &middot; <a href="https://youtu.be/OpGa-YGO4Hs" target="_blank" rel="noopener">Somewhere Up There</a><br>Story, voices and score all made with Zoar.</p>
             </div>
           </div>
 
@@ -959,127 +971,51 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
                   <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
                   <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
-                <h3 id="ai-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">AI</span></span><video class="mark-hdr" data-mark="ai" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
+                <h3 id="zoar-name" class="zoar-name">Zoar Video</h3>
+                <span class="chip label">Beta</span>
               </div>
-              <p class="desc">An AI app that runs on your own machines. Private by default, with the cloud only if you turn it on.</p>
+              <p class="desc">Describe a film. Your machines make it.</p>
               <div class="plats label">
-                <span>macOS</span>
-                <span>Windows</span>
+                <span>Any browser</span>
+                <span>Your own NVIDIA GPU</span>
               </div>
             </div>
 
             <ul class="feats">
               <li>
                 <span class="n">01</span>
-                <div><b>Private by default</b><span class="d">Answers run on your own machines. Cloud models are there when you turn them on.</span></div>
+                <div><b>Idea to film</b><span class="d">Say what it&rsquo;s about. Zoar writes the story, draws the storyboard, casts it and films it.</span></div>
               </li>
               <li>
                 <span class="n">02</span>
-                <div><b>Five modes, one answer</b><span class="d">Fast, Thinking, Pro, Max or Deep, with an effort slider. Several drafts are combined into one answer.</span></div>
+                <div><b>A cast that stays itself</b><span class="d">The same faces from the first scene to the last, with spoken lines in sync with their lips.</span></div>
               </li>
               <li>
                 <span class="n">03</span>
-                <div><b>Your own stuff</b><span class="d">Bring your chats over from other apps. Answers can cite your own chats and files.</span></div>
+                <div><b>Score and sound</b><span class="d">Original music and sound, mixed in. Short clips or films of fifteen minutes.</span></div>
               </li>
               <li>
                 <span class="n">04</span>
-                <div><b>Code and Funnels</b><span class="d">A code lane, and guided decisions that end in a recommendation.</span></div>
+                <div><b>On your own machines</b><span class="d">Films are made on your own computer with an NVIDIA graphics card. Watch each stage fill in as it works.</span></div>
               </li>
             </ul>
 
-            <div class="dl">
-            <!-- releases:ai -->
-            <div class="chan">
-              <div class="chan-top">
-                <span class="chan-name">Stable</span>
-                <span class="chan-ver">6.1</span>
-                <span class="chan-date">Released <time datetime="2026-10-02">2 Oct 2026</time></span>
-              </div>
-              <div class="btns">
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v277/ConcordeAI-6.1.0.dmg">
-                  <span class="os">macOS</span>
-                  <span class="file">ConcordeAI-6.1.0.dmg</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v277/ConcordeAI-6.1.0-Windows.zip">
-                  <span class="os">Win zip</span>
-                  <span class="file">ConcordeAI-6.1.0-Windows.zip</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v277/ConcordeAI-6.1.0-x64.msi">
-                  <span class="os">Win msi</span>
-                  <span class="file">ConcordeAI-6.1.0-x64.msi</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-              </div>
-              <details class="sum notes">
-                <summary>Release notes</summary>
-                <div class="sum-body">
-<ul><li><b>Windows</b> — chats, searches the web, speaks and listens on Intel, AMD and ARM PCs; installs Ollama for you</li><li><b>Video</b> — ask for a short clip and it renders on your Mac; a size ladder shows what each quality costs</li><li><b>Export</b> — ask for an answer as a PDF, Word document, spreadsheet, slides, calendar file, CSV and more</li><li><b>Removed</b> — Contribute and the free community image cloud</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
+            <div class="dl go-dl">
+              <div class="chan">
+                <div class="chan-top">
+                  <span class="chan-ver">BETA</span>
+                  <span class="chan-commit">Invite only</span>
                 </div>
-              </details>
-            </div>
-
-            <div class="chan">
-              <div class="chan-top">
-                <span class="chan-name">Beta</span>
-                <span class="chan-ver">7.0</span>
-                <span class="chan-commit">beta 5</span>
-                <span class="chan-date">Released <time datetime="2026-11-13">13 Nov 2026</time></span>
-              </div>
-              <div class="btns">
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v282/ConcordeAI-7.0.0.dmg">
-                  <span class="os">macOS</span>
-                  <span class="file">ConcordeAI-7.0.0.dmg</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v282/ConcordeAI-7.0.0-Windows.zip">
-                  <span class="os">Win zip</span>
-                  <span class="file">ConcordeAI-7.0.0-Windows.zip</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v282/ConcordeAI-7.0.0-x64.msi">
-                  <span class="os">Win msi</span>
-                  <span class="file">ConcordeAI-7.0.0-x64.msi</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-              </div>
-              <p class="chan-note">On Windows, the first open shows a warning: More info &rsaquo; Run anyway.</p>
-              <details class="sum notes">
-                <summary>Release notes</summary>
-                <div class="sum-body">
-<ul><li><b>Bring your chats</b> — drop a ChatGPT, Claude or Gemini export on the window; it's read on your computer</li><li><b>Your own stuff</b> — ask about your notes and past chats with cited answers, and attach PDFs read locally</li><li><b>Native Mac app</b> — lighter and quicker, signed and notarized by Apple, with your chats and settings carried over</li><li><b>Horizon redesign</b> — a night-sky home, Chat, Code and Funnels in one switch, modes from Fast to Deep, simpler Settings</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
+                <div class="btns">
+                  <a class="btn open" href="https://zoarvideo.com/" target="_blank" rel="noopener">
+                    <span class="os">Ask to join</span>
+                    <span class="file">zoarvideo.com</span>
+                    <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9 9.2 2.8M4 2.6h5.4V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="visually-hidden">(opens in a new tab)</span>
+                  </a>
                 </div>
-              </details>
-            </div>
-
-            <div class="chan">
-              <div class="chan-top">
-                <span class="chan-name">Nightly</span>
-                <span class="chan-ver">7.0</span>
-                <span class="chan-commit" data-nightly-commit="ai" data-nightly-ver="7.0" data-commit-base="https://github.com/bigmillz/concordeai/commit/">build <a href="https://github.com/bigmillz/concordeai/commit/25c5fc4">25c5fc4</a></span>
-                <span class="chan-date">Built <time datetime="2026-11-13" data-nightly-date="ai">13 Nov 2026</time></span>
+                <p class="chan-note">Sign in with Google and ask. Each person is let in by hand while it&rsquo;s small.</p>
               </div>
-              <div class="btns">
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/nightly/ConcordeAI-7.0.0.dmg">
-                  <span class="os">macOS</span>
-                  <span class="file">ConcordeAI-7.0.0.dmg</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/nightly/ConcordeAI-7.0.0-Windows.zip">
-                  <span class="os">Win zip</span>
-                  <span class="file">ConcordeAI-7.0.0-Windows.zip</span>
-                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-              </div>
-              <details class="sum notes">
-                <summary>Release notes</summary>
-                <div class="sum-body">
-<ul><li><b>Answers in a serif typeface</b> — replies now display in Source Serif 4, with Inter in the rest of the app</li><li><b>Dialogs redesigned</b> — small dialogs share one look, with plain titles and a single row of buttons</li><li><b>Settings redesigned</b> — chunkier controls in a tighter layout</li><li><b>Usage at half a screen</b> — the header wraps, and the chart and menus fit the column</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
-                </div>
-              </details>
-            </div>
-            <!-- /releases:ai -->
             </div>
           </div>
         </article>
@@ -1377,6 +1313,156 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   </a>
                 </div>
               </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ============ CARD: CONCORDEAI ============ -->
+        <article class="card reveal" id="concordeai" aria-labelledby="ai-name">
+          <div class="stage">
+            <div class="stage-in">
+              <a class="shot" href="assets/shot-ai.png">
+                <picture>
+                  <source srcset="assets/shot-ai.webp" type="image/webp">
+                  <img src="assets/shot-ai.png" width="1469" height="1532" loading="lazy" decoding="async"
+                       alt="ConcordeAI 7.0 as it opens: a glowing greeting under a near-black sky, and a message box with a question typed in, set to Max mode with the effort slider at Ultra, ringed by a violet glow and sparkles.">
+                </picture>
+                <span class="visually-hidden">Enlarge</span>
+              </a>
+              <p class="how"><span class="label">Downloads</span>macOS (7.0 is signed and notarized) and Windows.<br>Installed copies update themselves.</p>
+            </div>
+          </div>
+
+          <div class="card-main">
+            <div class="card-head">
+              <div class="row">
+                <svg class="wing" viewBox="2 2.3 19.6 16.4" aria-hidden="true" focusable="false"><g>
+                  <line x1="3.2" y1="17.5" x2="20.4" y2="3.5"/>
+                  <line x1="7.5" y1="17.5" x2="20.4" y2="7"/>
+                  <line x1="11.8" y1="17.5" x2="20.4" y2="10.5"/>
+                  <line x1="16.1" y1="17.5" x2="20.4" y2="14"/>
+                  <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
+                <h3 id="ai-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">AI</span></span><video class="mark-hdr" data-mark="ai" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
+              </div>
+              <p class="desc">An AI app that runs on your own machines. Private by default, with the cloud only if you turn it on.</p>
+              <div class="plats label">
+                <span>macOS</span>
+                <span>Windows</span>
+              </div>
+            </div>
+
+            <ul class="feats">
+              <li>
+                <span class="n">01</span>
+                <div><b>Private by default</b><span class="d">Answers run on your own machines. Cloud models are there when you turn them on.</span></div>
+              </li>
+              <li>
+                <span class="n">02</span>
+                <div><b>Five modes, one answer</b><span class="d">Fast, Thinking, Pro, Max or Deep, with an effort slider. Several drafts are combined into one answer.</span></div>
+              </li>
+              <li>
+                <span class="n">03</span>
+                <div><b>Your own stuff</b><span class="d">Bring your chats over from other apps. Answers can cite your own chats and files.</span></div>
+              </li>
+              <li>
+                <span class="n">04</span>
+                <div><b>Code and Funnels</b><span class="d">A code lane, and guided decisions that end in a recommendation.</span></div>
+              </li>
+            </ul>
+
+            <div class="dl">
+            <!-- releases:ai -->
+            <div class="chan">
+              <div class="chan-top">
+                <span class="chan-name">Stable</span>
+                <span class="chan-ver">6.1</span>
+                <span class="chan-date">Released <time datetime="2026-10-02">2 Oct 2026</time></span>
+              </div>
+              <div class="btns">
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v277/ConcordeAI-6.1.0.dmg">
+                  <span class="os">macOS</span>
+                  <span class="file">ConcordeAI-6.1.0.dmg</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v277/ConcordeAI-6.1.0-Windows.zip">
+                  <span class="os">Win zip</span>
+                  <span class="file">ConcordeAI-6.1.0-Windows.zip</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v277/ConcordeAI-6.1.0-x64.msi">
+                  <span class="os">Win msi</span>
+                  <span class="file">ConcordeAI-6.1.0-x64.msi</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+              <details class="sum notes">
+                <summary>Release notes</summary>
+                <div class="sum-body">
+<ul><li><b>Windows</b> — chats, searches the web, speaks and listens on Intel, AMD and ARM PCs; installs Ollama for you</li><li><b>Video</b> — ask for a short clip and it renders on your Mac; a size ladder shows what each quality costs</li><li><b>Export</b> — ask for an answer as a PDF, Word document, spreadsheet, slides, calendar file, CSV and more</li><li><b>Removed</b> — Contribute and the free community image cloud</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
+                </div>
+              </details>
+            </div>
+
+            <div class="chan">
+              <div class="chan-top">
+                <span class="chan-name">Beta</span>
+                <span class="chan-ver">7.0</span>
+                <span class="chan-commit">beta 5</span>
+                <span class="chan-date">Released <time datetime="2026-11-13">13 Nov 2026</time></span>
+              </div>
+              <div class="btns">
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v282/ConcordeAI-7.0.0.dmg">
+                  <span class="os">macOS</span>
+                  <span class="file">ConcordeAI-7.0.0.dmg</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v282/ConcordeAI-7.0.0-Windows.zip">
+                  <span class="os">Win zip</span>
+                  <span class="file">ConcordeAI-7.0.0-Windows.zip</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/v282/ConcordeAI-7.0.0-x64.msi">
+                  <span class="os">Win msi</span>
+                  <span class="file">ConcordeAI-7.0.0-x64.msi</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+              <p class="chan-note">On Windows, the first open shows a warning: More info &rsaquo; Run anyway.</p>
+              <details class="sum notes">
+                <summary>Release notes</summary>
+                <div class="sum-body">
+<ul><li><b>Bring your chats</b> — drop a ChatGPT, Claude or Gemini export on the window; it's read on your computer</li><li><b>Your own stuff</b> — ask about your notes and past chats with cited answers, and attach PDFs read locally</li><li><b>Native Mac app</b> — lighter and quicker, signed and notarized by Apple, with your chats and settings carried over</li><li><b>Horizon redesign</b> — a night-sky home, Chat, Code and Funnels in one switch, modes from Fast to Deep, simpler Settings</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
+                </div>
+              </details>
+            </div>
+
+            <div class="chan">
+              <div class="chan-top">
+                <span class="chan-name">Nightly</span>
+                <span class="chan-ver">7.0</span>
+                <span class="chan-commit" data-nightly-commit="ai" data-nightly-ver="7.0" data-commit-base="https://github.com/bigmillz/concordeai/commit/">build <a href="https://github.com/bigmillz/concordeai/commit/25c5fc4">25c5fc4</a></span>
+                <span class="chan-date">Built <time datetime="2026-11-13" data-nightly-date="ai">13 Nov 2026</time></span>
+              </div>
+              <div class="btns">
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/nightly/ConcordeAI-7.0.0.dmg">
+                  <span class="os">macOS</span>
+                  <span class="file">ConcordeAI-7.0.0.dmg</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="btn" href="https://github.com/bigmillz/concordeai/releases/download/nightly/ConcordeAI-7.0.0-Windows.zip">
+                  <span class="os">Win zip</span>
+                  <span class="file">ConcordeAI-7.0.0-Windows.zip</span>
+                  <svg class="arw" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M6 1v9M2.4 6.6 6 10.2l3.6-3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+              <details class="sum notes">
+                <summary>Release notes</summary>
+                <div class="sum-body">
+<ul><li><b>Answers in a serif typeface</b> — replies now display in Source Serif 4, with Inter in the rest of the app</li><li><b>Dialogs redesigned</b> — small dialogs share one look, with plain titles and a single row of buttons</li><li><b>Settings redesigned</b> — chunkier controls in a tighter layout</li><li><b>Usage at half a screen</b> — the header wraps, and the chart and menus fit the column</li><li class="more">Plus smaller fixes and polish &mdash; <a href="https://github.com/bigmillz/concordeai/releases">full notes on GitHub</a></li></ul>
+                </div>
+              </details>
+            </div>
+            <!-- /releases:ai -->
             </div>
           </div>
         </article>

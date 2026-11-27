@@ -377,6 +377,15 @@ back to system faces — the render looks subtly wrong and nothing warns you.
 `--default-background-color=00000000` is what keeps the page transparent, which
 is what lets the site's starfield show around the window instead of a flat box.
 
+### The Zoar Video window
+
+`windows/zoar-window.html` frames three stills from sample films made with Zoar
+Video (`zoar-loop.jpg`, `zoar-bullrun.jpg`, `zoar-upthere.jpg`: each film's
+YouTube poster frame, letterbox trimmed). It is never a capture of Zoar itself:
+Zoar's screens show the owner's own projects. To swap a film, replace its jpg,
+fix its caption, re-run `make-shots.py`, and update the matching link under
+the window in `index.html`. Only films that are original and fictional go here.
+
 ### Retaking `windows/ai-capture.png`
 
 The app serves its own page, so the capture is the real thing, with a fresh,
