@@ -297,22 +297,9 @@ label is out of date.
 
 ## The product windows
 
-Each product card shows one window: `windows/ai-window.html`,
-`windows/vpn-window.html`, `windows/go-window.html` and
-`windows/lite-window.html`. The first two are
-the apps' own UIs, rebuilt as static HTML from each app's real page (its
-markup and its own CSS rules, with fake data) rather than screenshots of
-whatever happened to be on screen. They are HTML so they stay crisp at any
-size and can be restaged without re-shooting. The AI window is the Horizon home as ConcordeAI 7.0
-draws it, a 2x capture of the app's real page (see "Retaking
-`windows/ai-capture.png`"): the greeting under the near-black sky, the message
-box with a question typed in, Max mode and the effort slider at Ultra. The VPN
-window is the main window as ConcordeVPN 1.5 draws it, 460x590: connected
-through New York, Balanced, with the speed card and the Mode and Exit rows. It
-is a capture of the app's real page (see "Retaking `windows/vpn-capture.png`").
-ConcordeGo is a website, so its window is a plain browser frame round a
-capture of the live app. ConcordeGo's is `windows/go-capture.png` and ConcordeGo Lite's (the address
-bar reads go.flyconcordefly.com/lite) is `windows/lite-capture.png`.
+Each product card shows one window: `windows/zoar-window.html` (sample-film stills),
+`windows/vpn-window.html`, `windows/go-window.html` and `windows/lite-window.html`.
+ConcordeAI, retired, has no window.
 
 Three rules they exist to enforce:
 
@@ -386,39 +373,7 @@ Zoar's screens show the owner's own projects. To swap a film, replace its jpg,
 fix its caption, re-run `make-shots.py`, and update the matching link under
 the window in `index.html`. Only films that are original and fictional go here.
 
-### Retaking `windows/ai-capture.png`
-
-The app serves its own page, so the capture is the real thing, with a fresh,
-empty data folder (no chats, accounts or servers). From the ConcordeAI repo
-(use a copy of the tree, e.g. `git archive <branch> | tar -x -C <scratch>`, so
-nothing in the working tree changes), with the app's own Python:
-
-    VENV="$HOME/Library/Application Support/MillenAI/venv/bin/python3"
-    MILLENAI_DEV=1 MILLENAI_HOME=<empty scratch dir> MILLENAI_NOWINDOW=1 \
-      MILLENAI_PORT=9931 "$VENV" millenai.py &
-    # wait for <home>/run/instance.json; its "key" is the launch cookie
-
-then, with `measure.mjs` (its `MEASURE_COOKIE`, `MEASURE_INIT` and
-`MEASURE_MOTION` exist for this: the app wants its cookie, `millen.fxlevel`
-set to `full` before it loads, and motion left on):
-
-    MEASURE_COOKIE="millen_key_9931=<key>" MEASURE_MOTION=1 MEASURE_DPR=2.5106383 \
-    MEASURE_INIT='localStorage.setItem("millen.fxlevel","full")' \
-    node tools/measure.mjs http://127.0.0.1:9931/ 940x988 '<expression>' /tmp/ai.png
-
-940x988 at 2.51x is near the app's smallest window, so the interface reads large
-(the PNG is 2360x2481; crop it to 2360x2480). The expression waits 15 s for the
-intro, opens the mode menu (`button.hz-pick`) and picks **Max**, types "Explain
-how a heat pump works, then compare three models under $4,000" into `#input`
-(never sends it), pushes the effort `input[type=range]` to its max (**Ultra**:
-the ice-violet slider, the glowing composer and the sparkles), then for about
-4 s removes the "window didn't finish starting" toast a window-less dev copy
-shows, and blurs the box. (2026-11-11, per Pat: the site did not make the
-product look as good as it is; the plain Medium/Fast home was dull.) Save the PNG as `tools/windows/ai-capture.png` (2360x2480), run `make-shots.py`,
-look at it, then stop the dev copy (`kill $(lsof -tnP -iTCP:9931 -sTCP:LISTEN)`).
-Never open a visible app window or add `?hz=gpu=1` (a dev badge); the app's
-Apple aerial footage never goes on the site (the capture is the app's own
-near-black sky). Retake it when the home screen changes.
+(ConcordeAI's window was retired with the app on 2026-11-27; its recipe is in git history.)
 
 ### Retaking `windows/vpn-capture.png`
 

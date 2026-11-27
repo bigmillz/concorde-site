@@ -22,20 +22,19 @@
 <meta property="og:site_name" content="Concorde">
 <meta property="og:title" content="Concorde: Zoar Video, ConcordeVPN and ConcordeGo">
 <meta property="og:description" content="Zoar Video: describe a film and your own machines make it. ConcordeVPN: a menu-bar VPN for your own server. ConcordeGo: flights, and friends where you fly.">
-<meta property="og:image" content="https://flyconcordefly.com/og.png?v=2">
+<meta property="og:image" content="https://flyconcordefly.com/og.png?v=3">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Concorde delta wing above the CONCORDE wordmark and the line Fly Concorde, Fly., with ConcordeAI, ConcordeVPN and ConcordeGo beneath.">
+<meta property="og:image:alt" content="The Concorde delta wing above the CONCORDE wordmark and the line Fly Concorde, Fly., with Zoar Video, ConcordeVPN and ConcordeGo beneath.">
 <meta name="twitter:card" content="summary_large_image">
 <!-- What search engines read about the site: its name, and one entry per app.
      Plain facts only; keep it true to the page. -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
- {"@type":"WebSite","@id":"https://flyconcordefly.com/#site","url":"https://flyconcordefly.com/","name":"Concorde","alternateName":["Fly Concorde Fly","flyconcordefly"],"description":"Concorde makes ConcordeAI, ConcordeVPN and ConcordeGo.","publisher":{"@id":"https://flyconcordefly.com/#org"}},
+ {"@type":"WebSite","@id":"https://flyconcordefly.com/#site","url":"https://flyconcordefly.com/","name":"Concorde","alternateName":["Fly Concorde Fly","flyconcordefly"],"description":"Concorde makes Zoar Video, ConcordeVPN and ConcordeGo.","publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"Organization","@id":"https://flyconcordefly.com/#org","name":"Concorde","url":"https://flyconcordefly.com/","logo":"https://flyconcordefly.com/apple-touch-icon.png","slogan":"Fly Concorde, Fly."},
  {"@type":"WebApplication","name":"Zoar Video","url":"https://zoarvideo.com/","applicationCategory":"MultimediaApplication","operatingSystem":"Any browser","description":"Describe a film and your own machines make it: story, cast, voices, score and sound. Invite-only beta.","publisher":{"@id":"https://flyconcordefly.com/#org"}},
- {"@type":"SoftwareApplication","name":"ConcordeAI","url":"https://flyconcordefly.com/#concordeai","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS, Windows","description":"An AI chat app that runs on your own Mac or PC.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"SoftwareApplication","name":"ConcordeVPN","url":"https://flyconcordefly.com/#concordevpn","applicationCategory":"SecurityApplication","operatingSystem":"macOS","description":"A menu-bar VPN client for your own exit node.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"WebApplication","name":"ConcordeGo","url":"https://go.flyconcordefly.com/","applicationCategory":"TravelApplication","operatingSystem":"Any browser","description":"Flight search that ranks flights by what the trip really costs, with friends and meet-ups along the way.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://flyconcordefly.com/#org"}},
  {"@type":"WebApplication","name":"ConcordeGo Lite","url":"https://go.flyconcordefly.com/lite","applicationCategory":"TravelApplication","operatingSystem":"Any browser","description":"Say where you need to be and get the earliest and the cheapest flights you can still make.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@id":"https://flyconcordefly.com/#org"}}
@@ -252,7 +251,8 @@ main .section:last-child{padding-bottom:76px}
 }
 
 /* ---------- products: one full-width card each ----------
-   The products stack, ConcordeAI, ConcordeVPN, ConcordeGo, ConcordeGo Lite, and every
+   The products stack, Zoar Video, ConcordeVPN, ConcordeGo, ConcordeGo Lite, then the
+   retired ConcordeAI (name and downloads only), and every
    card is the same card: the product's window on the left and, on the right,
    one column read top to bottom: the name, line and chips, the numbered
    features, then the action box. The text column sets the card's height
@@ -399,6 +399,12 @@ html.hdrmarks .card-head .mark-hdr{position:relative;top:-2.5px}
 /* Zoar Video's name: its own word mark, not the Concorde lockup */
 .card-head .zmark{width:20px;height:18px;flex:0 0 auto;display:block}
 .card-head .zoar-name{font-family:var(--sans);font-weight:600;font-size:19px;letter-spacing:-.01em;color:#fff;line-height:1}
+/* A retired product: one row, its name and line beside its download box */
+.card.retired{grid-template-columns:minmax(0,1fr)}
+.card.retired .card-main{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);align-items:start}
+.card.retired .card-head{border-bottom:0}
+.card.retired .dl{margin:26px 26px 26px 0}
+@media (max-width:1179px){.card.retired .card-main{display:block}.card.retired .dl{margin:0 20px 20px}}
 .feats .n{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--faint);padding-top:2px}
 .feats b{
   display:block;font-family:var(--mono);font-size:11px;font-weight:600;
@@ -905,10 +911,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         <time datetime="2026-11-25">25 Nov</time>
         <ul><li><a href="#concordego">ConcordeGo</a> &mdash; Find friends at your airport today</li></ul>
       </div>
-      <div class="news-day">
-        <time datetime="2026-11-13">13 Nov</time>
-        <ul><li><a href="#concordeai">ConcordeAI</a> 7.0 beta 5 now available &mdash; A new reading typeface for answers; Stars and aurora behind your chats; A less cluttered interface</li></ul>
-      </div>
       <!-- /releases:news -->
       </div>
     </div>
@@ -1313,22 +1315,13 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
           </div>
         </article>
 
-        <!-- ============ CARD: CONCORDEAI ============ -->
-        <article class="card reveal" id="concordeai" aria-labelledby="ai-name">
-          <div class="stage">
-            <div class="stage-in">
-              <a class="shot" href="assets/shot-ai.png">
-                <picture>
-                  <source srcset="assets/shot-ai.webp" type="image/webp">
-                  <img src="assets/shot-ai.png" width="1469" height="1532" loading="lazy" decoding="async"
-                       alt="ConcordeAI 7.0 as it opens: a glowing greeting under a near-black sky, and a message box with a question typed in, set to Max mode with the effort slider at Ultra, ringed by a violet glow and sparkles.">
-                </picture>
-                <span class="visually-hidden">Enlarge</span>
-              </a>
-              <p class="how"><span class="label">Downloads</span>macOS (7.0 is signed and notarized) and Windows.<br>Installed copies update themselves.</p>
-            </div>
-          </div>
-
+        <!-- ============ CARD: CONCORDEAI (retired) ============
+             ConcordeAI is no longer developed (2026-11-27: Pat chose Zoar Video,
+             above; ConcordeAI frozen but still downloadable, no new releases).
+             The card is only its name, one line and its download box. Keep the
+             releases:ai block: sync-releases.py still writes it, so the existing
+             download links keep resolving. -->
+        <article class="card reveal retired" id="concordeai" aria-labelledby="ai-name">
           <div class="card-main">
             <div class="card-head">
               <div class="row">
@@ -1340,31 +1333,8 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
                   <line x1="19.3" y1="17.5" x2="20.4" y2="16.6"/></g></svg>
                 <h3 id="ai-name" class="lockup"><span class="mark-txt">Concorde<span class="tld">AI</span></span><video class="mark-hdr" data-mark="ai" muted playsinline loop preload="none" aria-hidden="true"></video></h3>
               </div>
-              <p class="desc">An AI app that runs on your own machines. Private by default, with the cloud only if you turn it on.</p>
-              <div class="plats label">
-                <span>macOS</span>
-                <span>Windows</span>
-              </div>
+              <p class="desc">No longer developed. The last builds stay here for anyone who already uses it; there will be no new releases.</p>
             </div>
-
-            <ul class="feats">
-              <li>
-                <span class="n">01</span>
-                <div><b>Private by default</b><span class="d">Answers run on your own machines. Cloud models are there when you turn them on.</span></div>
-              </li>
-              <li>
-                <span class="n">02</span>
-                <div><b>Five modes, one answer</b><span class="d">Fast, Thinking, Pro, Max or Deep, with an effort slider. Several drafts are combined into one answer.</span></div>
-              </li>
-              <li>
-                <span class="n">03</span>
-                <div><b>Your own stuff</b><span class="d">Bring your chats over from other apps. Answers can cite your own chats and files.</span></div>
-              </li>
-              <li>
-                <span class="n">04</span>
-                <div><b>Code and Funnels</b><span class="d">A code lane, and guided decisions that end in a recommendation.</span></div>
-              </li>
-            </ul>
 
             <div class="dl">
             <!-- releases:ai -->
@@ -1478,7 +1448,7 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
       <div class="note reveal d1">
         <h3>Which build</h3>
         <div class="body">
-          <p>ConcordeAI and ConcordeVPN each come in up to three builds, one tab each on the download card:</p>
+          <p>ConcordeVPN comes in up to three builds, one tab each on the download card:</p>
           <ul class="chans">
             <li><b>Stable</b><span>The finished release. Start here if you just want it to work.</span></li>
             <li><b>Prerelease</b><span>Betas and release candidates: new features before Stable, tested but not final.</span></li>
@@ -1524,17 +1494,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         <h2 id="faq-h">FAQ</h2>
       </div>
       <div class="faq reveal d1">
-        <div class="faq-group">
-          <h3><span class="lockup">Concorde<span class="tld">AI</span></span></h3>
-          <div class="qs">
-            <details><summary>Does ConcordeAI run locally?</summary><div class="a"><p>Yes. Models download to your computer and run there: MLX on Apple silicon, Ollama on Intel Macs and Windows, using CUDA on NVIDIA cards. Cloud models stay off until you add an API key. Without one, two things still go online: web search, for questions about the world, and image requests, unless local image generation (Apple silicon only) is installed.</p></div></details>
-            <details><summary>How much disk space do I need?</summary><div class="a"><p>The setup wizard shows each model set&#x27;s download size for your machine before anything downloads. Basic is one 0.8 GB model. On a Mac, Pro is 7 to 11 GB, and Max, the largest set, is 22 to 25 GB with 16 GB of memory or about 50 GB with 32 GB. Local image generation, Apple silicon only, adds 9.6 GB.</p></div></details>
-            <details><summary>How much memory do I need?</summary><div class="a"><p>ConcordeAI only lists models your machine can hold: by default, those within 75% of your RAM, or on a PC with an NVIDIA card, 1.25 times the card&#x27;s memory if that is lower. Loading a model needs about one and a half times its size free, so roughly 4 GB for Llama 3.2 3B and 12 GB for Gemma 4 12B. If a model can&#x27;t load, a smaller installed one answers.</p></div></details>
-            <details><summary>Why use it over an online AI tool?</summary><div class="a"><p>With no cloud key, text answers come from models on your computer, your chats are saved in a file on it, and local models work offline. Add a Gemini, Groq, Claude or Kimi key and cloud models join in. Thinking and Pro modes blend several models&#x27; drafts into one answer, and the same window has a Code lane, with an SSH agent that asks before irreversible commands, and Funnels for step-by-step decisions.</p></div></details>
-            <details><summary>What is Funnel?</summary><div class="a"><p>A way to make a decision rather than chat about one. Open Funnels and say what you&rsquo;re deciding, plus anything that has to hold, such as a budget or a size. ConcordeAI then asks one question at a time, each with a few options to pick from, and every pick narrows the next question, so the choices close in instead of starting over. It ends with one recommendation: a real, named pick, why it fits what you chose, and what to do next. Some funnels show a real photo from the web with each option.</p></div></details>
-            <details><summary>Can I use my chats on another computer?</summary><div class="a"><p>It&rsquo;s coming: an optional sign-in that carries your chats between your own computers. Until then, your chats are saved in a file on the computer you use, and ConcordeAI keeps working without an account.</p></div></details>
-          </div>
-        </div>
         <div class="faq-group">
           <h3><span class="lockup">Concorde<span class="tld">VPN</span></span></h3>
           <div class="qs">
@@ -1588,7 +1547,6 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
             </div>
             <label for="contact-product">About
               <select id="contact-product" name="product">
-                <option>ConcordeAI</option>
                 <option>ConcordeVPN</option>
                 <option>ConcordeGo</option>
                 <option>This website</option>
@@ -1620,13 +1578,13 @@ footer .right{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
         <h3>Why they exist</h3>
         <div class="body">
           <p>I built these to fill gaps: things the apps I already used couldn&rsquo;t do, and tools I needed that didn&rsquo;t exist. Once they worked well enough for me every day, I cleaned them up so other people could use them too.</p>
-          <p>This is a hobby, not a business, and I&rsquo;m adding features all the time. If one of these turns out to be useful to you, keep it up to date. ConcordeAI and ConcordeVPN update themselves; ConcordeGo is a website, so it is always current.</p>
+          <p>This is a hobby, not a business, and I&rsquo;m adding features all the time. If one of these turns out to be useful to you, keep it up to date. ConcordeVPN updates itself; Zoar Video and ConcordeGo are websites, so they are always current.</p>
           <p class="sig">&mdash; Pat</p>
         </div>
 
         <h3>Channels</h3>
         <div class="body">
-          <p>ConcordeAI and ConcordeVPN each ship on up to three channels.</p>
+          <p>ConcordeVPN ships on up to three channels.</p>
           <ul class="chans">
             <li><b>Stable</b><span>The finished release. Use this one if you just want it to work.</span></li>
             <li><b>Prerelease</b><span>Betas with new features and fixes I&rsquo;ve confirmed. Relatively stable.</span></li>

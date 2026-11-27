@@ -1142,6 +1142,9 @@ NEWS_DAYS = 30                           # how far back anything is considered
 NEWS_KEY = "news"
 NEWS_PROMPT = Path(__file__).with_name("news-prompt.md")
 NEWS_FEATURES = 3
+# Products no longer developed: their downloads stay on the page, but they are
+# not news (ConcordeAI, retired 2026-11-27 for Zoar Video).
+NEWS_RETIRED = {"ai"}
 ANCHOR = {"ai": ("#concordeai", "ConcordeAI"), "vpn": ("#concordevpn", "ConcordeVPN"), "go": ("#concordego", "ConcordeGo")}
 # A ConcordeGo update whose every line is about Lite ("Lite, three good
 # flights…") links to Lite's own card instead, named in full, the "Lite" lead
@@ -1295,6 +1298,8 @@ def news_entries(go=None, today=None):
     auto = load_auto()
     entries = []
     for key, repo, _buttons in PRODUCTS:
+        if key in NEWS_RETIRED:
+            continue
         try:
             groups = news_groups(repo, today)
         except SystemExit as exc:

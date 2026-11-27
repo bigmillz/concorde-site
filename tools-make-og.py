@@ -189,7 +189,7 @@ def main():
            width=max(1, X))
     f_prod = ImageFont.truetype(FONT, int(19 * X))
     b = max(1, int(1.1 * X))          # synthetic weight for the suffixes
-    segments(img, [("CONCORDE", 0), ("AI", b), ("   \u00b7   ", 0),
+    segments(img, [("ZOAR ", 0), ("VIDEO", b), ("   \u00b7   ", 0),
                    ("CONCORDE", 0), ("VPN", b), ("   \u00b7   ", 0),
                    ("CONCORDE", 0), ("GO", b)],
              f_prod, int(19 * X * 0.15), int(516 * X), (180, 180, 180))
